@@ -1,9 +1,9 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8)
 project (mothur)
  
 # The version number.
-set (mothur_VERSION 1.36.0)
-set (mothur_RELEASE_DATE 7/23/2015)
+set (MOTHUR_VERSION 1.36.0)
+set (MOTHUR_RELEASE_DATE 7/23/2015)
 
 set(CMAKE_BUILD_TYPE Release)
  
@@ -17,6 +17,8 @@ option(USE_COMPRESSION
   "Use compression (may only work on *nix systems)" OFF)
 option(MOTHUR_FILES
   "Default path for mothur files" Enter_your_default_path_here)
+  
+ enable_testing()
 
 if (USE_READLINE)
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/source/cmake/Modules")
@@ -60,6 +62,8 @@ configure_file (
   )
 
 include_directories ("${PROJECT_BINARY_DIR}/source")
+
+add_subdirectory(source/uchime_src)
 
 add_executable(mothur
   source/calculators/ace.cpp
@@ -454,7 +458,16 @@ endif()
 target_link_libraries(mothur ${MOTHUR_LINK_LIBRARIES})
 
 # add the install targets
-install (TARGETS mothur DESTINATION bin)
+install(TARGETS mothur DESTINATION bin)
  
 # does the application run
-add_test (mothurRuns mothur --version)
+add_test(mothurVersion mothur --version)
+set_tests_properties(mothurVersion
+  PROPERTIES
+  PASS_REGULAR_EXPRESSION "Mothur version=${MOTHUR_VERSION}"
+)
+add_test(mothurHelp mothur --help)
+set_tests_properties(mothurHelp
+  PROPERTIES
+  PASS_REGULAR_EXPRESSION "Valid commands are"
+)

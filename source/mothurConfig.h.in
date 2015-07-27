@@ -1,5 +1,5 @@
-#define RELEASE_DATE "@mothur_RELEASE_DATE@"
-#define VERSION "@mothur_VERSION@"
+#define RELEASE_DATE "@MOTHUR_RELEASE_DATE@"
+#define VERSION "@MOTHUR_VERSION@"
 #cmakedefine USE_MPI
 #cmakedefine USE_READLINE
 #cmakedefine USE_BOOST
