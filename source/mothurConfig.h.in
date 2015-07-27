@@ -1,7 +1,4 @@
 #define RELEASE_DATE "@MOTHUR_RELEASE_DATE@"
 #define VERSION "@MOTHUR_VERSION@"
-#cmakedefine USE_MPI
-#cmakedefine USE_READLINE
-#cmakedefine USE_BOOST
 #cmakedefine USE_COMPRESSION
 #cmakedefine MOTHUR_FILES
