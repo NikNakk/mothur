@@ -16,6 +16,9 @@
 
 //#include <cstddef>
 
+//config
+#include "mothurConfig.h"
+
 //boost libraries
 #ifdef USE_BOOST
     #include <boost/iostreams/filtering_stream.hpp>
@@ -59,8 +62,6 @@
 	#include "mpi.h"
 #endif
 
-//config
-#include "mothurConfig.h"
 /***********************************************************************/
 
 #if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
