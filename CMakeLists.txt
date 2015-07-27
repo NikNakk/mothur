@@ -7,39 +7,39 @@ set (MOTHUR_RELEASE_DATE 7/23/2015)
 
 set(CMAKE_BUILD_TYPE Release)
  
-option(ENABLE_MPI 
+option(USE_MPI 
   "Use MPI" OFF)
-option(ENABLE_READLINE 
+option(USE_READLINE 
   "Use readline library" ON)
-option(ENABLE_BOOST
+option(USE_BOOST
   "Use boost library" ON)
 option(USE_COMPRESSION
   "Use compression (may only work on *nix systems)" OFF)
 set(MOTHUR_FILES ""
   CACHE STRING "Default path for mothur files" Enter_your_default_path_here)
   
- enable_testing()
+enable_testing()
 
-if (ENABLE_READLINE)
+if (USE_READLINE)
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/source/cmake/Modules")
   find_package(Readline)
   if (READLINE_FOUND)
     include_directories(${READLINE_INCLUDE_DIR})
     set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} ${READLINE_LIBRARIES})
-    set(USE_READLINE ON)
+    add_definitions(-DUSE_READLINE)
   endif (READLINE_FOUND)
-endif (ENABLE_READLINE)
+endif (USE_READLINE)
 
-if (ENABLE_MPI)
+if (USE_MPI)
   find_package(MPI)
   if (MPI_FOUND)
     include_directories(${MPI_INCLUDE_PATH})
     set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} ${MPI_LIBRARIES})
-    set(USE_MPI ON)
+    add_definitions(-DUSE_MPI)
   endif (MPI_FOUND)
-endif (ENABLE_MPI)
+endif (USE_MPI)
 
-if (ENABLE_BOOST)
+if (USE_BOOST)
   find_package(Boost 1.50.0)
   find_package(ZLIB)
   if (Boost_FOUND AND ZLIB_FOUND)
@@ -47,9 +47,9 @@ if (ENABLE_BOOST)
     include_directories(${ZLIB_INCLUDE_DIRS})
     set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} boost_iostreams)
     set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} ${ZLIB_LIBRARIES})
-    set(USE_BOOST ON)
+    add_definitions(-DUSE_BOOST)
   endif (Boost_FOUND AND ZLIB_FOUND)
-endif (ENABLE_BOOST)
+endif (USE_BOOST)
   
 # configure a header file to pass some of the CMake settings
 # to the source code
