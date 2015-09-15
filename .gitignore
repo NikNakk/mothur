@@ -38,3 +38,8 @@ mothur.dir/
 *.sln
 source/uchime_src/uchime.dir/
 x64/
+source/wineditline/lib64/
+source/wineditline/lib32/
+source/wineditline/bin32/
+source/wineditline/bin64/
+.svn/

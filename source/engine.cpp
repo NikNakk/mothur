@@ -164,40 +164,29 @@ bool InteractEngine::getInput(){
 string Engine::getCommand()  {
 	try {
 	
-		#if defined UNIX
-			#ifdef USE_READLINE
-				char* nextCommand = NULL;
-				nextCommand = readline("\nmothur > ");
-				
-				if(nextCommand != NULL) {  add_history(nextCommand);  }	
-				else{ //^D causes null string and we want it to quit mothur
-					nextCommand = strdup("quit");
-					mout->mothurOut(nextCommand);
-                    mout->mothurOut("\n");
-				}	
-				
-				mout->mothurOutJustToLog("\nmothur > " + toString(nextCommand) + "\n");
-				return nextCommand;
-			#else
-				string nextCommand = "";
-				mout->mothurOut("\nmothur > ");
-				getline(cin, nextCommand);
-                mout->mothurOut("\n");
-				mout->mothurOutJustToLog("\nmothur > " + toString(nextCommand) + "\n");
-				
-				return nextCommand;
-			#endif
-		#else
-				string nextCommand = "";
-				
-				mout->mothurOut("\nmothur > ");
-				getline(cin, nextCommand);
-                mout->mothurOut("\n");
-				mout->mothurOutJustToLog(toString(nextCommand) + "\n");
-				
-				return nextCommand;
-		#endif
-	
+	#if defined(USE_READLINE) || defined(USE_EDITLINE)
+			char* nextCommand = NULL;
+			mout->mothurOut("\n");
+			nextCommand = readline("mothur > ");
+
+			if (nextCommand != NULL) { add_history(nextCommand); }
+			else { //^D causes null string and we want it to quit mothur
+				nextCommand = strdup("quit");
+				mout->mothurOut(nextCommand);
+				mout->mothurOut("\n");
+			}
+
+			mout->mothurOutJustToLog("\nmothur > " + toString(nextCommand) + "\n");
+			return nextCommand;
+	#else
+			string nextCommand = "";
+			mout->mothurOut("\nmothur > ");
+			getline(cin, nextCommand);
+			mout->mothurOut("\n");
+			mout->mothurOutJustToLog("\nmothur > " + toString(nextCommand) + "\n");
+
+			return nextCommand;
+	#endif	
 						
 	}
 	catch(exception& e) {
