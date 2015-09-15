@@ -13,6 +13,7 @@
 #include <stdarg.h>
 #include <cstdlib>
 #include <climits>
+#include <algorithm>
 
 #ifndef _MSC_VER
 #include <inttypes.h>

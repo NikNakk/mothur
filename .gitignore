@@ -29,3 +29,12 @@ Makefile
 CTestTestfile.cmake
 Testing/
 install_manifest.txt
+*.vcxproj*
+Debug/
+Release/
+mothur.dir/
+*.opensdf
+*.sdf
+*.sln
+source/uchime_src/uchime.dir/
+x64/

@@ -19,6 +19,8 @@
 //config
 #include "mothurConfig.h"
 
+#define NOMINMAX // Required on Windows because of macros for min and max
+
 //boost libraries
 #ifdef USE_BOOST
     #include <boost/iostreams/filtering_stream.hpp>
