@@ -63,7 +63,7 @@ struct parsData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyParsimonyThreadFunction(LPVOID lpParam){
 	parsData* pDataArray;

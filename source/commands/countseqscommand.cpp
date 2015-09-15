@@ -197,7 +197,7 @@ int CountSeqsCommand::execute(){
 		
 		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
         
-#if defined UNIX
+#if defined (UNIX)
 #else
         processors=1;
 #endif
@@ -409,7 +409,7 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap*& groupMap, string
         unsigned long long numSeqs = 0;
         bool recalc = false;
         
-#if defined UNIX
+#if defined (UNIX)
 		positions = m->divideFilePerLine(namefile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
 #else
@@ -430,7 +430,7 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap*& groupMap, string
 #endif
 
         		
-#if defined UNIX
+#if defined (UNIX)
 		
 		//loop through and create all the processes you want
 		while (process != processors-1) {
@@ -655,7 +655,7 @@ unsigned long long CountSeqsCommand::driver(unsigned long long start, unsigned l
 			
 			total += names.size();
             
-#if defined UNIX
+#if defined (UNIX)
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= end)) { break; }
 #else
@@ -702,7 +702,7 @@ unsigned long long CountSeqsCommand::processLarge(string outputFileName){
             
             //sort file by first column so the names of sequences will be easier to find
             //use the unix sort 
-            #if defined UNIX
+            #if defined (UNIX)
                 string command = "sort -n " + newGroupFile + " -o " + outfile;
                 system(command.c_str());
                 command = "sort -n " + newNameFile + " -o " + outName;

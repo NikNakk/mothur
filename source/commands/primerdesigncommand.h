@@ -105,7 +105,7 @@ struct primerDesignData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyPrimerThreadFunction(LPVOID lpParam){ 
 	primerDesignData* pDataArray;

@@ -149,7 +149,7 @@ struct uchimeData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyUchimeThreadFunction(LPVOID lpParam){ 
 	uchimeData* pDataArray;

@@ -111,7 +111,7 @@ struct clusterData {
 };
 
 /**************************************************************************************************
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyClusterThreadFunction(LPVOID lpParam){ 
 	clusterData* pDataArray;

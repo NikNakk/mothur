@@ -121,7 +121,7 @@ struct pairwiseData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyPairwiseSquareThreadFunction(LPVOID lpParam){ 
 	pairwiseData* pDataArray;

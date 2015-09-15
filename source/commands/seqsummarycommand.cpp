@@ -215,7 +215,7 @@ int SeqSummaryCommand::execute(){
 			
 
 			vector<unsigned long long> positions; 
-			#if defined UNIX
+			#if defined (UNIX)
 				positions = m->divideFile(fastafile, processors);
 				for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
 			#else
@@ -476,7 +476,7 @@ int SeqSummaryCommand::execute(){
                 if (m->debug) { m->mothurOut("[DEBUG]: " + current.getName() + '\t' + toString(num) + "\n");  }
 			}
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -501,7 +501,7 @@ int SeqSummaryCommand::execute(){
 		processIDS.clear();
         bool recalc = false;
 		
-#if defined UNIX
+#if defined (UNIX)
 		
 		//loop through and create all the processes you want
 		while (process != processors) {

@@ -177,7 +177,7 @@ string MothurOut::findProgramPath(string programName){
         //is this the programs path?
         ifstream in5;
         string tempIn = ".";
-#if defined UNIX
+#if defined (UNIX)
         tempIn += "/" + programName;
 #else
         tempIn += "\\" + programName;
@@ -191,7 +191,7 @@ string MothurOut::findProgramPath(string programName){
 		
 		//delimiting path char
 		char delim;
-#if defined UNIX
+#if defined (UNIX)
         delim = ':';
 #else
         delim = ';';
@@ -220,7 +220,7 @@ string MothurOut::findProgramPath(string programName){
         
 		if (pPath != "") {
 			//add programName so it looks like what argv would look like
-#if defined UNIX
+#if defined (UNIX)
             pPath += "/" + programName;
 #else
             pPath += "\\" + programName;
@@ -237,7 +237,7 @@ string MothurOut::findProgramPath(string programName){
 				//is this the programs path?
 				ifstream in;
 				string tempIn = dirs[i];
-#if defined UNIX
+#if defined (UNIX)
                 tempIn += "/" + programName;
 #else
                 tempIn += "\\" + programName;
@@ -286,7 +286,7 @@ void MothurOut::setDefaultPath(string pathname)  {
 	
 		//add / to name if needed
 		string lastChar = pathname.substr(pathname.length()-1);
-		#if defined UNIX
+		#if defined (UNIX)
 			if (lastChar != "/") { pathname += "/"; }
 		#else
 			if (lastChar != "\\") { pathname += "\\"; }	
@@ -545,7 +545,7 @@ void MothurOut::errorOut(exception& e, string object, string function) {
 //
 // On failure, returns 0.0, 0.0
 int MothurOut::mem_usage(double& vm_usage, double& resident_set) {
-  #if defined UNIX
+  #if defined (UNIX)
   
 	   vm_usage     = 0.0;
 	   resident_set = 0.0;
@@ -762,7 +762,7 @@ string MothurOut::getline(ifstream& fileHandle) {
 }
 /***********************************************************************/
 
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
 inline bool endsWith(string s, const char * suffix){
   size_t suffixLength = strlen(suffix);
@@ -776,7 +776,7 @@ string MothurOut::getRootName(string longName){
 	
 		string rootName = longName;
 
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
     if (endsWith(rootName, ".gz") || endsWith(rootName, ".bz2")) {
       int pos = rootName.find_last_of('.');
@@ -870,7 +870,7 @@ bool MothurOut::dirCheck(string& dirName){
 
         //add / to name if needed
         string lastChar = dirName.substr(dirName.length()-1);
-        #if defined UNIX
+        #if defined (UNIX)
         if (lastChar != "/") { dirName += "/"; }
         #else
         if (lastChar != "\\") { dirName += "\\"; }	
@@ -914,7 +914,7 @@ bool MothurOut::dirCheck(string& dirName, string noError){
         
         //add / to name if needed
         string lastChar = dirName.substr(dirName.length()-1);
-#if defined UNIX
+#if defined (UNIX)
         if (lastChar != "/") { dirName += "/"; }
 #else
         if (lastChar != "\\") { dirName += "\\"; }
@@ -1085,7 +1085,7 @@ string MothurOut::getFullPathName(string fileName){
 				
 		string cwd;
 		//get current working directory 
-		#if defined UNIX	
+		#if defined (UNIX)	
 			
 			if (path.find("~") != -1) { //go to home directory
 				string homeDir;
@@ -1208,7 +1208,7 @@ int MothurOut::openInputFile(string fileName, ifstream& fileHandle, string m){
 	try {
 			//get full path name
 			string completeFileName = getFullPathName(fileName);
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
       // check for gzipped or bzipped file
       if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
@@ -1255,7 +1255,7 @@ int MothurOut::openInputFile(string fileName, ifstream& fileHandle){
 
 		//get full path name
 		string completeFileName = getFullPathName(fileName);
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
   // check for gzipped or bzipped file
   if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
@@ -1305,7 +1305,7 @@ int MothurOut::openInputFileBinary(string fileName, ifstream& fileHandle){
         
 		//get full path name
 		string completeFileName = getFullPathName(fileName);
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
         // check for gzipped or bzipped file
         if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
@@ -1355,7 +1355,7 @@ int MothurOut::openInputFileBinary(string fileName, ifstream& fileHandle, string
         
 		//get full path name
 		string completeFileName = getFullPathName(fileName);
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
         // check for gzipped or bzipped file
         if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
@@ -1535,7 +1535,7 @@ int MothurOut::renameFile(string oldName, string newName){
 		int exist = openInputFile(newName, inTest, "");
 		inTest.close();
 		
-	#if defined UNIX		
+	#if defined (UNIX)		
 		if (exist == 0) { //you could open it so you want to delete it
 			string command = "rm " + newName;
 			system(command.c_str());
@@ -1562,7 +1562,7 @@ int MothurOut::openOutputFile(string fileName, ofstream& fileHandle){
 	try { 
 	
 		string completeFileName = getFullPathName(fileName);
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
     // check for gzipped file
     if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
@@ -1604,7 +1604,7 @@ int MothurOut::openOutputFileBinary(string fileName, ofstream& fileHandle){
 	try {
         
 		string completeFileName = getFullPathName(fileName);
-#if defined UNIX
+#if defined (UNIX)
 #ifdef USE_COMPRESSION
         // check for gzipped file
         if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
@@ -1787,7 +1787,7 @@ string MothurOut::sortFile(string distFile, string outputDir){
 
 		
 		//if you can, use the unix sort since its been optimized for years
-		#if defined UNIX
+		#if defined (UNIX)
 			string command = "sort -n -k +3 " + distFile + " -o " + outfile;
 			system(command.c_str());
 		#else //you are stuck with my best attempt...
@@ -2235,7 +2235,7 @@ vector<unsigned long long> MothurOut::divideFile(string filename, int& proc) {
             fclose (pFile);
         }
         
-#if defined UNIX
+#if defined (UNIX)
         
         //estimate file breaks
         unsigned long long chunkSize = 0;
@@ -2317,7 +2317,7 @@ vector<unsigned long long> MothurOut::divideFile(string filename, int& proc, cha
         char secondaryDelim = '>';
         if (delimChar == '@') { secondaryDelim = '+'; }
         
-#if defined UNIX
+#if defined (UNIX)
         
         //estimate file breaks
         unsigned long long chunkSize = 0;
@@ -2416,7 +2416,7 @@ vector<unsigned long long> MothurOut::divideFilePerLine(string filename, int& pr
 			fclose (pFile);
 		}
 		
-#if defined UNIX
+#if defined (UNIX)
         
 		//estimate file breaks
 		unsigned long long chunkSize = 0;
@@ -3417,7 +3417,7 @@ string MothurOut::mothurGetpid(int threadID){
 	try {
         
         string pid = "";
-#if defined UNIX
+#if defined (UNIX)
         
 		pid += toString(getpid()); if(debug) { mothurOut("[DEBUG]: " + pid + "\n"); }
         //remove any weird chars

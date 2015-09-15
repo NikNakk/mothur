@@ -133,7 +133,7 @@ struct classifyData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyClassThreadFunction(LPVOID lpParam){ 
 	classifyData* pDataArray;

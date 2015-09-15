@@ -66,7 +66,7 @@
 
 /***********************************************************************/
 
-#if defined UNIX
+#if defined (UNIX)
 	#include <sys/wait.h>
 	#include <sys/time.h>
 	#include <sys/resource.h>

@@ -426,7 +426,7 @@ int PairwiseSeqsCommand::execute(){
 			MPI_Barrier(MPI_COMM_WORLD); //make everyone wait - just in case
 	#else		
 					
-		//#if defined UNIX
+		//#if defined (UNIX)
 			//if you don't need to fork anything
 			if(processors == 1){
 				if (output != "square") {  driver(0, numSeqs, outputFile, cutoff); }
@@ -519,7 +519,7 @@ void PairwiseSeqsCommand::createProcesses(string filename) {
 		processIDS.clear();
         bool recalc = false;
         
-#if defined UNIX
+#if defined (UNIX)
 		
 		
 		//loop through and create all the processes you want

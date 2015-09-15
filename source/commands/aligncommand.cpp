@@ -442,7 +442,7 @@ int AlignCommand::execute(){
 #else
 
 			vector<unsigned long long> positions; 
-		#if defined UNIX
+		#if defined (UNIX)
 			positions = m->divideFile(candidateFileNames[s], processors);
 			for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
 		#else
@@ -649,7 +649,7 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 			}
 			delete candidateSeq;
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -863,7 +863,7 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		processIDS.resize(0);
         bool recalc = false;
         
-#if defined UNIX
+#if defined (UNIX)
 		int process = 1;
 		
 		//loop through and create all the processes you want

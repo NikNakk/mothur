@@ -690,7 +690,7 @@ int ScreenSeqsCommand::screenReports(map<string, string>& badSeqNames){
             getSummary(positions); 
             summarizedFasta = true;
         } else {
-            #if defined UNIX
+            #if defined (UNIX)
                 positions = m->divideFile(fastafile, processors);
                 for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
             #else 
@@ -1025,7 +1025,7 @@ int ScreenSeqsCommand::screenFasta(map<string, string>& badSeqNames){
             }
 			getSummary(positions); 
 		}else { 
-#if defined UNIX
+#if defined (UNIX)
             positions = m->divideFile(fastafile, processors);
             for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
 #else 
@@ -1276,7 +1276,7 @@ int ScreenSeqsCommand::optimizeContigs(){
 		
         vector<unsigned long long> positions;
         vector<linePair> contigsLines;
-#if defined UNIX
+#if defined (UNIX)
 		positions = m->divideFilePerLine(contigsreport, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { contigsLines.push_back(linePair(positions[i], positions[(i+1)])); }	
 #else
@@ -1404,7 +1404,7 @@ int ScreenSeqsCommand::driverContigsSummary(vector<int>& oLength, vector<int>& o
             count++;
 			
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-#if defined UNIX
+#if defined (UNIX)
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else
@@ -1432,7 +1432,7 @@ int ScreenSeqsCommand::createProcessesContigsSummary(vector<int>& oLength, vecto
         bool recalc = false;
         
         
-#if defined UNIX
+#if defined (UNIX)
         
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -1626,7 +1626,7 @@ int ScreenSeqsCommand::optimizeAlign(){
 		
         vector<unsigned long long> positions;
         vector<linePair> alignLines;
-#if defined UNIX
+#if defined (UNIX)
 		positions = m->divideFilePerLine(alignreport, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { alignLines.push_back(linePair(positions[i], positions[(i+1)])); }	
 #else
@@ -1744,7 +1744,7 @@ int ScreenSeqsCommand::driverAlignSummary(vector<float>& sims, vector<float>& sc
             count++;
 			
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-#if defined UNIX
+#if defined (UNIX)
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else
@@ -1771,7 +1771,7 @@ int ScreenSeqsCommand::createProcessesAlignSummary(vector<float>& sims, vector<f
 		vector<int> processIDS;
         bool recalc = false;
         
-#if defined UNIX
+#if defined (UNIX)
         
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -1956,7 +1956,7 @@ int ScreenSeqsCommand::getSummary(vector<unsigned long long>& positions){
 		vector<int> longHomoPolymer;
         vector<int> numNs;
 		
-#if defined UNIX
+#if defined (UNIX)
 		positions = m->divideFile(fastafile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }	
 #else
@@ -1985,7 +1985,7 @@ int ScreenSeqsCommand::getSummary(vector<unsigned long long>& positions){
 			driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, tempLine);
 #else
 		int numSeqs = 0;
-		//#if defined UNIX
+		//#if defined (UNIX)
 			if(processors == 1){
 				numSeqs = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[0]);
 			}else{
@@ -2097,7 +2097,7 @@ int ScreenSeqsCommand::driverCreateSummary(vector<int>& startPosition, vector<in
 				count++;
 			}
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos.end)) { break; }
 			#else
@@ -2124,7 +2124,7 @@ int ScreenSeqsCommand::createProcessesCreateSummary(vector<int>& startPosition, 
 		vector<int> processIDS;
         bool recalc = false;
 
-#if defined UNIX
+#if defined (UNIX)
 				
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -2608,7 +2608,7 @@ int ScreenSeqsCommand::driver(linePair filePos, string goodFName, string badAccn
                 count++;
 			}
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos.end)) { break; }
 			#else
@@ -2732,7 +2732,7 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
 		int num = 0;
         bool recalc = false;
 
-#if defined UNIX
+#if defined (UNIX)
 				
 		//loop through and create all the processes you want
 		while (process != processors) {

@@ -65,7 +65,7 @@ EstOutput Weighted::createProcesses(Tree* t, vector< vector<string> > namesOfGro
 		EstOutput results;
         bool recalc = false;
         
-#if defined UNIX
+#if defined (UNIX)
 		int process = 1;
 		
 		//loop through and create all the processes you want

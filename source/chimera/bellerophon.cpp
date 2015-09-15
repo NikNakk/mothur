@@ -314,7 +314,7 @@ int Bellerophon::getChimeras() {
 	#else
 	
 		//divide breakpoints between processors
-		#if defined UNIX
+		#if defined (UNIX)
 			if(processors == 1){ 
 				lines.push_back(linePair(0, iters));	
 				
@@ -356,7 +356,7 @@ int Bellerophon::getChimeras() {
 
 int Bellerophon::createProcesses(vector<int> mid) {
 	try {
-#if defined UNIX
+#if defined (UNIX)
 		int process = 0;
 		int exitCommand = 1;
 		vector<int> processIDS;

@@ -254,7 +254,7 @@ int DegapSeqsCommand::createProcesses(string filename, string outputFileName){
         vector<linePair> lines;
         vector<unsigned long long> positions;
         
-#if defined UNIX
+#if defined (UNIX)
         positions = m->divideFile(filename, processors);
         for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
         int process = 1;
@@ -444,7 +444,7 @@ int DegapSeqsCommand::driver(linePair filePos, string filename, string outputFil
                 numSeqs++;
             }
             
-            #if defined UNIX
+            #if defined (UNIX)
                 unsigned long long pos = inFASTA.tellg();
                 if ((pos == -1) || (pos >= filePos.end)) { break; }
             #else

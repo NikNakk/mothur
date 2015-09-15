@@ -90,7 +90,7 @@ struct indicatorData {
     }
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyIndicatorThreadFunction(LPVOID lpParam){
 	indicatorData* pDataArray;

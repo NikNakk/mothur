@@ -82,7 +82,7 @@ int FormatColumnMatrix::read(NameAssignment* nameMap){
 		string outfile = m->getRootName(squareFile) + "sorted.dist.temp";
 		
 		//use the unix sort 
-		#if defined UNIX
+		#if defined (UNIX)
 			string command = "sort -n " + squareFile + " -o " + outfile;
 			system(command.c_str());
 		#else //sort using windows sort
@@ -245,7 +245,7 @@ int FormatColumnMatrix::read(CountTable* nameMap){
 		string outfile = m->getRootName(squareFile) + "sorted.dist.temp";
 		
 		//use the unix sort 
-#if defined UNIX
+#if defined (UNIX)
         string command = "sort -n " + squareFile + " -o " + outfile;
         system(command.c_str());
 #else //sort using windows sort

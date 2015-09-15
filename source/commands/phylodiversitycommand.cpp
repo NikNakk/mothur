@@ -400,7 +400,7 @@ int PhyloDiversityCommand::createProcesses(vector<int>& procIters, Tree* t, map<
 		map< string, vector<float> >::iterator itSum;
         bool recalc = false;
 
-		#if defined UNIX
+		#if defined (UNIX)
 				
 		//loop through and create all the processes you want
 		while (process != processors) {

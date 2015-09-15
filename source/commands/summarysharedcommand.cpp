@@ -625,7 +625,7 @@ int SummarySharedCommand::process(vector<SharedRAbundVector*> thisLookup, string
                 vector<int> processIDS;
                 bool recalc = false;
                 
-#if defined UNIX
+#if defined (UNIX)
                 //loop through and create all the processes you want
                 while (process != processors) {
                     pid_t pid = fork();

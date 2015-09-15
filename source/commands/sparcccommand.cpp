@@ -425,7 +425,7 @@ vector<vector<float> > SparccCommand::createProcesses(vector<vector<float> >& sh
             vector<int> processIDS;
             int process = 1;
 			
-#if defined UNIX
+#if defined (UNIX)
             
 			//loop through and create all the processes you want
 			while (process != processors) {

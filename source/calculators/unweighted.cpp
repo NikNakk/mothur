@@ -81,7 +81,7 @@ EstOutput Unweighted::createProcesses(Tree* t, vector< vector<string> > namesOfG
         bool recalc = false;
 		
 		EstOutput results;
-#if defined UNIX
+#if defined (UNIX)
 		
 		
 		//loop through and create all the processes you want
@@ -434,7 +434,7 @@ EstOutput Unweighted::createProcesses(Tree* t, vector< vector<string> > namesOfG
         bool recalc = false;
 		
 		EstOutput results;
-#if defined UNIX
+#if defined (UNIX)
 
 		//loop through and create all the processes you want
 		while (process != processors) {

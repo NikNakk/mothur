@@ -761,7 +761,7 @@ int ClassifySeqsCommand::execute(){
 #else
 		
 			vector<unsigned long long> positions; 
-#if defined UNIX
+#if defined (UNIX)
 			positions = m->divideFile(fastaFileNames[s], processors);
 			for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
 #else
@@ -971,7 +971,7 @@ int ClassifySeqsCommand::createProcesses(string taxFileName, string tempTaxFile,
 		processIDS.clear();
         bool recalc = false;
 		
-#if defined UNIX
+#if defined (UNIX)
 		int process = 1;
 		
 		//loop through and create all the processes you want
@@ -1194,7 +1194,7 @@ int ClassifySeqsCommand::driver(linePair* filePos, string taxFName, string tempT
 			}
 			delete candidateSeq;
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else

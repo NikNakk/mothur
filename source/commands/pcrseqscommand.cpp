@@ -332,7 +332,7 @@ int PcrSeqsCommand::execute(){
         
         vector<unsigned long long> positions; 
         int numFastaSeqs = 0;
-#if defined UNIX
+#if defined (UNIX)
         positions = m->divideFile(fastafile, processors);
         for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
 #else
@@ -434,7 +434,7 @@ int PcrSeqsCommand::createProcesses(string filename, string goodFileName, string
         bool adjustNeeded = false;
         bool recalc = false;
         
-#if defined UNIX
+#if defined (UNIX)
         
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -894,7 +894,7 @@ int PcrSeqsCommand::driverPcr(string filename, string goodFasta, string badFasta
                 count++;
 			}
 			
-#if defined UNIX
+#if defined (UNIX)
             unsigned long long pos = inFASTA.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else

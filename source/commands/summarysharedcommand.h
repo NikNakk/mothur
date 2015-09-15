@@ -127,7 +127,7 @@ struct summarySharedData {
 	}
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MySummarySharedThreadFunction(LPVOID lpParam){ 
 	summarySharedData* pDataArray;

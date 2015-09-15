@@ -134,7 +134,7 @@ struct distSharedData {
 	}
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyDistSharedThreadFunction(LPVOID lpParam){ 
 	distSharedData* pDataArray;

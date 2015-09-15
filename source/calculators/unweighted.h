@@ -72,7 +72,7 @@ struct unweightedData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyUnWeightedThreadFunction(LPVOID lpParam){
 	unweightedData* pDataArray;

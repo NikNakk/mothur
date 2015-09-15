@@ -268,7 +268,7 @@ int ChopSeqsCommand::execute(){
         
         vector<unsigned long long> positions; 
         vector<linePair> lines;
-#if defined UNIX
+#if defined (UNIX)
         positions = m->divideFile(fastafile, processors);
         for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
 #else
@@ -415,7 +415,7 @@ bool ChopSeqsCommand::createProcesses(vector<linePair> lines, string filename, s
         vector<string> nonBlankAccnosFiles;
         bool recalc = false;
 		
-#if defined UNIX
+#if defined (UNIX)
 		
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -645,7 +645,7 @@ bool ChopSeqsCommand::driver(linePair filePos, string filename, string outFasta,
                 count++;
 			}
 			
-#if defined UNIX
+#if defined (UNIX)
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else

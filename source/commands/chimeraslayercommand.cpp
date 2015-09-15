@@ -612,14 +612,14 @@ ChimeraSlayerCommand::ChimeraSlayerCommand(string option)  {
 			else {
 				//add / to name if needed
 				string lastChar = blastlocation.substr(blastlocation.length()-1);
-#if defined UNIX
+#if defined (UNIX)
 				if (lastChar != "/") { blastlocation += "/"; }
 #else
 				if (lastChar != "\\") { blastlocation += "\\"; }	
 #endif
 				blastlocation = m->getFullPathName(blastlocation);
 				string formatdbCommand = "";
-#if defined UNIX
+#if defined (UNIX)
 				formatdbCommand = blastlocation + "formatdb";	
 #else
 				formatdbCommand = blastlocation + "formatdb.exe";
@@ -632,7 +632,7 @@ ChimeraSlayerCommand::ChimeraSlayerCommand(string option)  {
 				if(ableToOpen == 1) {	m->mothurOut("[ERROR]: " + formatdbCommand + " file does not exist. mothur requires formatdb.exe to run chimera.slayer."); m->mothurOutEndLine(); abort = true; }
 				
 				string blastCommand = "";
-#if defined UNIX
+#if defined (UNIX)
 				blastCommand = blastlocation + "megablast";	
 #else
 				blastCommand = blastlocation + "megablast.exe";
@@ -650,7 +650,7 @@ ChimeraSlayerCommand::ChimeraSlayerCommand(string option)  {
 			if (hasGroup && (templatefile != "self")) { m->mothurOut("You have provided a group file and the reference parameter is not set to self. I am not sure what reference you are trying to use, aborting."); m->mothurOutEndLine(); abort=true; }
 
 			//until we resolve the issue 10-18-11
-#if defined UNIX
+#if defined (UNIX)
 #else
 			//processors=1;
 #endif
@@ -724,7 +724,7 @@ int ChimeraSlayerCommand::execute(){
 #else
 				//break up file
 				vector<unsigned long long> positions; 
-#if defined UNIX
+#if defined (UNIX)
 				positions = m->divideFile(thisFastaName, processors);
 				for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
 #else
@@ -1475,7 +1475,7 @@ int ChimeraSlayerCommand::driverGroups(string outputFName, string accnos, string
 			m->mothurOutEndLine(); m->mothurOut("Checking sequences from group: " + fileGroup[thisFastaName] + "."); m->mothurOutEndLine(); 
 			
 			lines.clear();
-#if defined UNIX
+#if defined (UNIX)
 			int proc = 1;
 			vector<unsigned long long> positions = m->divideFile(thisFastaName, proc);
 			lines.push_back(linePair(positions[0], positions[1]));	
@@ -1578,7 +1578,7 @@ int ChimeraSlayerCommand::createProcessesGroups(string outputFName, string accno
 			breakUp.push_back(thisFileToPriority);
 		}
 				
-#if defined UNIX
+#if defined (UNIX)
 		//loop through and create all the processes you want
 		while (process != processors) {
 			pid_t pid = fork();
@@ -1878,7 +1878,7 @@ int ChimeraSlayerCommand::driver(linePair filePos, string outputFName, string fi
 				count++;
 			}
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos.end)) { break; }
 			#else
@@ -2066,7 +2066,7 @@ int ChimeraSlayerCommand::createProcesses(string outputFileName, string filename
         
         if (m->debug) { m->mothurOut("[DEBUG]: filename = " + filename + "\n"); }
 		
-#if defined UNIX
+#if defined (UNIX)
 		//loop through and create all the processes you want
 		while (process != processors) {
 			pid_t pid = fork();

@@ -180,7 +180,7 @@ struct slayerData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MySlayerThreadFunction(LPVOID lpParam){ 
 	slayerData* pDataArray;

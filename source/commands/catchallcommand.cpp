@@ -209,7 +209,7 @@ int CatchAllCommand::execute() {
 		savedOutputDir = outputDir;
 		string catchAllCommandExe = "";
         string catchAllTest = "";
-		#if defined UNIX
+		#if defined (UNIX)
 			if (outputDir == "") { outputDir = "./"; } //force full pathname to be created for catchall, this is necessary because if catchall is in the path it will look for input file whereever the exe is and not the cwd.
             catchAllTest = path + "CatchAllcmdL.exe";
 		#else
@@ -226,7 +226,7 @@ int CatchAllCommand::execute() {
             //check to see if uchime is in the path??
             
             string programName = "CatchAllcmdW.exe";
-#if defined UNIX
+#if defined (UNIX)
             programName = "CatchAllcmdL.exe";
 #endif
             string cLocation = m->findProgramPath(programName);
@@ -239,7 +239,7 @@ int CatchAllCommand::execute() {
         }
         catchAllTest = m->getFullPathName(catchAllTest);
         
-#if defined UNIX
+#if defined (UNIX)
         catchAllCommandExe += "mono \"" + catchAllTest + "\" ";
 #else
         catchAllCommandExe += "\"" + catchAllTest + "\" ";
@@ -293,7 +293,7 @@ int CatchAllCommand::execute() {
 											
 						//create system command
 						string catchAllCommand = "";
-						#if defined UNIX
+						#if defined (UNIX)
 							catchAllCommand += catchAllCommandExe + "\"" + filename + "\" \""  + outputPath + + "\" 1";
 						#else
                             //removes extra '\\' catchall doesnt like that
@@ -356,7 +356,7 @@ int CatchAllCommand::execute() {
 											
 						//create system command
 						string catchAllCommand = "";
-						#if defined UNIX
+						#if defined (UNIX)
                             catchAllCommand += catchAllCommandExe + "\"" + filename + "\" \""  + outputPath + + "\" 1";
 						#else
                             //removes extra '\\' catchall doesnt like that
@@ -441,7 +441,7 @@ int CatchAllCommand::execute() {
 				
 				//create system command
 				string catchAllCommand = "";
-				#if defined UNIX
+				#if defined (UNIX)
                     catchAllCommand += catchAllCommandExe + "\"" + filename + "\" \""  + outputPath + + "\" 1";
 				#else
                     //removes extra '\\' catchall doesnt like that

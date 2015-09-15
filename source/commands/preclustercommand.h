@@ -148,7 +148,7 @@ struct preClusterData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyPreclusterThreadFunction(LPVOID lpParam){ 
 	preClusterData* pDataArray;

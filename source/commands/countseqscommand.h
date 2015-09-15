@@ -83,7 +83,7 @@ struct countData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyCountThreadFunction(LPVOID lpParam){
 	countData* pDataArray;

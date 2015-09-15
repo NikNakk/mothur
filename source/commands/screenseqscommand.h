@@ -205,7 +205,7 @@ struct sumScreenData {
 
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MySumThreadFunction(LPVOID lpParam){ 
 	sumData* pDataArray;

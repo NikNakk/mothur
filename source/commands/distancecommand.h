@@ -56,7 +56,7 @@ struct distanceData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyDistThreadFunction(LPVOID lpParam){ 
 	distanceData* pDataArray;

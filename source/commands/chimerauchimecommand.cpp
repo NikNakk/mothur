@@ -580,7 +580,7 @@ ChimeraUchimeCommand::ChimeraUchimeCommand(string option)  {
 			path = path.substr(0, (tempPath.find_last_of('m')));
 			
 			string uchimeCommand;
-#if defined UNIX
+#if defined (UNIX)
 			uchimeCommand = path + "uchime";	//	format the database, -o option gives us the ability
             if (m->debug) { 
                 m->mothurOut("[DEBUG]: Uchime location using \"which uchime\" = "); 
@@ -608,7 +608,7 @@ ChimeraUchimeCommand::ChimeraUchimeCommand(string option)  {
                 
                 
                 ifstream in2;
-#if defined UNIX
+#if defined (UNIX)
                 ableToOpen = m->openInputFile(uLocation, in2, "no error"); in2.close();
 #else
                 ableToOpen = m->openInputFile((uLocation + ".exe"), in2, "no error"); in2.close();
@@ -1525,7 +1525,7 @@ int ChimeraUchimeCommand::driver(string outputFName, string filename, string acc
 		
 		//uchime_main(numArgs, uchimeParameters); 
 		//cout << "commandString = " << commandString << endl;
-#if defined UNIX
+#if defined (UNIX)
 #else
 		commandString = "\"" + commandString + "\"";
 #endif
@@ -1628,7 +1628,7 @@ int ChimeraUchimeCommand::createProcesses(string outputFileName, string filename
 		int num = 0;
 		vector<string> files;
 		
-#if defined UNIX		
+#if defined (UNIX)		
 		//break up file into multiple files
 		m->divideFile(filename, processors, files);
 		
@@ -1816,7 +1816,7 @@ int ChimeraUchimeCommand::createProcessesGroups(string outputFName, string filen
             remainingPairs = remainingPairs - numPairs;
         }
 
-#if defined UNIX		
+#if defined (UNIX)		
 				
 		//loop through and create all the processes you want
 		while (process != processors) {

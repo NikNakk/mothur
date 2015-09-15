@@ -182,7 +182,7 @@ struct trimData {
 	}
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyTrimThreadFunction(LPVOID lpParam){ 
 	trimData* pDataArray;

@@ -200,7 +200,7 @@ struct shhhFlowsData {
 };
 
 /**************************************************************************************************
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI ShhhFlowsThreadFunction(LPVOID lpParam){ 
 	shhhFlowsData* pDataArray;

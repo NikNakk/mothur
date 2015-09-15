@@ -121,7 +121,7 @@ struct filterRunData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyCreateFilterThreadFunction(LPVOID lpParam){ 
 	filterData* pDataArray;

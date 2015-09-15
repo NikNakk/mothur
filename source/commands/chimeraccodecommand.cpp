@@ -410,7 +410,7 @@ int ChimeraCcodeCommand::execute(){
 			
 			
 			//break up file
-			#if defined UNIX
+			#if defined (UNIX)
 				vector<unsigned long long> positions = m->divideFile(fastaFileNames[s], processors);
 			
 				for (int i = 0; i < (positions.size()-1); i++) {
@@ -541,7 +541,7 @@ int ChimeraCcodeCommand::driver(linePair* filePos, string outputFName, string fi
 			}
 			delete candidateSeq;
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -628,7 +628,7 @@ int ChimeraCcodeCommand::driverMPI(int start, int num, MPI_File& inMPI, MPI_File
 
 int ChimeraCcodeCommand::createProcesses(string outputFileName, string filename, string accnos) {
 	try {
-#if defined UNIX
+#if defined (UNIX)
 		int process = 0;
 		int num = 0;
         bool recalc = false;

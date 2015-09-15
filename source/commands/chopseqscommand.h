@@ -88,7 +88,7 @@ struct chopData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyChopThreadFunction(LPVOID lpParam){ 
 	chopData* pDataArray;

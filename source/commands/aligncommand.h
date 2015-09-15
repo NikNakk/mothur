@@ -117,7 +117,7 @@ struct alignData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyAlignThreadFunction(LPVOID lpParam){ 
 	alignData* pDataArray;

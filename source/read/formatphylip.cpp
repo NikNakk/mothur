@@ -103,7 +103,7 @@ int FormatPhylipMatrix::read(NameAssignment* nameMap){
 				string outfile = m->getRootName(tempFile) + "sorted.dist.temp";
 				
 				//use the unix sort 
-				#if defined UNIX
+				#if defined (UNIX)
 					string command = "sort -n " + tempFile + " -o " + outfile;
 					system(command.c_str());
 				#else //sort using windows sort
@@ -333,7 +333,7 @@ int FormatPhylipMatrix::read(CountTable* nameMap){
             string outfile = m->getRootName(tempFile) + "sorted.dist.temp";
             
             //use the unix sort 
-#if defined UNIX
+#if defined (UNIX)
             string command = "sort -n " + tempFile + " -o " + outfile;
             system(command.c_str());
 #else //sort using windows sort

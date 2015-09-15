@@ -558,7 +558,7 @@ set<int> PrimerDesignCommand::createProcesses(string newSummaryFile, vector<doub
 			lines.push_back(linePair(startIndex, endIndex));
 		}
 		
-#if defined UNIX		
+#if defined (UNIX)		
 		
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -848,7 +848,7 @@ vector< vector< vector<unsigned int> > > PrimerDesignCommand::driverGetCounts(ma
 
             }
 
-#if defined UNIX
+#if defined (UNIX)
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= end)) { break; }
 #else
@@ -875,7 +875,7 @@ vector<Sequence> PrimerDesignCommand::createProcessesConSeqs(map<string, int>& n
         unsigned long int fastaCount = 0;
         bool recalc = false;
  		
-#if defined UNIX		
+#if defined (UNIX)		
 		
         vector<unsigned long long> positions; 
         vector<fastaLinePair> lines;

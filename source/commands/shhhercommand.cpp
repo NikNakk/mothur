@@ -272,7 +272,7 @@ ShhherCommand::ShhherCommand(string option) {
                 for (int i = 0; i < path.length(); i++) { tempPath[i] = tolower(path[i]); }
                 path = path.substr(0, (tempPath.find_last_of('m')));
                 
-#if defined UNIX
+#if defined (UNIX)
                 path += "lookupFiles/";
 #else
                 path += "lookupFiles\\";
@@ -1966,7 +1966,7 @@ int ShhherCommand::execute(){
 		
         if (numFiles < processors) { processors = numFiles; }
         
-#if defined UNIX
+#if defined (UNIX)
         if (processors == 1) { driver(flowFileVector, compositeFASTAFileName, compositeNamesFileName); }
         else { createProcesses(flowFileVector); } //each processor processes one file
 #else
@@ -2059,7 +2059,7 @@ int ShhherCommand::createProcesses(vector<string> filenames){
         }
         
 		
-        #if defined UNIX		
+        #if defined (UNIX)		
 		
 		//loop through and create all the processes you want
 		while (process != processors) {

@@ -530,7 +530,7 @@ unsigned long long MakeContigsCommand::processSingleFileOption(map<string, int>&
             }
         }
 #else
-        #if defined UNIX
+        #if defined (UNIX)
         #else
         string extension = m->getExtension(fileInputs[0]);
         if (extension == "gz") {  m->mothurOut("[ERROR]: You cannot use compressed .gz files as input with our windows version of mothur. \n"); m->control_pressed = true; }
@@ -787,7 +787,7 @@ unsigned long long MakeContigsCommand::createProcessesGroups(vector< vector<stri
             remainingPairs = remainingPairs - numPairs;
         }
         
-#if defined UNIX
+#if defined (UNIX)
         int process = 1;
         
         //loop through and create all the processes you want
@@ -1237,7 +1237,7 @@ unsigned long long MakeContigsCommand::createProcesses(vector<string> fileInputs
 		vector<int> processIDS;
         bool recalc = false;
        
-#if defined UNIX
+#if defined (UNIX)
 		int process = 1;
 		
 		//loop through and create all the processes you want
@@ -1891,7 +1891,7 @@ unsigned long long MakeContigsCommand::driver(vector<string> inputFiles, vector<
             }
             num++;
             
-            #if defined UNIX
+            #if defined (UNIX)
                 if (!gz) {
                     unsigned long long pos = inFFasta.tellg();
                     if ((pos == -1) || (pos >= linesInput.end)) { good = false; break; }
@@ -2294,7 +2294,7 @@ int MakeContigsCommand::setLines(vector<string> fasta, vector<string> qual, vect
         vector<unsigned long long> qfileFilePos;
         vector<unsigned long long> temp;
 
-#if defined UNIX
+#if defined (UNIX)
         //set file positions for fasta file
         fastaFilePos = m->divideFile(fasta[0], processors, delim);
         
@@ -2851,7 +2851,7 @@ vector< vector<string> > MakeContigsCommand::readFileNames(string filename){
                 }
 #else
                 allGZ=false;
-#if defined UNIX
+#if defined (UNIX)
 #else
                 string extension = m->getExtension(forward);
                 if (extension == "gz") {  m->mothurOut("[ERROR]: You cannot use compressed .gz files as input with our windows version of mothur. \n"); m->control_pressed = true; }

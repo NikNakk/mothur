@@ -92,7 +92,7 @@ struct metastatsData {
 	}
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyMetastatsThreadFunction(LPVOID lpParam){ 
 	metastatsData* pDataArray;

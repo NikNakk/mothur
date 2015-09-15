@@ -404,7 +404,7 @@ int DistanceCommand::execute(){
         
 #else
 				
-	//#if defined UNIX
+	//#if defined (UNIX)
 		//if you don't need to fork anything
 		if(processors == 1){
 			if (output != "square") {  driver(0, numSeqs, outputFile, cutoff); }
@@ -530,7 +530,7 @@ void DistanceCommand::createProcesses(string filename, int numSeqs) {
             
         }
 
-#if defined UNIX
+#if defined (UNIX)
 		int process = 1;
 		processIDS.clear();
         bool recalc = false;
@@ -1088,7 +1088,7 @@ int DistanceCommand::convertMatrix(string outputFile) {
 		string outfile = m->getRootName(outputFile) + "sorted.dist.temp";
 		
 		//use the unix sort 
-		#if defined UNIX
+		#if defined (UNIX)
 			string command = "sort -n " + outputFile + " -o " + outfile;
 			system(command.c_str());
 		#else //sort using windows sort
@@ -1176,7 +1176,7 @@ int DistanceCommand::convertToLowerTriangle(string outputFile) {
 		string outfile = m->getRootName(outputFile) + "sorted.dist.temp";
 		
 		//use the unix sort 
-		#if defined UNIX
+		#if defined (UNIX)
 			string command = "sort -n " + outputFile + " -o " + outfile;
 			system(command.c_str());
 		#else //sort using windows sort

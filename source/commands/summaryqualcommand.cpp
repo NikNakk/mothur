@@ -202,7 +202,7 @@ int SummaryQualCommand::execute(){
         }
         
 		vector<unsigned long long> positions; 
-#if defined UNIX
+#if defined (UNIX)
 		positions = m->divideFile(qualfile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
 #else	
@@ -313,7 +313,7 @@ int SummaryQualCommand::driverCreateSummary(vector<int>& position, vector<int>& 
 				count += num;
 			}
 			
-#if defined UNIX
+#if defined (UNIX)
 			unsigned long long pos = in.tellg();
 			if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else
@@ -338,7 +338,7 @@ int SummaryQualCommand::createProcessesCreateSummary(vector<int>& position, vect
 		processIDS.clear();
         bool recalc = false;
 		
-#if defined UNIX
+#if defined (UNIX)
 		
 		//loop through and create all the processes you want
 		while (process != processors) {

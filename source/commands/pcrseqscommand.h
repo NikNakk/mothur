@@ -102,7 +102,7 @@ struct pcrData {
 	}
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyPcrThreadFunction(LPVOID lpParam){ 
 	pcrData* pDataArray;

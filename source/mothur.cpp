@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
 
 		m->setFileName(logFileName);
 		
-		#if defined UNIX
+		#if defined (UNIX)
 			system("clear");
 		#else
 			system("CLS");
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
 		
 			//add / to name if needed
 			string lastChar = temp.substr(temp.length()-1);
-			#if defined UNIX
+			#if defined (UNIX)
 				if (lastChar != "/") { temp += "/"; }
 			#else
 				if (lastChar != "\\") { temp += "\\"; }	
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]){
         
 		if (outputHeader)  {
 			//version
-			#if defined UNIX
+			#if defined (UNIX)
 				#if defined (__APPLE__) || (__MACH__)
 					m->mothurOutJustToLog("Mac version");
 					m->mothurOutEndLine(); m->mothurOutEndLine();
@@ -134,14 +134,16 @@ int main(int argc, char *argv[]){
 				m->mothurOutEndLine(); m->mothurOutEndLine();
 			#endif
 			
-			#ifdef BIT_VERSION
+			if (sizeof(void*) == 8) {
 				m->mothurOutJustToLog("Running 64Bit Version");
-				m->mothurOutEndLine(); m->mothurOutEndLine();
-			#else
+			}
+			else if (sizeof(void*) == 4) {
 				m->mothurOutJustToLog("Running 32Bit Version");
-				m->mothurOutEndLine(); m->mothurOutEndLine();
-			#endif
-			
+			}
+			else {
+				m->mothurOutJustToLog("Running unknown Version");
+			}
+
 			//header
 			m->mothurOut("mothur v." + mothurVersion);
 			m->mothurOutEndLine();		
@@ -205,7 +207,7 @@ int main(int argc, char *argv[]){
                 createLogFile = false;
                 string OS = "";
                 //version
-                #if defined UNIX
+                #if defined (UNIX)
                 #if defined (__APPLE__) || (__MACH__)
                 OS = "Mac ";
                 #else
@@ -216,12 +218,16 @@ int main(int argc, char *argv[]){
                 OS = "Windows ";
                 #endif
                 
-                #ifdef BIT_VERSION
-                OS += "64Bit Version";
-                #else
-                OS += "32Bit Version";
-                #endif
-                
+				if (sizeof(void*) == 8) {
+					OS += "64Bit Version";
+				}
+				else if (sizeof(void*) == 4) {
+					OS += "32Bit Version";
+				}
+				else {
+					OS += "unknown Version";
+				}
+
 				m->mothurOut(OS + "\nMothur version=" + mothurVersion + "\nRelease Date=" + releaseDate); m->mothurOutEndLine(); m->mothurOutEndLine(); m->closeLog();
 				#ifdef USE_MPI
 					MPI_Finalize();

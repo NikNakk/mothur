@@ -390,7 +390,7 @@ vector<string> ShhhSeqsCommand::createProcessesGroups(SequenceParser& parser, st
         }
 
 		
-#if defined UNIX		
+#if defined (UNIX)		
 		
 		//loop through and create all the processes you want
 		while (process != processors) {

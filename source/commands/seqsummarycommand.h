@@ -86,7 +86,7 @@ struct seqSumData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MySeqSumThreadFunction(LPVOID lpParam){ 
 	seqSumData* pDataArray;

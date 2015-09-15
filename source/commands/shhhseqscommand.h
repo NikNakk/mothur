@@ -97,7 +97,7 @@ struct shhhseqsData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyShhhSeqsThreadFunction(LPVOID lpParam){ 
 	shhhseqsData* pDataArray;

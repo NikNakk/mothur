@@ -88,7 +88,7 @@ struct phylodivData {
 };
 
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyPhyloDivThreadFunction(LPVOID lpParam){
 	phylodivData* pDataArray;

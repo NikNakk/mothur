@@ -24,7 +24,7 @@ int Rarefact::getCurve(float percentFreq = 0.01, int nIters = 1000){
 		if (percentFreq < 1.0) {  increment = numSeqs * percentFreq;  }
 		else { increment = percentFreq;  }	
 		
-		#if defined UNIX
+		#if defined (UNIX)
 				if(processors == 1){
 					driver(rcd, increment, nIters);	
 				}else{
@@ -114,7 +114,7 @@ int Rarefact::driver(RarefactionCurveData* rcd, int increment, int nIters = 1000
 
 int Rarefact::createProcesses(vector<int>& procIters, RarefactionCurveData* rcd, int increment, int nIters) {
 	try {
-#if defined UNIX
+#if defined (UNIX)
 		int process = 1;
 		vector<int> processIDS;
         bool recalc = false;

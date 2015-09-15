@@ -449,7 +449,7 @@ int FilterSeqsCommand::filterSequences() {
             vector<unsigned long long> positions;
             if (savedPositions.size() != 0) { positions = savedPositions[s]; }
             else {
-#if defined UNIX
+#if defined (UNIX)
 				positions = m->divideFile(fastafileNames[s], processors);
 #else
                 if(processors != 1){
@@ -459,7 +459,7 @@ int FilterSeqsCommand::filterSequences() {
                 }
 #endif
             }
-		#if defined UNIX
+		#if defined (UNIX)
 			//vector<unsigned long long> positions = m->divideFile(fastafileNames[s], processors);
 			
 			for (int i = 0; i < (positions.size()-1); i++) {
@@ -619,7 +619,7 @@ int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string i
 				count++;
 			}
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -653,7 +653,7 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		processIDS.clear();
         bool recalc = false;
         
-#if defined UNIX
+#if defined (UNIX)
 		
 		
 		//loop through and create all the processes you want
@@ -896,7 +896,7 @@ string FilterSeqsCommand::createFilter() {
 #else
 				
                 vector<unsigned long long> positions;
-		#if defined UNIX
+		#if defined (UNIX)
 				positions = m->divideFile(fastafileNames[s], processors);
 				for (int i = 0; i < (positions.size()-1); i++) {
 					lines.push_back(new linePair(positions[i], positions[(i+1)]));
@@ -1060,7 +1060,7 @@ int FilterSeqsCommand::driverCreateFilter(Filters& F, string filename, linePair*
 					count++;
 			}
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -1139,7 +1139,7 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 		processIDS.clear();
         bool recalc = false;
 
-#if defined UNIX
+#if defined (UNIX)
 				
 		//loop through and create all the processes you want
 		while (process != processors) {

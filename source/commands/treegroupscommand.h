@@ -151,7 +151,7 @@ struct treeSharedData {
 	}
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyTreeSharedThreadFunction(LPVOID lpParam){ 
 	treeSharedData* pDataArray;

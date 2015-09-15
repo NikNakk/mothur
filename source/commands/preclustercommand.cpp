@@ -423,7 +423,7 @@ int PreClusterCommand::createProcessesGroups(string newFName, string newNName, s
             remainingPairs = remainingPairs - numPairs;
         }
 		
-#if defined UNIX		
+#if defined (UNIX)		
 		
 		//loop through and create all the processes you want
 		while (process != processors) {

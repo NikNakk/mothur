@@ -1187,7 +1187,7 @@ vector<float> IndicatorCommand::getPValues(vector< vector<SharedRAbundFloatVecto
             vector<int> processIDS;
             int process = 1;
 			
-#if defined UNIX
+#if defined (UNIX)
 						
 			//loop through and create all the processes you want
 			while (process != processors) {
@@ -1418,7 +1418,7 @@ vector<float> IndicatorCommand::getPValues(vector< vector<SharedRAbundVector*> >
             vector<int> processIDS;
             int process = 1;
 			
-#if defined UNIX
+#if defined (UNIX)
             
 			//loop through and create all the processes you want
 			while (process != processors) {

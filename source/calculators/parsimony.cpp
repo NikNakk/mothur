@@ -86,7 +86,7 @@ EstOutput Parsimony::createProcesses(Tree* t, vector< vector<string> > namesOfGr
 		
 		EstOutput results;
 
-#if defined UNIX
+#if defined (UNIX)
 				
 		//loop through and create all the processes you want
 		while (process != processors) {

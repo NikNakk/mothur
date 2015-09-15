@@ -1054,7 +1054,7 @@ int TrimSeqsCommand::driverCreateTrim(string filename, string qFileName, string 
 				count++;
 			}
 			
-			#if defined UNIX
+			#if defined (UNIX)
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= line.end)) { break; }
 			
@@ -1097,7 +1097,7 @@ int TrimSeqsCommand::createProcessesCreateTrim(string filename, string qFileName
 		processIDS.clear();
         bool recalc = false;
 		
-#if defined UNIX
+#if defined (UNIX)
 				//loop through and create all the processes you want
 		while (process != processors) {
 			int pid = fork();
@@ -1527,7 +1527,7 @@ int TrimSeqsCommand::createProcessesCreateTrim(string filename, string qFileName
 				}
 			}
 			
-            #if defined UNIX
+            #if defined (UNIX)
 			if(createGroup){
 				ifstream in;
 				string tempFile =  filename + toString(processIDS[i]) + ".num.temp";
@@ -1580,7 +1580,7 @@ int TrimSeqsCommand::setLines(string filename, string qfilename) {
         vector<unsigned long long> fastaFilePos;
 		vector<unsigned long long> qfileFilePos;
 		
-		#if defined UNIX
+		#if defined (UNIX)
 		//set file positions for fasta file
 		fastaFilePos = m->divideFile(filename, processors);
 		

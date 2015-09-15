@@ -75,7 +75,7 @@ struct sparccData {
     }
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MySparccThreadFunction(LPVOID lpParam){
 	sparccData* pDataArray;

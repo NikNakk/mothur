@@ -180,7 +180,7 @@ int GetCurrentCommand::execute(){
         
         
         string temp = "./";
-#if defined UNIX
+#if defined (UNIX)
 #else
             temp = ".\\";
 #endif

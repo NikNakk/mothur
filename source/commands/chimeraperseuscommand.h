@@ -109,7 +109,7 @@ struct perseusData {
 	}
 };
 /**************************************************************************************************/
-#if defined UNIX
+#if defined (UNIX)
 #else
 static DWORD WINAPI MyPerseusThreadFunction(LPVOID lpParam){ 
 	perseusData* pDataArray;
