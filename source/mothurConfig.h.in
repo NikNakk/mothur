@@ -2,3 +2,4 @@
 #define VERSION "@MOTHUR_VERSION@"
 #cmakedefine USE_COMPRESSION
 #cmakedefine MOTHUR_FILES
+#cmakedefine UNIX
