@@ -5,8 +5,6 @@ project (mothur)
 set (MOTHUR_VERSION 1.36.0)
 set (MOTHUR_RELEASE_DATE 7/23/2015)
 
-set(CMAKE_BUILD_TYPE Release)
- 
 option(USE_MPI 
   "Use MPI" OFF)
 option(USE_READLINE 
@@ -20,47 +18,7 @@ set(MOTHUR_FILES ""
   
 enable_testing()
 
-if (USE_READLINE)
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/source/cmake/Modules")
-  find_package(Readline)
-  if (READLINE_FOUND)
-    include_directories(${READLINE_INCLUDE_DIR})
-    set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} ${READLINE_LIBRARIES})
-    add_definitions(-DUSE_READLINE)
-  endif (READLINE_FOUND)
-endif (USE_READLINE)
-
-if (USE_MPI)
-  find_package(MPI)
-  if (MPI_FOUND)
-    include_directories(${MPI_INCLUDE_PATH})
-    set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} ${MPI_LIBRARIES})
-    add_definitions(-DUSE_MPI)
-  endif (MPI_FOUND)
-endif (USE_MPI)
-
-if (USE_BOOST)
-  find_package(Boost 1.50.0)
-  find_package(ZLIB)
-  if (Boost_FOUND AND ZLIB_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    include_directories(${ZLIB_INCLUDE_DIRS})
-    set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} boost_iostreams)
-    set(MOTHUR_LINK_LIBRARIES ${MOTHUR_LINK_LIBRARIES} ${ZLIB_LIBRARIES})
-    add_definitions(-DUSE_BOOST)
-  endif (Boost_FOUND AND ZLIB_FOUND)
-endif (USE_BOOST)
-  
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file (
-  "${PROJECT_SOURCE_DIR}/source/mothurConfig.h.in"
-  "${PROJECT_BINARY_DIR}/source/mothurConfig.h"
-  )
-
 include_directories ("${PROJECT_BINARY_DIR}/source")
-
-add_subdirectory(source/uchime_src)
 
 add_executable(mothur
   source/calculators/ace.cpp
@@ -442,20 +400,92 @@ include_directories(
   source/svm
 )
 
-if(MPI_COMPILE_FLAGS)
-  set_target_properties(mothur PROPERTIES
-    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-endif()
+if (USE_READLINE)
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/source/cmake/Modules")
+  find_package(Readline)
+  if (READLINE_FOUND)
+    target_include_directories(mothur PRIVATE ${READLINE_INCLUDE_DIR})
+    target_link_libraries(mothur ${READLINE_LIBRARIES})
+    target_compile_definitions(mothur PRIVATE -DUSE_READLINE)
+  else (READLINE_FOUND)
+    message(STATUS "Readline not found")
+  endif (READLINE_FOUND)
+endif (USE_READLINE)
 
-if(MPI_LINK_FLAGS)
-  set_target_properties(mothur PROPERTIES
-    LINK_FLAGS "${MPI_LINK_FLAGS}")
-endif()
+if (USE_MPI)
+  find_package(MPI)
+  if (MPI_FOUND)
+    target_include_directories(mothur PRIVATE ${MPI_INCLUDE_PATH})
+    target_link_libraries(mothur ${MPI_LIBRARIES})
+    target_compile_definitions(mothur PRIVATE -DUSE_MPI)
+    if(MPI_COMPILE_FLAGS)
+      set_target_properties(mothur PROPERTIES
+        COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+    endif()
+    if(MPI_LINK_FLAGS)
+      set_target_properties(mothur PROPERTIES
+        LINK_FLAGS "${MPI_LINK_FLAGS}")
+    endif()
+  endif (MPI_FOUND)
+endif (USE_MPI)
 
-target_link_libraries(mothur ${MOTHUR_LINK_LIBRARIES})
+if (USE_BOOST)
+  find_package(Boost 1.50.0
+    COMPONENTS iostreams)
+  find_package(ZLIB)
+  if (Boost_FOUND AND ZLIB_FOUND)
+    target_include_directories(mothur PRIVATE ${Boost_INCLUDE_DIRS})
+    target_include_directories(mothur PRIVATE ${ZLIB_INCLUDE_DIRS})
+    target_link_libraries(mothur ${Boost_LIBRARIES})
+    target_link_libraries(mothur ${ZLIB_LIBRARIES})
+    target_compile_definitions(mothur PRIVATE -DUSE_BOOST)
+  endif (Boost_FOUND AND ZLIB_FOUND)
+endif (USE_BOOST)
+
+if (USE_COMPRESSION)
+  target_compile_definitions(mothur PRIVATE -DUSE_COMPRESSION)
+endif (USE_COMPRESSION)
+
+if (MOTHUR_FILES)
+  target_compile_definitions(mothur PRIVATE -DMOTHUR_FILES="${MOTHUR_FILES}")
+endif (MOTHUR_FILES)
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+  "${PROJECT_SOURCE_DIR}/source/mothurConfig.h.in"
+  "${PROJECT_BINARY_DIR}/source/mothurConfig.h"
+  )
+
+add_executable(uchime
+  source/uchime_src/addtargets2.cpp
+  source/uchime_src/alignchime.cpp
+  source/uchime_src/alignchimel.cpp
+  source/uchime_src/alnparams.cpp
+  source/uchime_src/alpha.cpp
+  source/uchime_src/alpha2.cpp
+  source/uchime_src/fractid.cpp
+  source/uchime_src/getparents.cpp
+  source/uchime_src/globalalign2.cpp
+  source/uchime_src/make3way.cpp
+  source/uchime_src/mx.cpp
+  source/uchime_src/myutils.cpp
+  source/uchime_src/path.cpp
+  source/uchime_src/searchchime.cpp
+  source/uchime_src/seqdb.cpp
+  source/uchime_src/setnucmx.cpp
+  source/uchime_src/sfasta.cpp
+  source/uchime_src/tracebackbit.cpp
+  source/uchime_src/uchime_main.cpp
+  source/uchime_src/usort.cpp
+  source/uchime_src/viterbifast.cpp
+  source/uchime_src/writechhit.cpp
+)
+target_compile_definitions(uchime PRIVATE "-DUCHIMES=1")
 
 # add the install targets
 install(TARGETS mothur DESTINATION bin)
+install(TARGETS uchime DESTINATION bin)
  
 # does the application run
 add_test(mothurVersion mothur --version)
@@ -467,4 +497,10 @@ add_test(mothurHelp mothur --help)
 set_tests_properties(mothurHelp
   PROPERTIES
   PASS_REGULAR_EXPRESSION "Valid commands are"
+)
+
+add_test(uchimeUsage uchime)
+set_tests_properties(uchimeUsage
+  PROPERTIES
+  PASS_REGULAR_EXPRESSION "Usage"
 )
