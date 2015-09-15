@@ -74,11 +74,6 @@
 	#include <sys/stat.h>
 	#include <unistd.h>
 	
-	#ifdef USE_READLINE
-		#include <readline/readline.h>
-		#include <readline/history.h>
-	#endif
-
 #else
 	#include <conio.h> //allows unbuffered screen capture from stdin
 	#include <direct.h> //get cwd
@@ -88,6 +83,14 @@
 	#include <tchar.h>
 
 #endif
+
+#ifdef USE_READLINE
+	#include <readline/readline.h>
+	#include <readline/history.h>
+#elif USE_EDITLINE
+	#include <editline/readline.h>
+#endif
+
 
 using namespace std;
 
