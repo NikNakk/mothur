@@ -690,7 +690,7 @@ int ScreenSeqsCommand::screenReports(map<string, string>& badSeqNames){
             getSummary(positions); 
             summarizedFasta = true;
         } else {
-            #if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+            #if defined UNIX
                 positions = m->divideFile(fastafile, processors);
                 for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
             #else 
@@ -1025,7 +1025,7 @@ int ScreenSeqsCommand::screenFasta(map<string, string>& badSeqNames){
             }
 			getSummary(positions); 
 		}else { 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
             positions = m->divideFile(fastafile, processors);
             for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
 #else 
@@ -1276,7 +1276,7 @@ int ScreenSeqsCommand::optimizeContigs(){
 		
         vector<unsigned long long> positions;
         vector<linePair> contigsLines;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		positions = m->divideFilePerLine(contigsreport, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { contigsLines.push_back(linePair(positions[i], positions[(i+1)])); }	
 #else
@@ -1404,7 +1404,7 @@ int ScreenSeqsCommand::driverContigsSummary(vector<int>& oLength, vector<int>& o
             count++;
 			
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else
@@ -1432,7 +1432,7 @@ int ScreenSeqsCommand::createProcessesContigsSummary(vector<int>& oLength, vecto
         bool recalc = false;
         
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
         
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -1571,8 +1571,8 @@ int ScreenSeqsCommand::createProcessesContigsSummary(vector<int>& oLength, vecto
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		/*
 		vector<contigsSumData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -1591,7 +1591,7 @@ int ScreenSeqsCommand::createProcessesContigsSummary(vector<int>& oLength, vecto
 		num = driverContigsSummary(oLength, ostartPosition, oendPosition, omismatches, numNs, contigsLines[processors-1]);
         /*
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -1626,7 +1626,7 @@ int ScreenSeqsCommand::optimizeAlign(){
 		
         vector<unsigned long long> positions;
         vector<linePair> alignLines;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		positions = m->divideFilePerLine(alignreport, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { alignLines.push_back(linePair(positions[i], positions[(i+1)])); }	
 #else
@@ -1744,7 +1744,7 @@ int ScreenSeqsCommand::driverAlignSummary(vector<float>& sims, vector<float>& sc
             count++;
 			
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else
@@ -1771,7 +1771,7 @@ int ScreenSeqsCommand::createProcessesAlignSummary(vector<float>& sims, vector<f
 		vector<int> processIDS;
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
         
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -1903,8 +1903,8 @@ int ScreenSeqsCommand::createProcessesAlignSummary(vector<float>& sims, vector<f
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		/*
 		vector<alignsData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -1922,7 +1922,7 @@ int ScreenSeqsCommand::createProcessesAlignSummary(vector<float>& sims, vector<f
 		num = driverAlignSummary(sims, scores, inserts, alignLines[processors-1]);
        /*
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -1956,7 +1956,7 @@ int ScreenSeqsCommand::getSummary(vector<unsigned long long>& positions){
 		vector<int> longHomoPolymer;
         vector<int> numNs;
 		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		positions = m->divideFile(fastafile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }	
 #else
@@ -1985,7 +1985,7 @@ int ScreenSeqsCommand::getSummary(vector<unsigned long long>& positions){
 			driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, tempLine);
 #else
 		int numSeqs = 0;
-		//#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		//#if defined UNIX
 			if(processors == 1){
 				numSeqs = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[0]);
 			}else{
@@ -2097,7 +2097,7 @@ int ScreenSeqsCommand::driverCreateSummary(vector<int>& startPosition, vector<in
 				count++;
 			}
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos.end)) { break; }
 			#else
@@ -2124,7 +2124,7 @@ int ScreenSeqsCommand::createProcessesCreateSummary(vector<int>& startPosition, 
 		vector<int> processIDS;
         bool recalc = false;
 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 				
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -2263,8 +2263,8 @@ int ScreenSeqsCommand::createProcessesCreateSummary(vector<int>& startPosition, 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<sumData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -2282,7 +2282,7 @@ int ScreenSeqsCommand::createProcessesCreateSummary(vector<int>& startPosition, 
 		num = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[processors-1]);
          
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -2608,7 +2608,7 @@ int ScreenSeqsCommand::driver(linePair filePos, string goodFName, string badAccn
                 count++;
 			}
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos.end)) { break; }
 			#else
@@ -2732,7 +2732,7 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
 		int num = 0;
         bool recalc = false;
 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 				
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -2852,8 +2852,8 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<sumScreenData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -2874,7 +2874,7 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
         processIDS.push_back(processors-1);
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

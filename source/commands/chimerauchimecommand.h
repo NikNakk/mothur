@@ -16,6 +16,9 @@
 #include "sequenceparser.h"
 #include "counttable.h"
 #include "sequencecountparser.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 /***********************************************************/
 
@@ -146,7 +149,7 @@ struct uchimeData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyUchimeThreadFunction(LPVOID lpParam){ 
 	uchimeData* pDataArray;

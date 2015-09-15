@@ -404,7 +404,7 @@ int DistanceCommand::execute(){
         
 #else
 				
-	//#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+	//#if defined UNIX
 		//if you don't need to fork anything
 		if(processors == 1){
 			if (output != "square") {  driver(0, numSeqs, outputFile, cutoff); }
@@ -530,7 +530,7 @@ void DistanceCommand::createProcesses(string filename, int numSeqs) {
             
         }
 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		int process = 1;
 		processIDS.clear();
         bool recalc = false;
@@ -623,8 +623,8 @@ void DistanceCommand::createProcesses(string filename, int numSeqs) {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<distanceData*> pDataArray; //[processors-1];
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor-1 worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -644,7 +644,7 @@ void DistanceCommand::createProcesses(string filename, int numSeqs) {
 		else { driver(lines[0].start, lines[0].end, filename, "square"); }
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -1088,7 +1088,7 @@ int DistanceCommand::convertMatrix(string outputFile) {
 		string outfile = m->getRootName(outputFile) + "sorted.dist.temp";
 		
 		//use the unix sort 
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			string command = "sort -n " + outputFile + " -o " + outfile;
 			system(command.c_str());
 		#else //sort using windows sort
@@ -1176,7 +1176,7 @@ int DistanceCommand::convertToLowerTriangle(string outputFile) {
 		string outfile = m->getRootName(outputFile) + "sorted.dist.temp";
 		
 		//use the unix sort 
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			string command = "sort -n " + outputFile + " -o " + outfile;
 			system(command.c_str());
 		#else //sort using windows sort

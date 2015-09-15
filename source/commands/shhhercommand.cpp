@@ -272,7 +272,7 @@ ShhherCommand::ShhherCommand(string option) {
                 for (int i = 0; i < path.length(); i++) { tempPath[i] = tolower(path[i]); }
                 path = path.substr(0, (tempPath.find_last_of('m')));
                 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
                 path += "lookupFiles/";
 #else
                 path += "lookupFiles\\";
@@ -1966,7 +1966,7 @@ int ShhherCommand::execute(){
 		
         if (numFiles < processors) { processors = numFiles; }
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
         if (processors == 1) { driver(flowFileVector, compositeFASTAFileName, compositeNamesFileName); }
         else { createProcesses(flowFileVector); } //each processor processes one file
 #else
@@ -2059,7 +2059,7 @@ int ShhherCommand::createProcesses(vector<string> filenames){
         }
         
 		
-        #if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)		
+        #if defined UNIX		
 		
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -2172,8 +2172,8 @@ int ShhherCommand::createProcesses(vector<string> filenames){
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		/*
 		vector<shhhFlowsData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -2193,7 +2193,7 @@ int ShhherCommand::createProcesses(vector<string> filenames){
 		driver(filenames, compositeFASTAFileName, compositeNamesFileName, lines[processors-1].start, lines[processors-1].end);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

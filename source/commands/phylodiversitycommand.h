@@ -14,6 +14,9 @@
 #include "counttable.h"
 #include "sharedutilities.h"
 #include "tree.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 
 class PhyloDiversityCommand : public Command {
@@ -85,7 +88,7 @@ struct phylodivData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyPhyloDivThreadFunction(LPVOID lpParam){
 	phylodivData* pDataArray;

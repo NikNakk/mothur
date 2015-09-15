@@ -197,7 +197,7 @@ int CountSeqsCommand::execute(){
 		
 		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
         processors=1;
 #endif
@@ -409,7 +409,7 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap*& groupMap, string
         unsigned long long numSeqs = 0;
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		positions = m->divideFilePerLine(namefile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
 #else
@@ -430,7 +430,7 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap*& groupMap, string
 #endif
 
         		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		
 		//loop through and create all the processes you want
 		while (process != processors-1) {
@@ -531,8 +531,8 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap*& groupMap, string
         }
 #else		
 		vector<countData*> pDataArray;
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1];
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]);
         vector<GroupMap*> copies;
 		
 		//Create processor worker threads.
@@ -555,7 +555,7 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap*& groupMap, string
         numSeqs = driver(lines[processors-1].start, lines[processors-1].end, filename, groupMap);
         		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -655,7 +655,7 @@ unsigned long long CountSeqsCommand::driver(unsigned long long start, unsigned l
 			
 			total += names.size();
             
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= end)) { break; }
 #else
@@ -702,7 +702,7 @@ unsigned long long CountSeqsCommand::processLarge(string outputFileName){
             
             //sort file by first column so the names of sequences will be easier to find
             //use the unix sort 
-            #if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+            #if defined UNIX
                 string command = "sort -n " + newGroupFile + " -o " + outfile;
                 system(command.c_str());
                 command = "sort -n " + newNameFile + " -o " + outName;

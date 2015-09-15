@@ -21,7 +21,9 @@
 #include "needlemanoverlap.hpp"
 #include "blastalign.hpp"
 #include "noalign.hpp"
-
+#ifndef UNIX
+#include <memory>
+#endif
 
 /************************************************************/
 struct seqPNode {
@@ -146,7 +148,7 @@ struct preClusterData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyPreclusterThreadFunction(LPVOID lpParam){ 
 	preClusterData* pDataArray;

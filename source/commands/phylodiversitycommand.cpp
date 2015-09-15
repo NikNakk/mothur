@@ -400,7 +400,7 @@ int PhyloDiversityCommand::createProcesses(vector<int>& procIters, Tree* t, map<
 		map< string, vector<float> >::iterator itSum;
         bool recalc = false;
 
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 				
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -533,8 +533,8 @@ int PhyloDiversityCommand::createProcesses(vector<int>& procIters, Tree* t, map<
         
         //fill in functions
         vector<phylodivData*> pDataArray;
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1];
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]);
         vector<CountTable*> cts;
         vector<Tree*> trees;
         map<string, int> rootForGroup = getRootForGroups(t);
@@ -565,7 +565,7 @@ int PhyloDiversityCommand::createProcesses(vector<int>& procIters, Tree* t, map<
 		driver(t, div, sumDiv, procIters[0], increment, randomLeaf, numSampledList, outCollect, outSum, true);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

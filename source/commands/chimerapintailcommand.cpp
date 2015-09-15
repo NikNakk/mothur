@@ -506,7 +506,7 @@ int ChimeraPintailCommand::execute(){
 		#else
 						
 			//break up file
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				vector<unsigned long long> positions = m->divideFile(fastaFileNames[s], processors);
 			
 				for (int i = 0; i < (positions.size()-1); i++) {
@@ -629,7 +629,7 @@ int ChimeraPintailCommand::driver(linePair* filePos, string outputFName, string 
 			}
 			delete candidateSeq;
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -715,7 +715,7 @@ int ChimeraPintailCommand::driverMPI(int start, int num, MPI_File& inMPI, MPI_Fi
 
 int ChimeraPintailCommand::createProcesses(string outputFileName, string filename, string accnos) {
 	try {
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		int process = 0;
 		int num = 0;
         bool recalc = false;

@@ -202,7 +202,7 @@ int SummaryQualCommand::execute(){
         }
         
 		vector<unsigned long long> positions; 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		positions = m->divideFile(qualfile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
 #else	
@@ -313,7 +313,7 @@ int SummaryQualCommand::driverCreateSummary(vector<int>& position, vector<int>& 
 				count += num;
 			}
 			
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 			unsigned long long pos = in.tellg();
 			if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else
@@ -338,7 +338,7 @@ int SummaryQualCommand::createProcessesCreateSummary(vector<int>& position, vect
 		processIDS.clear();
         bool recalc = false;
 		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -488,9 +488,9 @@ int SummaryQualCommand::createProcessesCreateSummary(vector<int>& position, vect
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<seqSumQualData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors];
-		HANDLE  hThreadArray[processors]; 
-		
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors - 1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors - 1]);
+
         bool hasNameMap = false;
         if ((namefile !="") || (countfile != "")) { hasNameMap = true; }
         
@@ -506,8 +506,8 @@ int SummaryQualCommand::createProcessesCreateSummary(vector<int>& position, vect
 		}
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors, hThreadArray, TRUE, INFINITE);
-		
+		WaitForMultipleObjects(processors - 1, hThreadArray.get(), TRUE, INFINITE);
+
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
 			numSeqs += pDataArray[i]->numSeqs;

@@ -20,6 +20,9 @@
 #include "eachgapignore.h"
 #include "onegapdist.h"
 #include "onegapignore.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 //custom data structure for threads to use.
 // This is passed by void pointer so it can be any data type
@@ -53,7 +56,7 @@ struct distanceData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyDistThreadFunction(LPVOID lpParam){ 
 	distanceData* pDataArray;

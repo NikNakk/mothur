@@ -338,7 +338,7 @@ int qFinderDMM::lineMinimizeFletcher(vector<double>& x, vector<double>& p, doubl
         
         double a = 0.0000;          double b = alpha;
         double fa = f0;             double fb = 0.0000;
-        double dfa = df0;           double dfb = 0.0/0.0;
+        double dfa = df0;           double dfb = NAN;
         
         int iter = 0;
         int maxIters = 100;
@@ -354,7 +354,7 @@ int qFinderDMM::lineMinimizeFletcher(vector<double>& x, vector<double>& p, doubl
             if(fAlpha > f0 + alpha * rho * df0 || fAlpha >= falpha_prev){
                 a = alpha_prev;         b = alpha;
                 fa = falpha_prev;       fb = fAlpha;
-                dfa = dfalpha_prev;     dfb = 0.0/0.0;
+                dfa = dfalpha_prev;     dfb = NAN;
                 break;
             }
             
@@ -411,7 +411,7 @@ int qFinderDMM::lineMinimizeFletcher(vector<double>& x, vector<double>& p, doubl
             if(fAlpha > f0 + rho * alpha * df0 || fAlpha >= fa){
                 b = alpha;
                 fb = fAlpha;
-                dfb = 0.0/0.0;
+                dfb = NAN;
             }
             else{
                 double dfalpha = 0.0000;

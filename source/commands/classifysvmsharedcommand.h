@@ -88,7 +88,7 @@ private:
     void trainSharedAndDesignData(vector<SharedRAbundVector*> lookup);
 
     void getParameterValue(int& target, string pstring, int defaultvalue) {
-        if (pstring == "not found" or pstring == "") {
+        if (pstring == "not found" || pstring == "") {
             target = defaultvalue;
         }
         else {

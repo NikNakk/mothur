@@ -16,6 +16,9 @@
 #include "qualityscores.h"
 #include "trimoligos.h"
 #include "counttable.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 
 class TrimSeqsCommand : public Command {
@@ -179,7 +182,7 @@ struct trimData {
 	}
 };
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyTrimThreadFunction(LPVOID lpParam){ 
 	trimData* pDataArray;

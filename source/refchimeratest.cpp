@@ -10,6 +10,7 @@
 #include "refchimeratest.h"
 #include "mothur.h"
 
+#undef MAXINT // Defined on Windows
 int MAXINT = numeric_limits<int>::max();
 
 //***************************************************************************************************************

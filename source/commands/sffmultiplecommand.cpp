@@ -298,7 +298,7 @@ SffMultipleCommand::SffMultipleCommand(string option)  {
                 for (int i = 0; i < path.length(); i++) { tempPath[i] = tolower(path[i]); }
                 path = path.substr(0, (tempPath.find_last_of('m')));
                 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
                 path += "lookupFiles/";
 #else
                 path += "lookupFiles\\";
@@ -353,7 +353,7 @@ int SffMultipleCommand::execute(){
         
         if (sffFiles.size() < processors) { processors = sffFiles.size(); }
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
         //trim.flows, shhh.flows cannot handle multiple processors for windows.
         processors = 1; m->mothurOut("This command can only use 1 processor on Windows platforms, using 1 processors.\n\n");
@@ -745,7 +745,7 @@ int SffMultipleCommand::createProcesses(vector<string> sffFiles, vector<string> 
             numFilesToComplete.push_back((endIndex-startIndex));
 		}
 		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)		
+#if defined UNIX		
 		
 		//loop through and create all the processes you want
 		while (process != processors) {

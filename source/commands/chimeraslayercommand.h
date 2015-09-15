@@ -16,6 +16,9 @@
 #include "chimeraslayer.h"
 #include "sequenceparser.h"
 #include "sequencecountparser.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 /***********************************************************/
 
@@ -177,7 +180,7 @@ struct slayerData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MySlayerThreadFunction(LPVOID lpParam){ 
 	slayerData* pDataArray;

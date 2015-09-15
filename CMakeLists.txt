@@ -16,7 +16,7 @@ option(USE_BOOST
 option(USE_COMPRESSION
   "Use compression (may only work on *nix systems)" OFF)
 set(MOTHUR_FILES ""
-  CACHE STRING "Default path for mothur files" Enter_your_default_path_here)
+  CACHE FILEPATH "Default path for mothur files")
   
 enable_testing()
 

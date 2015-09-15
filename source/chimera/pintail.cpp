@@ -74,7 +74,7 @@ int Pintail::doPrep() {
 	#ifdef USE_MPI
 		//do nothing
 	#else
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			//find breakup of templatefile for quantiles
 			if (processors == 1) {   templateLines.push_back(new linePair(0, templateSeqs.size()));  }
 			else { 
@@ -529,7 +529,7 @@ Sequence* Pintail::findPairs(Sequence* q) {
 //**************************************************************************************************
 void Pintail::createProcessesQuan() {
 	try {
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		int process = 1;
 		vector<int> processIDS;
         bool recalc = false;

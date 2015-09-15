@@ -29,6 +29,9 @@
 #include "eachgapignore.h"
 #include "onegapdist.h"
 #include "onegapignore.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 class PairwiseSeqsCommand : public Command {
 	
@@ -118,7 +121,7 @@ struct pairwiseData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyPairwiseSquareThreadFunction(LPVOID lpParam){ 
 	pairwiseData* pDataArray;

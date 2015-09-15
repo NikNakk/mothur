@@ -445,7 +445,7 @@ int ChimeraCheckCommand::execute(){
 			
 			
 			//break up file
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				vector<unsigned long long> positions = m->divideFile(fastaFileNames[i], processors);
 			
 				for (int s = 0; s < (positions.size()-1); s++) {
@@ -541,7 +541,7 @@ int ChimeraCheckCommand::driver(linePair* filePos, string outputFName, string fi
 			}
 			delete candidateSeq;
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -618,7 +618,7 @@ int ChimeraCheckCommand::driverMPI(int start, int num, MPI_File& inMPI, MPI_File
 
 int ChimeraCheckCommand::createProcesses(string outputFileName, string filename) {
 	try {
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		int process = 0;
 		int num = 0;
         bool recalc = false;

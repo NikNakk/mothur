@@ -13,6 +13,9 @@
 
 #include "treecalculator.h"
 #include "counttable.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 /***********************************************************************/
 
@@ -71,7 +74,7 @@ struct weightedData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyWeightedThreadFunction(LPVOID lpParam){
 	weightedData* pDataArray;

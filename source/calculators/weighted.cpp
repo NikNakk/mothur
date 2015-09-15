@@ -65,7 +65,7 @@ EstOutput Weighted::createProcesses(Tree* t, vector< vector<string> > namesOfGro
 		EstOutput results;
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		int process = 1;
 		
 		//loop through and create all the processes you want
@@ -203,8 +203,8 @@ EstOutput Weighted::createProcesses(Tree* t, vector< vector<string> > namesOfGro
         
         //fill in functions
         vector<weightedData*> pDataArray;
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1];
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]);
         vector<CountTable*> cts;
         vector<Tree*> trees;
 		
@@ -228,7 +228,7 @@ EstOutput Weighted::createProcesses(Tree* t, vector< vector<string> > namesOfGro
 		results = driver(t, namesOfGroupCombos, lines[0].start, lines[0].num, ct);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

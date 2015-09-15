@@ -215,7 +215,7 @@ int SeqSummaryCommand::execute(){
 			
 
 			vector<unsigned long long> positions; 
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				positions = m->divideFile(fastafile, processors);
 				for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
 			#else
@@ -476,7 +476,7 @@ int SeqSummaryCommand::execute(){
                 if (m->debug) { m->mothurOut("[DEBUG]: " + current.getName() + '\t' + toString(num) + "\n");  }
 			}
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -501,7 +501,7 @@ int SeqSummaryCommand::execute(){
 		processIDS.clear();
         bool recalc = false;
 		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -685,8 +685,8 @@ int SeqSummaryCommand::execute(){
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<seqSumData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
         
 		bool hasNameMap = false;
         if ((namefile !="") || (countfile != "")) { hasNameMap = true; }
@@ -710,7 +710,7 @@ int SeqSummaryCommand::execute(){
         processIDS.push_back(processors-1);
 
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

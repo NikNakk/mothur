@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
 
 		m->setFileName(logFileName);
 		
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			system("clear");
 		#else
 			system("CLS");
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
 		
 			//add / to name if needed
 			string lastChar = temp.substr(temp.length()-1);
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				if (lastChar != "/") { temp += "/"; }
 			#else
 				if (lastChar != "\\") { temp += "\\"; }	
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]){
         
 		if (outputHeader)  {
 			//version
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				#if defined (__APPLE__) || (__MACH__)
 					m->mothurOutJustToLog("Mac version");
 					m->mothurOutEndLine(); m->mothurOutEndLine();
@@ -205,7 +205,7 @@ int main(int argc, char *argv[]){
                 createLogFile = false;
                 string OS = "";
                 //version
-                #if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+                #if defined UNIX
                 #if defined (__APPLE__) || (__MACH__)
                 OS = "Mac ";
                 #else

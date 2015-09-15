@@ -58,6 +58,9 @@
 #include "mempearson.h"
 #include "sharedjsd.h"
 #include "sharedrjsd.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 class SummarySharedCommand : public Command {
 
@@ -124,7 +127,7 @@ struct summarySharedData {
 	}
 };
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MySummarySharedThreadFunction(LPVOID lpParam){ 
 	summarySharedData* pDataArray;

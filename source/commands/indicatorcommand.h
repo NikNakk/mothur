@@ -17,6 +17,9 @@
 #include "sharedrabundfloatvector.h"
 #include "inputdata.h"
 #include "designmap.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 class IndicatorCommand : public Command {
 public:
@@ -87,7 +90,7 @@ struct indicatorData {
     }
 };
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyIndicatorThreadFunction(LPVOID lpParam){
 	indicatorData* pDataArray;

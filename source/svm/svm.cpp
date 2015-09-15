@@ -13,6 +13,7 @@
 #include <numeric>
 #include <stack>
 #include <utility>
+#include <iterator>
 
 #include "svm.hpp"
 
@@ -565,7 +566,7 @@ SVM* SmoTrainer::train(KernelFunctionCache& K, const LabeledObservationVector& t
         }
 
         // using lambda to break is a good performance enhancement
-        if ( yg[i] <= yg[j] or lambda < 0.0001) {
+        if ( yg[i] <= yg[j] || lambda < 0.0001) {
             break;
         }
         u[0] = B[i] - ya[i];

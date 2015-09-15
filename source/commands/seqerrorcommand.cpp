@@ -338,7 +338,7 @@ int SeqErrorCommand::execute(){
 		if (m->control_pressed) { return 0; }
         
         int numSeqs = 0;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		if(processors == 1){
 			numSeqs = driver(queryFileName, qualFileName, reportFileName, errorSummaryFileName, errorSeqFileName, errorChimeraFileName, lines[0], qLines[0], rLines[0]);
             
@@ -411,7 +411,7 @@ int SeqErrorCommand::createProcesses(string filename, string qFileName, string r
 		processIDS.clear();
 		map<char, vector<int> >::iterator it;
 		int num = 0;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -820,7 +820,7 @@ int SeqErrorCommand::driver(string filename, string qFileName, string rFileName,
 			
 			index++;
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = queryFile.tellg();
 				if ((pos == -1) || (pos >= line.end)) { break; }
 			#else
@@ -1302,7 +1302,7 @@ int SeqErrorCommand::setLines(string filename, string qfilename, string rfilenam
         vector<unsigned long long> qfileFilePos;
         vector<unsigned long long> rfileFilePos;
 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		//set file positions for fasta file
 		fastaFilePos = m->divideFile(filename, processors);
 		

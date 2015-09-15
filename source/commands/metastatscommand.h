@@ -15,6 +15,9 @@
 #include "sharedrabundvector.h"
 #include "mothurmetastats.h"
 #include "designmap.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 class MetaStatsCommand : public Command {
 
@@ -89,7 +92,7 @@ struct metastatsData {
 	}
 };
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyMetastatsThreadFunction(LPVOID lpParam){ 
 	metastatsData* pDataArray;

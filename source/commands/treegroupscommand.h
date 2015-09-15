@@ -62,7 +62,9 @@
 #include "mempearson.h"
 #include "sharedrjsd.h"
 #include "sharedjsd.h"
-
+#ifndef UNIX
+#include <memory>
+#endif
 
 
 /* This command create a tree file for each similarity calculator at distance level, using various calculators to find the similiarity between groups. 
@@ -149,7 +151,7 @@ struct treeSharedData {
 	}
 };
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyTreeSharedThreadFunction(LPVOID lpParam){ 
 	treeSharedData* pDataArray;

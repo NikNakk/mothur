@@ -332,7 +332,7 @@ int PcrSeqsCommand::execute(){
         
         vector<unsigned long long> positions; 
         int numFastaSeqs = 0;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
         positions = m->divideFile(fastafile, processors);
         for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
 #else
@@ -434,7 +434,7 @@ int PcrSeqsCommand::createProcesses(string filename, string goodFileName, string
         bool adjustNeeded = false;
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
         
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -572,8 +572,8 @@ int PcrSeqsCommand::createProcesses(string filename, string goodFileName, string
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<pcrData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
         string locationsFile = "locationsFile.txt";
         m->mothurRemove(locationsFile);
@@ -599,7 +599,7 @@ int PcrSeqsCommand::createProcesses(string filename, string goodFileName, string
         processIDS.push_back(processors-1);
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -894,7 +894,7 @@ int PcrSeqsCommand::driverPcr(string filename, string goodFasta, string badFasta
                 count++;
 			}
 			
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
             unsigned long long pos = inFASTA.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
 #else

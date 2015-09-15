@@ -558,7 +558,7 @@ set<int> PrimerDesignCommand::createProcesses(string newSummaryFile, vector<doub
 			lines.push_back(linePair(startIndex, endIndex));
 		}
 		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)		
+#if defined UNIX		
 		
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -685,8 +685,8 @@ set<int> PrimerDesignCommand::createProcesses(string newSummaryFile, vector<doub
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<primerDesignData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=1; i<processors; i++ ){
@@ -708,7 +708,7 @@ set<int> PrimerDesignCommand::createProcesses(string newSummaryFile, vector<doub
 		otusToRemove = driver(newSummaryFile, minTms, maxTms, primers, conSeqs, lines[0].start, lines[0].end, numBinsProcessed, binIndex);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -848,7 +848,7 @@ vector< vector< vector<unsigned int> > > PrimerDesignCommand::driverGetCounts(ma
 
             }
 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= end)) { break; }
 #else
@@ -875,7 +875,7 @@ vector<Sequence> PrimerDesignCommand::createProcessesConSeqs(map<string, int>& n
         unsigned long int fastaCount = 0;
         bool recalc = false;
  		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)		
+#if defined UNIX		
 		
         vector<unsigned long long> positions; 
         vector<fastaLinePair> lines;

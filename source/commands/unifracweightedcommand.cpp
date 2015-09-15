@@ -755,7 +755,7 @@ int UnifracWeightedCommand::createProcesses(Tree* t, vector< vector<string> > na
 		EstOutput results;
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		//loop through and create all the processes you want
 		while (process != processors) {
 			pid_t pid = fork();
@@ -861,8 +861,8 @@ int UnifracWeightedCommand::createProcesses(Tree* t, vector< vector<string> > na
 #else
         //fill in functions
         vector<weightedRandomData*> pDataArray;
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1];
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]);
         vector<CountTable*> cts;
         vector<Tree*> trees;
 		
@@ -888,7 +888,7 @@ int UnifracWeightedCommand::createProcesses(Tree* t, vector< vector<string> > na
 		driver(t, namesOfGroupCombos, lines[0].start, lines[0].end, scores);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

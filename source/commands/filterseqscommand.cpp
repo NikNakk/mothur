@@ -449,7 +449,7 @@ int FilterSeqsCommand::filterSequences() {
             vector<unsigned long long> positions;
             if (savedPositions.size() != 0) { positions = savedPositions[s]; }
             else {
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 				positions = m->divideFile(fastafileNames[s], processors);
 #else
                 if(processors != 1){
@@ -459,7 +459,7 @@ int FilterSeqsCommand::filterSequences() {
                 }
 #endif
             }
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			//vector<unsigned long long> positions = m->divideFile(fastafileNames[s], processors);
 			
 			for (int i = 0; i < (positions.size()-1); i++) {
@@ -619,7 +619,7 @@ int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string i
 				count++;
 			}
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -653,7 +653,7 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		processIDS.clear();
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		
 		
 		//loop through and create all the processes you want
@@ -762,8 +762,8 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<filterRunData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++){
@@ -781,7 +781,7 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
         num = driverRunFilter(F, (filteredFastaName + toString(processors-1) + ".temp"), filename, lines[processors-1]);
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -896,7 +896,7 @@ string FilterSeqsCommand::createFilter() {
 #else
 				
                 vector<unsigned long long> positions;
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 				positions = m->divideFile(fastafileNames[s], processors);
 				for (int i = 0; i < (positions.size()-1); i++) {
 					lines.push_back(new linePair(positions[i], positions[(i+1)]));
@@ -1060,7 +1060,7 @@ int FilterSeqsCommand::driverCreateFilter(Filters& F, string filename, linePair*
 					count++;
 			}
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = in.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -1139,7 +1139,7 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 		processIDS.clear();
         bool recalc = false;
 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 				
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -1293,9 +1293,9 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<filterData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors];
-		HANDLE  hThreadArray[processors]; 
-		
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors - 1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors - 1]);
+
 		//Create processor worker threads.
 		for( int i=0; i<processors; i++ ){
 			
@@ -1307,8 +1307,8 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 		}
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors, hThreadArray, TRUE, INFINITE);
-		
+		WaitForMultipleObjects(processors - 1, hThreadArray.get(), TRUE, INFINITE);
+
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
 			num += pDataArray[i]->count;

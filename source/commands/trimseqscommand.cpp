@@ -1054,7 +1054,7 @@ int TrimSeqsCommand::driverCreateTrim(string filename, string qFileName, string 
 				count++;
 			}
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= line.end)) { break; }
 			
@@ -1097,7 +1097,7 @@ int TrimSeqsCommand::createProcessesCreateTrim(string filename, string qFileName
 		processIDS.clear();
         bool recalc = false;
 		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 				//loop through and create all the processes you want
 		while (process != processors) {
 			int pid = fork();
@@ -1344,8 +1344,8 @@ int TrimSeqsCommand::createProcessesCreateTrim(string filename, string qFileName
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<trimData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int h=0; h<processors-1; h++){
@@ -1445,7 +1445,7 @@ int TrimSeqsCommand::createProcessesCreateTrim(string filename, string qFileName
 
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -1527,7 +1527,7 @@ int TrimSeqsCommand::createProcessesCreateTrim(string filename, string qFileName
 				}
 			}
 			
-            #if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+            #if defined UNIX
 			if(createGroup){
 				ifstream in;
 				string tempFile =  filename + toString(processIDS[i]) + ".num.temp";
@@ -1580,7 +1580,7 @@ int TrimSeqsCommand::setLines(string filename, string qfilename) {
         vector<unsigned long long> fastaFilePos;
 		vector<unsigned long long> qfileFilePos;
 		
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 		//set file positions for fasta file
 		fastaFilePos = m->divideFile(filename, processors);
 		

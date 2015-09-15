@@ -580,7 +580,7 @@ ChimeraUchimeCommand::ChimeraUchimeCommand(string option)  {
 			path = path.substr(0, (tempPath.find_last_of('m')));
 			
 			string uchimeCommand;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 			uchimeCommand = path + "uchime";	//	format the database, -o option gives us the ability
             if (m->debug) { 
                 m->mothurOut("[DEBUG]: Uchime location using \"which uchime\" = "); 
@@ -608,7 +608,7 @@ ChimeraUchimeCommand::ChimeraUchimeCommand(string option)  {
                 
                 
                 ifstream in2;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
                 ableToOpen = m->openInputFile(uLocation, in2, "no error"); in2.close();
 #else
                 ableToOpen = m->openInputFile((uLocation + ".exe"), in2, "no error"); in2.close();
@@ -1525,7 +1525,7 @@ int ChimeraUchimeCommand::driver(string outputFName, string filename, string acc
 		
 		//uchime_main(numArgs, uchimeParameters); 
 		//cout << "commandString = " << commandString << endl;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 		commandString = "\"" + commandString + "\"";
 #endif
@@ -1628,7 +1628,7 @@ int ChimeraUchimeCommand::createProcesses(string outputFileName, string filename
 		int num = 0;
 		vector<string> files;
 		
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)		
+#if defined UNIX		
 		//break up file into multiple files
 		m->divideFile(filename, processors, files);
 		
@@ -1729,8 +1729,8 @@ int ChimeraUchimeCommand::createProcesses(string outputFileName, string filename
 		if (count < processors) { processors = count; }
 		
 		vector<uchimeData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		vector<string> dummy; //used so that we can use the same struct for MyUchimeSeqsThreadFunction and MyUchimeThreadFunction
 		
 		//Create processor worker threads.
@@ -1755,7 +1755,7 @@ int ChimeraUchimeCommand::createProcesses(string outputFileName, string filename
 		num = driver(outputFileName, files[0], accnos, alns, numChimeras);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
@@ -1816,7 +1816,7 @@ int ChimeraUchimeCommand::createProcessesGroups(string outputFName, string filen
             remainingPairs = remainingPairs - numPairs;
         }
 
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)		
+#if defined UNIX		
 				
 		//loop through and create all the processes you want
 		while (process != processors) {
@@ -1869,8 +1869,8 @@ int ChimeraUchimeCommand::createProcessesGroups(string outputFName, string filen
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<uchimeData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=1; i<processors; i++ ){
@@ -1894,7 +1894,7 @@ int ChimeraUchimeCommand::createProcessesGroups(string outputFName, string filen
 		num = driverGroups(outputFName, filename, accnos, alns, accnos + ".byCount", lines[0].start, lines[0].end, groups);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

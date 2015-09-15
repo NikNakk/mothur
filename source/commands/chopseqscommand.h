@@ -14,6 +14,9 @@
 #include "command.hpp"
 #include "sequence.hpp"
 #include "qualityscores.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 class ChopSeqsCommand : public Command {
 	
@@ -85,7 +88,7 @@ struct chopData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyChopThreadFunction(LPVOID lpParam){ 
 	chopData* pDataArray;

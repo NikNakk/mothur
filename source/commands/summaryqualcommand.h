@@ -13,6 +13,9 @@
 
 #include "command.hpp"
 #include "qualityscores.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 /**************************************************************************************************/
 
@@ -78,7 +81,7 @@ struct seqSumQualData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MySeqSumQualThreadFunction(LPVOID lpParam){ 
 	seqSumQualData* pDataArray;

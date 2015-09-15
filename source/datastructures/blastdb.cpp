@@ -38,7 +38,7 @@ gapOpen(gO), gapExtend(gE), match(mm), misMatch(mM) {
 			for (int i = 0; i < path.length(); i++) { tempPath[i] = tolower(path[i]); }
 			path = path.substr(0, (tempPath.find_last_of('m')));
 			
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 			path += "blast/bin/";	
 #else
 			path += "blast\\bin\\";
@@ -47,7 +47,7 @@ gapOpen(gO), gapExtend(gE), match(mm), misMatch(mM) {
 		
 		
 		string formatdbCommand;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		formatdbCommand = path + "formatdb";	//	format the database, -o option gives us the ability
 #else
 		formatdbCommand = path + "formatdb.exe";
@@ -60,7 +60,7 @@ gapOpen(gO), gapExtend(gE), match(mm), misMatch(mM) {
 		if(ableToOpen == 1) {	m->mothurOut("[ERROR]: " + formatdbCommand + " file does not exist. mothur requires formatdb.exe."); m->mothurOutEndLine(); m->control_pressed = true; }
 		
 		string blastCommand;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		blastCommand = path + "blastall";	//	format the database, -o option gives us the ability
 #else
 		blastCommand = path + "blastall.exe";
@@ -76,7 +76,7 @@ gapOpen(gO), gapExtend(gE), match(mm), misMatch(mM) {
 		
 		
 		string megablastCommand;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		megablastCommand = path + "megablast";	//	format the database, -o option gives us the ability
 #else
 		megablastCommand = path + "megablast.exe";
@@ -110,7 +110,7 @@ BlastDB::BlastDB(string b, int tid) : Database() {
 			for (int i = 0; i < path.length(); i++) { tempPath[i] = tolower(path[i]); }
 			path = path.substr(0, (tempPath.find_last_of('m')));
 			
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 			path += "blast/bin/";	
 #else
 			path += "blast\\bin\\";
@@ -124,7 +124,7 @@ BlastDB::BlastDB(string b, int tid) : Database() {
 		blastFileName = pid + toString(randNumber) + ".blast";
 		
 		string formatdbCommand;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		formatdbCommand = path + "formatdb";	//	format the database, -o option gives us the ability
 #else
 		formatdbCommand = path + "formatdb.exe";
@@ -139,7 +139,7 @@ BlastDB::BlastDB(string b, int tid) : Database() {
 		if(ableToOpen == 1) {	m->mothurOut("[ERROR]: " +  formatdbCommand + " file does not exist. mothur requires formatdb.exe."); m->mothurOutEndLine(); m->control_pressed = true; }
 		
 		string blastCommand;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		blastCommand = path + "blastall";	//	format the database, -o option gives us the ability
 #else
 		blastCommand = path + "blastall.exe";
@@ -155,7 +155,7 @@ BlastDB::BlastDB(string b, int tid) : Database() {
 		
 		
 		string megablastCommand;
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		megablastCommand = path + "megablast";	//	format the database, -o option gives us the ability
 #else
 		megablastCommand = path + "megablast.exe";
@@ -216,7 +216,7 @@ vector<int> BlastDB::findClosestSequences(Sequence* seq, int n) {
 		//	long.  With this setting, it seems comparable in speed to the suffix tree approach.
 		
 		string blastCommand;
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 		
 			blastCommand = path + "blastall -p blastn -d " + dbFileName + " -m 8 -W 28 -v " + toString(n) + " -b " + toString(n);
 			blastCommand += (" -i " + (queryFileName+pid+toString(randNumber)) + " -o " + blastFileName+pid+toString(randNumber));
@@ -279,7 +279,7 @@ vector<int> BlastDB::findClosestMegaBlast(Sequence* seq, int n, int minPerID) {
 		//	long.  With this setting, it seems comparable in speed to the suffix tree approach.
 //7000004128189528left	0	100		66	0	0	1	66	61	126	1e-31	 131	
 		string blastCommand;
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			blastCommand = path + "megablast -e 1e-10 -d " + dbFileName + " -m 8 -b " + toString(n) + " -v " + toString(n); //-W 28 -p blastn
 			blastCommand += (" -i " + (queryFileName+pid+toString(randNumber)) + " -o " + blastFileName+pid+toString(randNumber));
 		#else
@@ -353,7 +353,7 @@ void BlastDB::generateDB() {
 			
 		string formatdbCommand;
 		
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			formatdbCommand = path + "formatdb -p F -o T -i " + dbFileName;	//	format the database, -o option gives us the ability
 		#else
 			//formatdbCommand = path + "blast\\bin\\formatdb -p F -o T -i " + dbFileName;	//	format the database, -o option gives us the ability

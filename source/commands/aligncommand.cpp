@@ -442,7 +442,7 @@ int AlignCommand::execute(){
 #else
 
 			vector<unsigned long long> positions; 
-		#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		#if defined UNIX
 			positions = m->divideFile(candidateFileNames[s], processors);
 			for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
 		#else
@@ -649,7 +649,7 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 			}
 			delete candidateSeq;
 			
-			#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+			#if defined UNIX
 				unsigned long long pos = inFASTA.tellg();
 				if ((pos == -1) || (pos >= filePos->end)) { break; }
 			#else
@@ -863,7 +863,7 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		processIDS.resize(0);
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		int process = 1;
 		
 		//loop through and create all the processes you want
@@ -987,8 +987,8 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<alignData*> pDataArray; 
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -1023,7 +1023,7 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		num = driver(lines[processors-1], (alignFileName + toString(processors-1) + ".temp"), (reportFileName + toString(processors-1) + ".temp"), (accnosFName + toString(processors-1) + ".temp"), filename);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

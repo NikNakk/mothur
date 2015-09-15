@@ -56,7 +56,9 @@
 #include "mempearson.h"
 #include "sharedjsd.h"
 #include "sharedrjsd.h"
-
+#ifndef UNIX
+#include <memory>
+#endif
 
 // aka. dist.shared()
 
@@ -132,7 +134,7 @@ struct distSharedData {
 	}
 };
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyDistSharedThreadFunction(LPVOID lpParam){ 
 	distSharedData* pDataArray;

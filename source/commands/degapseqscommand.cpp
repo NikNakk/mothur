@@ -254,7 +254,7 @@ int DegapSeqsCommand::createProcesses(string filename, string outputFileName){
         vector<linePair> lines;
         vector<unsigned long long> positions;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
         positions = m->divideFile(filename, processors);
         for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
         int process = 1;
@@ -369,8 +369,8 @@ int DegapSeqsCommand::createProcesses(string filename, string outputFileName){
         }
         
         vector<degapData*> pDataArray;
-        DWORD   dwThreadIdArray[processors-1];
-        HANDLE  hThreadArray[processors-1];
+        unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+        unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]);
         
         //Create processor worker threads.
         for( int i=0; i<processors-1; i++ ){
@@ -393,7 +393,7 @@ int DegapSeqsCommand::createProcesses(string filename, string outputFileName){
         numSeqs = driver(lines[processors-1], filename, (outputFileName + toString(processors-1) + ".temp"));
         
         //Wait until all threads have terminated.
-        WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+        WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
         
         //Close all thread handles and free memory allocations.
         for(int i=0; i < pDataArray.size(); i++){
@@ -444,7 +444,7 @@ int DegapSeqsCommand::driver(linePair filePos, string filename, string outputFil
                 numSeqs++;
             }
             
-            #if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+            #if defined UNIX
                 unsigned long long pos = inFASTA.tellg();
                 if ((pos == -1) || (pos >= filePos.end)) { break; }
             #else

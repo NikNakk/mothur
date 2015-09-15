@@ -426,7 +426,7 @@ int PairwiseSeqsCommand::execute(){
 			MPI_Barrier(MPI_COMM_WORLD); //make everyone wait - just in case
 	#else		
 					
-		//#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+		//#if defined UNIX
 			//if you don't need to fork anything
 			if(processors == 1){
 				if (output != "square") {  driver(0, numSeqs, outputFile, cutoff); }
@@ -519,7 +519,7 @@ void PairwiseSeqsCommand::createProcesses(string filename) {
 		processIDS.clear();
         bool recalc = false;
         
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 		
 		
 		//loop through and create all the processes you want
@@ -608,8 +608,8 @@ void PairwiseSeqsCommand::createProcesses(string filename) {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<pairwiseData*> pDataArray; //[processors-1];
-		DWORD   dwThreadIdArray[processors-1];
-		HANDLE  hThreadArray[processors-1]; 
+		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
+		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
 		
 		//Create processor-1 worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -629,7 +629,7 @@ void PairwiseSeqsCommand::createProcesses(string filename) {
 		else { driver(lines[0].start, lines[0].end, filename, "square"); }
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray, TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

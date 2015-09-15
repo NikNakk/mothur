@@ -15,6 +15,9 @@
 #include "sequence.hpp"
 #include "alignment.hpp"
 #include "needlemanoverlap.hpp"
+#ifndef UNIX
+#include <memory>
+#endif
 
 /**************************************************************************************************/
 
@@ -102,7 +105,7 @@ struct primerDesignData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyPrimerThreadFunction(LPVOID lpParam){ 
 	primerDesignData* pDataArray;

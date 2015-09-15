@@ -278,7 +278,7 @@ public:
             if (verbose) m->mothurOut("n = " + toString(n) ); m->mothurOutEndLine();
 
             // pull empty stacks off until there are no empty stacks
-            while ( stackOfParameterRanges.size() > 0 and stackOfParameterRanges.top().second.size() == 0 ) {
+            while ( stackOfParameterRanges.size() > 0 && stackOfParameterRanges.top().second.size() == 0 ) {
 
                 if (verbose) m->mothurOut("  empty parameter range: " + stackOfParameterRanges.top().first); m->mothurOutEndLine();
 

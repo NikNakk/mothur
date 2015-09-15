@@ -16,6 +16,9 @@
 #include "sequenceparser.h"
 #include "deconvolutecommand.h"
 #include "clustercommand.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 //**********************************************************************************************************************
 
@@ -94,7 +97,7 @@ struct shhhseqsData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyShhhSeqsThreadFunction(LPVOID lpParam){ 
 	shhhseqsData* pDataArray;

@@ -21,6 +21,9 @@
 #include "knn.h"
 #include "kmertree.h"
 #include "aligntree.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 
 //KNN and Wang methods modeled from algorithms in
@@ -130,7 +133,7 @@ struct classifyData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyClassThreadFunction(LPVOID lpParam){ 
 	classifyData* pDataArray;

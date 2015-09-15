@@ -13,6 +13,9 @@
 #include "command.hpp"
 #include "groupmap.h"
 #include "sharedrabundvector.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 class CountSeqsCommand : public Command {
 	
@@ -80,7 +83,7 @@ struct countData {
 };
 
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 static DWORD WINAPI MyCountThreadFunction(LPVOID lpParam){
 	countData* pDataArray;

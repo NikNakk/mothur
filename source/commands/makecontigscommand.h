@@ -21,6 +21,9 @@
 #include "oligos.h"
 #include "fastqread.h"
 #include "kmeralign.h"
+#ifndef UNIX
+#include <memory>
+#endif
 
 #        define PROBABILITY(score) (pow(10.0, (-(double)(score)) / 10.0))
 #        define PHREDMAX 46
@@ -206,7 +209,7 @@ struct contigsData {
     }
 };
 /**************************************************************************************************/
-#if defined (__APPLE__) || (__MACH__) || (linux) || (__linux) || (__linux__) || (__unix__) || (__unix)
+#if defined UNIX
 #else
 
 //**********************************************************************************************************************
