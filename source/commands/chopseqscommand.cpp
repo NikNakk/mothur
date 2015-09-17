@@ -522,8 +522,8 @@ bool ChopSeqsCommand::createProcesses(vector<linePair> lines, string filename, s
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<chopData*> pDataArray; 
-		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
-		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
+		vector<DWORD> dwThreadIdArray(processors-1);
+		vector<HANDLE> hThreadArray(processors-1); 
 		
 		//Create processor worker threads.
 		for( int i=0; i<processors-1; i++ ){
@@ -548,7 +548,7 @@ bool ChopSeqsCommand::createProcesses(vector<linePair> lines, string filename, s
         processIDS.push_back(processors-1);
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
 		
         if (wroteAccnos) { nonBlankAccnosFiles.push_back(outAccnos); }
 		else { m->mothurRemove(outAccnos); } //remove so other files can be renamed to it

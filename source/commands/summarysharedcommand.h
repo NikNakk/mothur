@@ -58,9 +58,7 @@
 #include "mempearson.h"
 #include "sharedjsd.h"
 #include "sharedrjsd.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class SummarySharedCommand : public Command {
 

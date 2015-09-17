@@ -19,9 +19,7 @@
 #include "sequencecountparser.h"
 #include "myPerseus.h"
 #include "counttable.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /***********************************************************/
 class ChimeraPerseusCommand : public Command {

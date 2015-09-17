@@ -16,9 +16,7 @@
 #include "chimeraslayer.h"
 #include "sequenceparser.h"
 #include "sequencecountparser.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /***********************************************************/
 

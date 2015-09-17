@@ -20,9 +20,7 @@
 #include "eachgapignore.h"
 #include "onegapdist.h"
 #include "onegapignore.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 //custom data structure for threads to use.
 // This is passed by void pointer so it can be any data type

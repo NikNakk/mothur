@@ -17,9 +17,7 @@
 #include "needlemanoverlap.hpp"
 #include "counttable.h"
 #include "oligos.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class PcrSeqsCommand : public Command {
 public:

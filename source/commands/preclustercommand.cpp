@@ -542,8 +542,8 @@ int PreClusterCommand::createProcessesGroups(string newFName, string newNName, s
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<preClusterData*> pDataArray; 
-		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
-		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
+		vector<DWORD> dwThreadIdArray(processors-1);
+		vector<HANDLE> hThreadArray(processors-1); 
 		
 		//Create processor worker threads.
 		for( int i=1; i<processors; i++ ){
@@ -564,7 +564,7 @@ int PreClusterCommand::createProcessesGroups(string newFName, string newNName, s
 		num = driverGroups(newFName, newNName, newMFile, lines[0].start, lines[0].end, groups);
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

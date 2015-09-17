@@ -62,9 +62,7 @@
 #include "mempearson.h"
 #include "sharedrjsd.h"
 #include "sharedjsd.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 
 /* This command create a tree file for each similarity calculator at distance level, using various calculators to find the similiarity between groups. 

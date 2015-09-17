@@ -17,9 +17,7 @@
 #include "sharedrabundfloatvector.h"
 #include "inputdata.h"
 #include "designmap.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class IndicatorCommand : public Command {
 public:

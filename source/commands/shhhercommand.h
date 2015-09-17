@@ -19,9 +19,7 @@
 #include "listvector.hpp"
 #include "cluster.hpp"
 #include <cfloat>
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 //**********************************************************************************************************************
 

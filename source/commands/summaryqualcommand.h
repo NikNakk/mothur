@@ -13,9 +13,7 @@
 
 #include "command.hpp"
 #include "qualityscores.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /**************************************************************************************************/
 

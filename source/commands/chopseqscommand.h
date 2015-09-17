@@ -14,9 +14,7 @@
 #include "command.hpp"
 #include "sequence.hpp"
 #include "qualityscores.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class ChopSeqsCommand : public Command {
 	

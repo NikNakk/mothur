@@ -21,9 +21,7 @@
 #include "needlemanoverlap.hpp"
 #include "blastalign.hpp"
 #include "noalign.hpp"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /************************************************************/
 struct seqPNode {

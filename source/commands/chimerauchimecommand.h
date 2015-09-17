@@ -16,9 +16,7 @@
 #include "sequenceparser.h"
 #include "counttable.h"
 #include "sequencecountparser.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /***********************************************************/
 

@@ -13,9 +13,7 @@
 
 #include "command.hpp"
 #include "sequence.hpp"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class DegapSeqsCommand : public Command {
 public:

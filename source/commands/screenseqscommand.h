@@ -12,9 +12,7 @@
 #include "mothur.h"
 #include "command.hpp"
 #include "sequence.hpp"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class ScreenSeqsCommand : public Command {
 	

@@ -13,9 +13,7 @@
 
 #include "treecalculator.h"
 #include "counttable.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /***********************************************************************/
 

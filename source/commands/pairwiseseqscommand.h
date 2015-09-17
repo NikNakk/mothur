@@ -29,9 +29,7 @@
 #include "eachgapignore.h"
 #include "onegapdist.h"
 #include "onegapignore.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class PairwiseSeqsCommand : public Command {
 	

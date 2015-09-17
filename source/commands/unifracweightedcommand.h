@@ -17,9 +17,7 @@
 #include "sharedutilities.h"
 #include "fileoutput.h"
 #include "readtree.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class UnifracWeightedCommand : public Command {
 	

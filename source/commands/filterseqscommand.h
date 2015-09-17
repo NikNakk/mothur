@@ -12,9 +12,7 @@
 
 #include "command.hpp"
 #include "filters.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class Sequence;
 class FilterSeqsCommand : public Command {

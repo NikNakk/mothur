@@ -14,9 +14,7 @@
 #include "counttable.h"
 #include "sharedutilities.h"
 #include "tree.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 
 class PhyloDiversityCommand : public Command {

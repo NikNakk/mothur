@@ -15,9 +15,7 @@
 #include "sharedrabundvector.h"
 #include "mothurmetastats.h"
 #include "designmap.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class MetaStatsCommand : public Command {
 

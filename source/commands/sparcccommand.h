@@ -12,9 +12,7 @@
 #include "command.hpp"
 #include "inputdata.h"
 #include "calcsparcc.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /**************************************************************************************************/
 

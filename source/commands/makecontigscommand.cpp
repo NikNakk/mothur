@@ -964,8 +964,8 @@ unsigned long long MakeContigsCommand::createProcessesGroups(vector< vector<stri
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         
         vector<contigsData*> pDataArray;
-        unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
-        unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]);
+        vector<DWORD> dwThreadIdArray(processors-1);
+        vector<HANDLE> hThreadArray(processors-1);
         
         //Create processor worker threads.
         for(int h=1; h<processors; h++ ){
@@ -981,7 +981,7 @@ unsigned long long MakeContigsCommand::createProcessesGroups(vector< vector<stri
         num = driverGroups(fileInputs, startEndIndexes[0].start, startEndIndexes[0].end, compositeGroupFile, compositeFastaFile, compositeScrapFastaFile, compositeQualFile, compositeScrapQualFile, compositeMisMatchFile, totalGroupCounts);
         
         //Wait until all threads have terminated.
-        WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
+        WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
         
         //Close all thread handles and free memory allocations.
         for(int i=0; i < pDataArray.size(); i++){
@@ -1455,8 +1455,8 @@ unsigned long long MakeContigsCommand::createProcesses(vector<string> fileInputs
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<contigsData*> pDataArray; 
-		unique_ptr<DWORD[]> dwThreadIdArray(new DWORD[processors-1]);
-		unique_ptr<HANDLE[]> hThreadArray(new HANDLE[processors-1]); 
+		vector<DWORD> dwThreadIdArray(processors-1);
+		vector<HANDLE> hThreadArray(processors-1); 
 		
 		//Create processor worker threads.
 		for( int h=0; h<processors-1; h++ ){
@@ -1527,7 +1527,7 @@ unsigned long long MakeContigsCommand::createProcesses(vector<string> fileInputs
         
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, hThreadArray.get(), TRUE, INFINITE);
+		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
 		
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

@@ -21,9 +21,7 @@
 #include "knn.h"
 #include "kmertree.h"
 #include "aligntree.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 
 //KNN and Wang methods modeled from algorithms in

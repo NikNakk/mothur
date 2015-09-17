@@ -17,9 +17,7 @@
 #include "groupmap.h"
 #include "trimoligos.h"
 #include "oligos.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 class TrimFlowsCommand : public Command {
 public:

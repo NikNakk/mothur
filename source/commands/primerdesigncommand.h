@@ -15,9 +15,7 @@
 #include "sequence.hpp"
 #include "alignment.hpp"
 #include "needlemanoverlap.hpp"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 /**************************************************************************************************/
 

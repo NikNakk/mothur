@@ -16,9 +16,7 @@
 #include "qualityscores.h"
 #include "trimoligos.h"
 #include "counttable.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 
 class TrimSeqsCommand : public Command {

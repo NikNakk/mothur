@@ -16,9 +16,7 @@
 #include "sequenceparser.h"
 #include "deconvolutecommand.h"
 #include "clustercommand.h"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 //**********************************************************************************************************************
 

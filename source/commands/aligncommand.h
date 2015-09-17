@@ -22,9 +22,7 @@
 
 #include "nast.hpp"
 #include "nastreport.hpp"
-#ifndef UNIX
-#include <memory>
-#endif
+
 
 //test
 class AlignCommand : public Command {
