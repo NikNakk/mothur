@@ -46,6 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctype.h>
 #include <wctype.h>
 #include <tchar.h>
+#include <el_compatibility.h>
 
 
 //#define FN_COMPLETE_DEBUG 1
