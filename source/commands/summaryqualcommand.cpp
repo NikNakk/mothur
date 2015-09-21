@@ -488,8 +488,8 @@ int SummaryQualCommand::createProcessesCreateSummary(vector<int>& position, vect
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<seqSumQualData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1);
+		vector<DWORD> dwThreadIdArray(processors);
+		vector<HANDLE> hThreadArray(processors);
 
         bool hasNameMap = false;
         if ((namefile !="") || (countfile != "")) { hasNameMap = true; }
@@ -506,7 +506,7 @@ int SummaryQualCommand::createProcessesCreateSummary(vector<int>& position, vect
 		}
 		
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors - 1, &(hThreadArray[0]), TRUE, INFINITE);
+		WaitForMultipleObjects(processors, &(hThreadArray[0]), TRUE, INFINITE);
 
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

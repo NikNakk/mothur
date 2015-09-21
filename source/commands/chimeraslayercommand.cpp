@@ -2155,8 +2155,8 @@ int ChimeraSlayerCommand::createProcesses(string outputFileName, string filename
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<slayerData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1);
+		vector<DWORD> dwThreadIdArray(processors);
+		vector<HANDLE> hThreadArray(processors);
 
 		//Create processor worker threads.
 		for( int i=0; i<processors; i++ ){
@@ -2171,7 +2171,7 @@ int ChimeraSlayerCommand::createProcesses(string outputFileName, string filename
 		}
 				
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors - 1, &(hThreadArray[0]), TRUE, INFINITE);
+		WaitForMultipleObjects(processors, &(hThreadArray[0]), TRUE, INFINITE);
 
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){

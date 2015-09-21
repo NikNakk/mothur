@@ -1293,8 +1293,8 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		vector<filterData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1);
+		vector<DWORD> dwThreadIdArray(processors);
+		vector<HANDLE> hThreadArray(processors);
 
 		//Create processor worker threads.
 		for( int i=0; i<processors; i++ ){
@@ -1307,7 +1307,7 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 		}
         
 		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors - 1, &(hThreadArray[0]), TRUE, INFINITE);
+		WaitForMultipleObjects(processors, &(hThreadArray[0]), TRUE, INFINITE);
 
 		//Close all thread handles and free memory allocations.
 		for(int i=0; i < pDataArray.size(); i++){
