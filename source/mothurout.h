@@ -118,6 +118,7 @@ class MothurOut {
         bool checkLocations(string&, string);  //filename, inputDir. checks for file in ./, inputdir, default and mothur's exe location.  Returns false if cant be found. If found completes name with location
 		string getline(ifstream&);
 		string getline(istringstream&);
+        bool stringBlank (string);
 		void gobble(istream&);
 		void gobble(istringstream&);
         void zapGremlins(istream&);
@@ -198,6 +199,9 @@ class MothurOut {
 		float roundDist(float, int);
 		unsigned int fromBase36(string);
         double median(vector<double>);
+        int median(vector<int>);
+        int average(vector<int>);
+        int sum(vector<int>);
 		int getRandomIndex(int); //highest
         double getStandardDeviation(vector<int>&);
         vector<double> getStandardDeviation(vector< vector<double> >&);

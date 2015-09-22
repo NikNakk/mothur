@@ -62,10 +62,6 @@
 #include <ctime>
 #include <limits>
 
-#ifdef USE_MPI
-	#include "mpi.h"
-#endif
-
 /***********************************************************************/
 
 #if defined (UNIX)
