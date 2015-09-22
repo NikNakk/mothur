@@ -19,7 +19,9 @@
 //config
 #include "mothurConfig.h"
 
-#define NOMINMAX // Required on Windows because of macros for min and max
+#ifndef NOMINMAX
+    #define NOMINMAX // Required on Windows because of macros for min and max
+#endif
 
 //boost libraries
 #ifdef USE_BOOST

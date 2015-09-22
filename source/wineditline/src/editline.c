@@ -46,7 +46,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <wctype.h>
 #include <el_globals.h>
 #include <tchar.h>
-#include <el_compatibility.h>
 
 
 int _el_display_prev_hist()

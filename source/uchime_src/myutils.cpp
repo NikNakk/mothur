@@ -11,7 +11,7 @@
 #include <signal.h>
 #include <float.h>
 
-#ifdef _MSC_VER
+#if (defined _MSC_VER) || (defined __MINGW32__)
 #include <crtdbg.h>
 #include <process.h>
 #include <windows.h>

@@ -46,7 +46,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctype.h>
 #include <errno.h>
 #include <tchar.h>
-#include <el_compatibility.h>
 
 HISTORY_STATE _el_hs = { 0 };
 extern size_t _el_line_buffer_size;
