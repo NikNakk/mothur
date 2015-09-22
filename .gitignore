@@ -32,6 +32,9 @@ install_manifest.txt
 *.vcxproj*
 Debug/
 Release/
+RelWithDebInfo/
+Win32/
+0.temp
 mothur.dir/
 *.opensdf
 *.sdf
@@ -43,3 +46,5 @@ source/wineditline/lib32/
 source/wineditline/bin32/
 source/wineditline/bin64/
 .svn/
+uchime.dir/
+edit_static.dir/

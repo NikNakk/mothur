@@ -5,8 +5,6 @@ project (mothur)
 set (MOTHUR_VERSION 1.36.0)
 set (MOTHUR_RELEASE_DATE 7/23/2015)
 
-option(USE_MPI 
-  "Use MPI" OFF)
 option(USE_READLINE 
   "Use readline library" ON)
 option(USE_BOOST
@@ -126,6 +124,7 @@ add_executable(mothur
   source/commands/amovacommand.cpp
   source/commands/anosimcommand.cpp
   source/commands/binsequencecommand.cpp
+  source/commands/biominfocommand.cpp
   source/commands/catchallcommand.cpp
   source/commands/chimerabellerophoncommand.cpp
   source/commands/chimeraccodecommand.cpp
@@ -420,23 +419,6 @@ if (USE_READLINE)
     endif (READLINE_FOUND)
   endif (WIN32)
 endif (USE_READLINE)
-
-if (USE_MPI)
-  find_package(MPI)
-  if (MPI_FOUND)
-    target_include_directories(mothur PRIVATE ${MPI_INCLUDE_PATH})
-    target_link_libraries(mothur ${MPI_LIBRARIES})
-    target_compile_definitions(mothur PRIVATE -DUSE_MPI)
-    if(MPI_COMPILE_FLAGS)
-      set_target_properties(mothur PROPERTIES
-        COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-    endif()
-    if(MPI_LINK_FLAGS)
-      set_target_properties(mothur PROPERTIES
-        LINK_FLAGS "${MPI_LINK_FLAGS}")
-    endif()
-  endif (MPI_FOUND)
-endif (USE_MPI)
 
 if (USE_BOOST)
   find_package(Boost 1.50.0
