@@ -10,7 +10,6 @@
 #include "filterseqscommand.h"
 #include "sequence.hpp"
 #include <thread>
-#include <future>
 
 //**********************************************************************************************************************
 vector<string> FilterSeqsCommand::setParameters(){	
@@ -445,12 +444,15 @@ int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string i
 
 int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, string filteredFastaName) {
 	try {
-		vector<future<int>> nums(processors - 1);
+		vector<thread> thrds(processors - 1);
+		vector<int> nums(processors - 1);
 
 		//loop through and create all the processes you want
 		for (int i = 0; i < processors - 1; i++) {
 			string filteredFasta = filename + m->mothurGetpid(i + 1) + ".temp";
-			nums[i] = async(&FilterSeqsCommand::driverRunFilter, this, F, filteredFasta, filename, lines[i + 1]);
+			thrds[i] = thread([&](int* num) {
+				driverRunFilter(F, filteredFasta, filename, lines[i + 1]);
+			}, &nums[i]);
 		}
 
 		string filteredFasta = filename + m->mothurGetpid(0) + ".temp";
@@ -458,8 +460,9 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		// Task for main thread
 		int num = driverRunFilter(F, filteredFasta, filename, lines[0]);
 
-		for (auto &e : nums) {
-			num += e.get();
+		for (int i = 0; i < processors - 1; i++) {
+			thrds[i].join();
+			num += nums[i];
 		}
 					
 		for (int i = 0; i < processors; i++) {
@@ -521,7 +524,6 @@ string FilterSeqsCommand::createFilter() {
 			}
 		}
 
-		F.setNumSeqs(numSeqs);
 		if(m->isTrue(vertical) == 1)	{	F.doVertical();	}
 		if(soft != 0)				{	F.doSoft();		}
 		filterString = F.getFilter();
@@ -577,6 +579,7 @@ int FilterSeqsCommand::driverCreateFilter(Filters& F, string filename, linePair*
         if (error) { m->control_pressed = true; }
         
 		return count;
+		F.setNumSeqs(count);
 	}
 	catch(exception& e) {
 		m->errorOut(e, "FilterSeqsCommand", "driverCreateFilter");
@@ -589,8 +592,8 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 	try {
 		int num = 0;
 
-		vector<future<int>> nums(processors - 1);
 		vector<Filters> pDataArray(processors - 1);
+		vector<thread> thrds(processors - 1);
 
 		//loop through and create all the processes you want
 		for (int i = 0; i < processors - 1; i++) {
@@ -606,14 +609,16 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 			if (hard.compare("") != 0) { pDataArray[i].doHard(hard); }
 			else { pDataArray[i].setFilter(string(alignmentLength, '1')); }
 
-			nums[i] = async(&FilterSeqsCommand::driverCreateFilter, this, ref(pDataArray[i]), filename, lines[i + 1]);
+			thrds[i] = thread(&FilterSeqsCommand::driverCreateFilter, this, ref(pDataArray[i]), filename, lines[i + 1]);
 		}
 
 		// Process for main worker task
 		num = driverCreateFilter(F, filename, lines[0]);
 
 		for (int i = 0; i < pDataArray.size(); i++) {
-			num += nums[i].get();
+			thrds[i].join();
+			num += pDataArray[i].getNumSeqs();
+			F.setNumSeqs(F.getNumSeqs() + pDataArray[i].getNumSeqs());
 			F.mergeFilter(pDataArray[i].getFilter());
 
 			for (int k = 0; k < alignmentLength; k++) { F.a[k] += pDataArray[i].a[k]; }

@@ -19,7 +19,9 @@
 class Filters {
 
 public:
-	Filters() { m = MothurOut::getInstance(); };
+	Filters():
+		numSeqs(0)
+	{m = MothurOut::getInstance(); };
 	~Filters(){};
 		
 	string getFilter()			{	return filter;		}
@@ -28,6 +30,7 @@ public:
 	void setSoft(float s)		{		soft = s;		}
 	void setTrump(float t)		{		trump = t;		}
 	void setNumSeqs(int num)	{	numSeqs = num;		}
+	int  getNumSeqs()			{ return numSeqs;		}
 	vector<int> a, t, g, c, gap;
 	
 	
