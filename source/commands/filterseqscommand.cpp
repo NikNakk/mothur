@@ -457,17 +457,15 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 			thrds[i] = thread(&FilterSeqsCommand::driverRunFilterWithCount, this, F, filteredFasta, filename, lines[i + 1], &nums[i]);
 		}
 
-		string filteredFasta = filename +  "0.temp";
-
 		// Task for main thread
-		int num = driverRunFilter(F, filteredFasta, filename, lines[0]);
+		int num = driverRunFilter(F, filteredFastaName, filename, lines[0]);
 
 		for (int i = 0; i < processors - 1; i++) {
 			thrds[i].join();
 			num += nums[i];
 		}
 					
-		for (int i = 0; i < processors; i++) {
+		for (int i = 1; i < processors; i++) {
             m->appendFiles(filename + toString(i) + ".temp", filteredFastaName);
             m->mothurRemove(filename + toString(i) + ".temp");
 		}
