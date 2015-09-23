@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.8)
 project (mothur)
- 
+
 # The version number.
 set (MOTHUR_VERSION 1.36.0)
 set (MOTHUR_RELEASE_DATE 7/23/2015)
@@ -13,6 +13,21 @@ option(USE_COMPRESSION
   "Use compression (may only work on *nix systems)" OFF)
 set(MOTHUR_FILES ""
   CACHE FILEPATH "Default path for mothur files")
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+   execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+   if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+        message(STATUS "C++11 activated.")
+        add_definitions("-std=gnu++11")
+   elseif(GCC_VERSION VERSION_GREATER 4.3 OR GCC_VERSION VERSION_EQUAL 4.3)
+        message(WARNING "C++0x activated. If you get any errors update to a compiler which fully supports C++11")
+        add_definitions("-std=gnu++0x")
+   else ()
+        message(FATAL_ERROR "C++11 needed. Therefore a gcc compiler with a version higher than 4.3 is needed.")   
+   endif()
+else(CMAKE_COMPILER_IS_GNUCXX)
+   add_definitions("-std=c++0x") 
+endif(CMAKE_COMPILER_IS_GNUCXX)
   
 enable_testing()
 
@@ -398,6 +413,8 @@ include_directories(
   source/read
   source/svm
 )
+
+set_property(TARGET mothur PROPERTY CXX_STANDARD 11)
 
 if (USE_READLINE)
   if (WIN32)
