@@ -16,6 +16,7 @@
 
 #include "aligncommand.h"
 #include "referencedb.h"
+#include <thread>
 
 //**********************************************************************************************************************
 vector<string> AlignCommand::setParameters(){	
@@ -336,25 +337,8 @@ int AlignCommand::execute(){
 		
 
 			vector<unsigned long long> positions; 
-		#if defined (UNIX)
 			positions = m->divideFile(candidateFileNames[s], processors);
 			for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
-		#else
-			if (processors == 1) {
-				lines.push_back(new linePair(0, 1000));
-			}else {
-				positions = m->setFilePosFasta(candidateFileNames[s], numFastaSeqs); 
-				if (positions.size() < processors) { processors = positions.size(); }
-                
-				//figure out how many sequences you have to process
-				int numSeqsPerProcessor = numFastaSeqs / processors;
-				for (int i = 0; i < processors; i++) {
-					int startIndex =  i * numSeqsPerProcessor;
-					if(i == (processors - 1)){	numSeqsPerProcessor = numFastaSeqs - i * numSeqsPerProcessor; 	}
-					lines.push_back(new linePair(positions[startIndex], numSeqsPerProcessor));
-				}
-			}
-		#endif
 			
 			if(processors == 1){
 				numFastaSeqs = driver(lines[0], alignFileName, reportFileName, accnosFileName, candidateFileNames[s]);
@@ -530,12 +514,8 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 			}
 			delete candidateSeq;
 			
-			#if defined (UNIX)
-				unsigned long long pos = inFASTA.tellg();
-				if ((pos == -1) || (pos >= filePos->end)) { break; }
-			#else
-				if (inFASTA.eof()) { break; }
-			#endif
+			unsigned long long pos = inFASTA.tellg();
+			if ((pos == -1) || (pos >= filePos->end)) { break; }
 			
 			//report progress
 			if((count) % 100 == 0){	m->mothurOutJustToScreen(toString(count) + "\n"); 		}
@@ -558,113 +538,45 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 }
 /**************************************************************************************************/
 
+void AlignCommand::driverWithCount(linePair* filePos, string alignFName, string reportFName, string accnosFName, string filename, int* count) {
+	*count = driver(filePos, alignFName, reportFName, accnosFName, filename);
+}
+
 int AlignCommand::createProcesses(string alignFileName, string reportFileName, string accnosFName, string filename) {
 	try {
 		int num = 0;
-		processIDS.resize(0);
-        bool recalc = false;
-        
-#if defined (UNIX)
-		int process = 1;
-		
+		vector<thread> thrds(processors - 1);
+		vector<int> nums(processors - 1);
+        		
 		//loop through and create all the processes you want
-		while (process != processors) {
-			pid_t pid = fork();
-			
-			if (pid > 0) {
-				processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-				process++;
-			}else if (pid == 0){
-				num = driver(lines[process], alignFileName + toString(m->mothurGetpid(process)) + ".temp", reportFileName + toString(m->mothurGetpid(process)) + ".temp", accnosFName + m->mothurGetpid(process) + ".temp", filename);
-				
-				//pass numSeqs to parent
-				ofstream out;
-				string tempFile = alignFileName + toString(m->mothurGetpid(process)) + ".num.temp";
-				m->openOutputFile(tempFile, out);
-				out << num << endl;
-				out.close();
-				
-				exit(0);
-			}else { 
-				m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(process) + "\n"); processors = process;
-                for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                //wait to die
-                for (int i=0;i<processIDS.size();i++) {
-                    int temp = processIDS[i];
-                    wait(&temp);
-                }
-                m->control_pressed = false;
-                recalc = true;
-				break;
-			}
+		for (int i = 0; i < processors - 1; i++) {
+			thrds[i] = thread(&AlignCommand::driverWithCount, this, lines[i + 1], alignFileName + toString(m->mothurGetpid(i)) + ".temp", reportFileName + toString(m->mothurGetpid(i)) + ".temp", accnosFName + m->mothurGetpid(i) + ".temp", filename, &nums[i]);
 		}
-		
-        if (recalc) {
-            //test line, also set recalc to true.
-            //for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); } for (int i=0;i<processIDS.size();i++) { int temp = processIDS[i]; wait(&temp); } m->control_pressed = false;  processors=3; m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(processors) + "\n");
-            for (int i = 0; i < lines.size(); i++) {  delete lines[i];  }  lines.clear();
-            vector<unsigned long long> positions;
-			positions = m->divideFile(filename, processors);
-			for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
-            
-            num = 0;
-            processIDS.resize(0);
-            process = 1;
-            
-            while (process != processors) {
-                pid_t pid = fork();
-                
-                if (pid > 0) {
-                    processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-                    process++;
-                }else if (pid == 0){
-                    num = driver(lines[process], alignFileName + toString(m->mothurGetpid(process)) + ".temp", reportFileName + toString(m->mothurGetpid(process)) + ".temp", accnosFName + m->mothurGetpid(process) + ".temp", filename);
-                    
-                    //pass numSeqs to parent
-                    ofstream out;
-                    string tempFile = alignFileName + toString(m->mothurGetpid(process)) + ".num.temp";
-                    m->openOutputFile(tempFile, out);
-                    out << num << endl;
-                    out.close();
-                    
-                    exit(0);
-                }else {
-                    m->mothurOut("[ERROR]: unable to spawn the necessary processes."); m->mothurOutEndLine();
-                    for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                    exit(0);
-                }
-            }
-        }
-        
+				
 		//do my part
-		num = driver(lines[0], alignFileName, reportFileName, accnosFName, filename);
+		num = driver(lines[0], alignFileName, reportFileName, accnosFName, filename);		        
 		
 		//force parent to wait until all the processes are done
-		for (int i=0;i<processIDS.size();i++) { 
-			int temp = processIDS[i];
-			wait(&temp);
+		for (int i=0; i<processors - 1; i++) { 
+			thrds[i].join();
 		}
 		
 		vector<string> nonBlankAccnosFiles;
 		if (!(m->isBlank(accnosFName))) { nonBlankAccnosFiles.push_back(accnosFName); }
 		else { m->mothurRemove(accnosFName); } //remove so other files can be renamed to it
 			
-		for (int i = 0; i < processIDS.size(); i++) {
-			ifstream in;
-			string tempFile =  alignFileName + toString(processIDS[i]) + ".num.temp";
-			m->openInputFile(tempFile, in);
-			if (!in.eof()) { int tempNum = 0; in >> tempNum; num += tempNum; }
-			in.close(); m->mothurRemove(tempFile);
+		for (int i = 0; i < processors - 1; i++) {
+			num += nums[i];
 			
-			m->appendFiles((alignFileName + toString(processIDS[i]) + ".temp"), alignFileName);
-			m->mothurRemove((alignFileName + toString(processIDS[i]) + ".temp"));
+			m->appendFiles(alignFileName + toString(m->mothurGetpid(i)) + ".temp", alignFileName);
+			m->mothurRemove(alignFileName + toString(m->mothurGetpid(i)) + ".temp");
 			
-			appendReportFiles((reportFileName + toString(processIDS[i]) + ".temp"), reportFileName);
-			m->mothurRemove((reportFileName + toString(processIDS[i]) + ".temp"));
+			appendReportFiles(reportFileName + toString(m->mothurGetpid(i)) + ".temp", reportFileName);
+			m->mothurRemove(reportFileName + toString(m->mothurGetpid(i)) + ".temp");
 			
-			if (!(m->isBlank(accnosFName + toString(processIDS[i]) + ".temp"))) {
-				nonBlankAccnosFiles.push_back(accnosFName + toString(processIDS[i]) + ".temp");
-			}else { m->mothurRemove((accnosFName + toString(processIDS[i]) + ".temp"));  }
+			if (!(m->isBlank(accnosFName + toString(m->mothurGetpid(i)) + ".temp"))) {
+				nonBlankAccnosFiles.push_back(accnosFName + toString(m->mothurGetpid(i)) + ".temp");
+			}else { m->mothurRemove(accnosFName + toString(m->mothurGetpid(i)) + ".temp");  }
 			
 		}
 		
@@ -681,91 +593,6 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 			m->openOutputFile(accnosFName, out);
 			out.close();
 		}
-#else
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Windows version shared memory, so be careful when passing variables through the alignData struct. 
-		//Above fork() will clone, so memory is separate, but that's not the case with windows, 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		vector<alignData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1); 
-		
-		//Create processor worker threads.
-		for( int i=0; i<processors-1; i++ ){
-			//copy templateDb
-			//AlignmentDB* tempDB = new AlignmentDB(*templateDB);
-			
-			// Allocate memory for thread data.
-			string extension = "";
-			if (i != 0) { extension = toString(i) + ".temp"; }
-			
-			alignData* tempalign = new alignData(templateFileName, (alignFileName + extension), (reportFileName + extension), (accnosFName + extension), filename, align, search, kmerSize, m, lines[i]->start, lines[i]->end, flip, match, misMatch, gapOpen, gapExtend, threshold, i);
-			pDataArray.push_back(tempalign);
-			processIDS.push_back(i);
-				
-			//MySeqSumThreadFunction is in header. It must be global or static to work with the threads.
-			//default security attributes, thread function name, argument to thread function, use default creation flags, returns the thread identifier
-			hThreadArray[i] = CreateThread(NULL, 0, MyAlignThreadFunction, pDataArray[i], 0, &dwThreadIdArray[i]);   
-		}
-		
-		//need to check for line ending error
-		ifstream inFASTA;
-		m->openInputFile(filename, inFASTA);
-		inFASTA.seekg(lines[processors-1]->start-1);
-		char c = inFASTA.peek();
-		
-		if (c != '>') { //we need to move back
-			lines[processors-1]->start--; 
-		}
-		
-		//using the main process as a worker saves time and memory
-		//do my part - do last piece because windows is looking for eof
-		num = driver(lines[processors-1], (alignFileName + toString(processors-1) + ".temp"), (reportFileName + toString(processors-1) + ".temp"), (accnosFName + toString(processors-1) + ".temp"), filename);
-		
-		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
-		
-		//Close all thread handles and free memory allocations.
-		for(int i=0; i < pDataArray.size(); i++){
-            if (pDataArray[i]->count != pDataArray[i]->end) {
-                m->mothurOut("[ERROR]: process " + toString(i) + " only processed " + toString(pDataArray[i]->count) + " of " + toString(pDataArray[i]->end) + " sequences assigned to it, quitting. \n"); m->control_pressed = true; 
-            }
-			num += pDataArray[i]->count;
-			CloseHandle(hThreadArray[i]);
-			delete pDataArray[i];
-		}
-		
-		vector<string> nonBlankAccnosFiles;
-		if (!(m->isBlank(accnosFName))) { nonBlankAccnosFiles.push_back(accnosFName); }
-		else { m->mothurRemove(accnosFName); } //remove so other files can be renamed to it
-		
-		for (int i = 1; i < processors; i++) {
-			m->appendFiles((alignFileName + toString(i) + ".temp"), alignFileName);
-			m->mothurRemove((alignFileName + toString(i) + ".temp"));
-			
-			appendReportFiles((reportFileName + toString(i) + ".temp"), reportFileName);
-			m->mothurRemove((reportFileName + toString(i) + ".temp"));
-			
-			if (!(m->isBlank(accnosFName + toString(i) + ".temp"))) {
-				nonBlankAccnosFiles.push_back(accnosFName + toString(i) + ".temp");
-			}else { m->mothurRemove((accnosFName + toString(i) + ".temp"));  }
-		}
-		
-		//append accnos files
-		if (nonBlankAccnosFiles.size() != 0) { 
-			rename(nonBlankAccnosFiles[0].c_str(), accnosFName.c_str());
-			
-			for (int h=1; h < nonBlankAccnosFiles.size(); h++) {
-				m->appendFiles(nonBlankAccnosFiles[h], accnosFName);
-				m->mothurRemove(nonBlankAccnosFiles[h]);
-			}
-		}else { //recreate the accnosfile if needed
-			ofstream out;
-			m->openOutputFile(accnosFName, out);
-			out.close();
-		}	
-#endif	
 		
 		return num;
 	}
