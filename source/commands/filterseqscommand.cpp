@@ -453,11 +453,11 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 
 		//loop through and create all the processes you want
 		for (int i = 0; i < processors - 1; i++) {
-			string filteredFasta = filename + m->mothurGetpid(i + 1) + ".temp";
+			string filteredFasta = filename + toString(i + 1) + ".temp";
 			thrds[i] = thread(&FilterSeqsCommand::driverRunFilterWithCount, this, F, filteredFasta, filename, lines[i + 1], &nums[i]);
 		}
 
-		string filteredFasta = filename + m->mothurGetpid(0) + ".temp";
+		string filteredFasta = filename +  "0.temp";
 
 		// Task for main thread
 		int num = driverRunFilter(F, filteredFasta, filename, lines[0]);
@@ -468,8 +468,8 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		}
 					
 		for (int i = 0; i < processors; i++) {
-            m->appendFiles(filename + m->mothurGetpid(i) + ".temp", filteredFastaName);
-            m->mothurRemove(filename + m->mothurGetpid(i) + ".temp");
+            m->appendFiles(filename + toString(i) + ".temp", filteredFastaName);
+            m->mothurRemove(filename + toString(i) + ".temp");
 		}
                
         return num;

@@ -550,7 +550,7 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
         		
 		//loop through and create all the processes you want
 		for (int i = 0; i < processors - 1; i++) {
-			thrds[i] = thread(&AlignCommand::driverWithCount, this, lines[i + 1], alignFileName + toString(m->mothurGetpid(i)) + ".temp", reportFileName + toString(m->mothurGetpid(i)) + ".temp", accnosFName + m->mothurGetpid(i) + ".temp", filename, &nums[i]);
+			thrds[i] = thread(&AlignCommand::driverWithCount, this, lines[i + 1], alignFileName + toString(i) + ".temp", reportFileName + toString(i) + ".temp", accnosFName + toString(i) + ".temp", filename, &nums[i]);
 		}
 				
 		//do my part
@@ -568,15 +568,15 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		for (int i = 0; i < processors - 1; i++) {
 			num += nums[i];
 			
-			m->appendFiles(alignFileName + toString(m->mothurGetpid(i)) + ".temp", alignFileName);
-			m->mothurRemove(alignFileName + toString(m->mothurGetpid(i)) + ".temp");
+			m->appendFiles(alignFileName + toString(i) + ".temp", alignFileName);
+			m->mothurRemove(alignFileName + toString(i) + ".temp");
 			
-			appendReportFiles(reportFileName + toString(m->mothurGetpid(i)) + ".temp", reportFileName);
-			m->mothurRemove(reportFileName + toString(m->mothurGetpid(i)) + ".temp");
+			appendReportFiles(reportFileName + toString(i) + ".temp", reportFileName);
+			m->mothurRemove(reportFileName + toString(i) + ".temp");
 			
-			if (!(m->isBlank(accnosFName + toString(m->mothurGetpid(i)) + ".temp"))) {
-				nonBlankAccnosFiles.push_back(accnosFName + toString(m->mothurGetpid(i)) + ".temp");
-			}else { m->mothurRemove(accnosFName + toString(m->mothurGetpid(i)) + ".temp");  }
+			if (!(m->isBlank(accnosFName + toString(i) + ".temp"))) {
+				nonBlankAccnosFiles.push_back(accnosFName + toString(i) + ".temp");
+			}else { m->mothurRemove(accnosFName + toString(i) + ".temp");  }
 			
 		}
 		
