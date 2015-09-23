@@ -414,8 +414,6 @@ include_directories(
   source/svm
 )
 
-set_property(TARGET mothur PROPERTY CXX_STANDARD 11)
-
 if (USE_READLINE)
   if (WIN32)
     message(STATUS "Using wineditline on Win32")

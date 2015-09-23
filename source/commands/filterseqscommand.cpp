@@ -442,6 +442,10 @@ int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string i
 }
 /**************************************************************************************************/
 
+void FilterSeqsCommand::driverRunFilterWithCount(string F, string outputFilename, string inputFilename, linePair* filePos, int* count) {
+	*count = driverRunFilter(F, outputFilename, inputFilename, filePos);
+}
+
 int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, string filteredFastaName) {
 	try {
 		vector<thread> thrds(processors - 1);
@@ -450,9 +454,7 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		//loop through and create all the processes you want
 		for (int i = 0; i < processors - 1; i++) {
 			string filteredFasta = filename + m->mothurGetpid(i + 1) + ".temp";
-			thrds[i] = thread([&](int* num) {
-				driverRunFilter(F, filteredFasta, filename, lines[i + 1]);
-			}, &nums[i]);
+			thrds[i] = thread(&FilterSeqsCommand::driverRunFilterWithCount, this, F, filteredFasta, filename, lines[i + 1], &nums[i]);
 		}
 
 		string filteredFasta = filename + m->mothurGetpid(0) + ".temp";
@@ -578,8 +580,8 @@ int FilterSeqsCommand::driverCreateFilter(Filters& F, string filename, linePair*
 		
         if (error) { m->control_pressed = true; }
         
-		return count;
 		F.setNumSeqs(count);
+		return count;
 	}
 	catch(exception& e) {
 		m->errorOut(e, "FilterSeqsCommand", "driverCreateFilter");
