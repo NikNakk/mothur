@@ -13,6 +13,7 @@
 #include "sequence.hpp"
 #include "referencedb.h"
 #include "systemcommand.h"
+#include <thread>
 
 //**********************************************************************************************************************
 vector<string> ChimeraUchimeCommand::setParameters(){	
@@ -1180,7 +1181,11 @@ string ChimeraUchimeCommand::getNamesFile(string& inputFile){
 	}
 }
 //**********************************************************************************************************************
-int ChimeraUchimeCommand::driverGroups(string outputFName, string filename, string accnos, string alns, string countlist, int start, int end, vector<string> groups){
+void ChimeraUchimeCommand::driverGroupsWithCount(string outputFName, string filename, string accnos, string alns, string countlist, unsigned long long start, unsigned long long end, vector<string> groups, int& numSeqs) {
+	numSeqs = driverGroups(outputFName, filename, accnos, alns, countlist, start, end, groups);
+}
+
+int ChimeraUchimeCommand::driverGroups(string outputFName, string filename, string accnos, string alns, string countlist, unsigned long long start, unsigned long long end, vector<string> groups){
 	try {
 		
 		int totalSeqs = 0;
@@ -1260,6 +1265,10 @@ int ChimeraUchimeCommand::driverGroups(string outputFName, string filename, stri
 	}
 }	
 //**********************************************************************************************************************
+
+void ChimeraUchimeCommand::driverWithCount(string outputFName, string filename, string accnos, string alns, int& numChimeras, int& numSeqs) {
+	numSeqs = driver(outputFName, filename, accnos, alns, numChimeras);
+}
 
 int ChimeraUchimeCommand::driver(string outputFName, string filename, string accnos, string alns, int& numChimeras){
 	try {
@@ -1620,151 +1629,35 @@ int ChimeraUchimeCommand::prepFile(string filename, string output) {
 int ChimeraUchimeCommand::createProcesses(string outputFileName, string filename, string accnos, string alns, int& numChimeras) {
 	try {
 		
-		processIDS.clear();
-		int process = 1;
 		int num = 0;
 		vector<string> files;
 		
-#if defined (UNIX)		
 		//break up file into multiple files
 		m->divideFile(filename, processors, files);
 		
 		if (m->control_pressed) {  return 0;  }
+
+		vector<thread> thrds(files.size() - 1);
+		vector<int> tNumSeqs(files.size() - 1);
+		vector<int> tNumChimeras(files.size() - 1);
 				
 		//loop through and create all the processes you want
-		while (process != processors) {
-			pid_t pid = fork();
-			
-			if (pid > 0) {
-				processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-				process++;
-			}else if (pid == 0){
-				num = driver(outputFileName + toString(m->mothurGetpid(process)) + ".temp", files[process], accnos + toString(m->mothurGetpid(process)) + ".temp", alns + toString(m->mothurGetpid(process)) + ".temp", numChimeras);
-				
-				//pass numSeqs to parent
-				ofstream out;
-				string tempFile = outputFileName + toString(m->mothurGetpid(process)) + ".num.temp";
-				m->openOutputFile(tempFile, out);
-				out << num << endl;
-				out << numChimeras << endl;
-				out.close();
-				
-				exit(0);
-            }else {
-                m->mothurOut("[ERROR]: unable to spawn the necessary processes."); m->mothurOutEndLine();
-                for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                exit(0);
-            }
+		for (int i = 1; i < files.size(); i++) {
+			thrds[i - 1] = thread(&ChimeraUchimeCommand::driverWithCount, this, outputFileName + toString(i) + ".temp", files[i], accnos + toString(i) + ".temp", alns + toString(i) + ".temp", ref(tNumChimeras[i - 1]), ref(tNumSeqs[i - 1]));
 		}
-		
+
 		//do my part
 		num = driver(outputFileName, files[0], accnos, alns, numChimeras);
-		
+
 		//force parent to wait until all the processes are done
-		for (int i=0;i<processIDS.size();i++) { 
-			int temp = processIDS[i];
-			wait(&temp);
+		for (int i = 0; i<thrds.size(); i++) {
+			thrds[i].join();
+			num += tNumSeqs[i];
+			numChimeras += tNumChimeras[i];
 		}
-		
-		for (int i = 0; i < processIDS.size(); i++) {
-			ifstream in;
-			string tempFile =  outputFileName + toString(processIDS[i]) + ".num.temp";
-			m->openInputFile(tempFile, in);
-			if (!in.eof()) { 
-				int tempNum = 0; 
-				in >> tempNum; m->gobble(in);
-				num += tempNum; 
-				in >> tempNum;
-				numChimeras += tempNum;
-			}
-			in.close(); m->mothurRemove(tempFile);
-		}
-#else
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Windows version shared memory, so be careful when passing variables through the preClusterData struct. 
-		//Above fork() will clone, so memory is separate, but that's not the case with windows, 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		//divide file
-		int count = 0;
-		int spot = 0;
-		map<int, ofstream*> filehandles;
-		map<int, ofstream*>::iterator it3;
-		
-		ofstream* temp;
-		for (int i = 0; i < processors; i++) {
-			temp = new ofstream;
-			filehandles[i] = temp;
-			m->openOutputFile(filename+toString(i)+".temp", *(temp));
-			files.push_back(filename+toString(i)+".temp");
-		}
-		
-		ifstream in;
-		m->openInputFile(filename, in);
-		
-		while(!in.eof()) {
-			
-			if (m->control_pressed) { in.close(); for (it3 = filehandles.begin(); it3 != filehandles.end(); it3++) { (*(it3->second)).close(); delete it3->second; } return 0; }
-			
-			Sequence tempSeq(in); m->gobble(in); 
-			
-			if (tempSeq.getName() != "") {
-				tempSeq.printSequence(*(filehandles[spot])); 
-				spot++; count++;
-				if (spot == processors) { spot = 0; }
-			}
-		}
-		in.close();
-		
-		//delete memory
-		for (it3 = filehandles.begin(); it3 != filehandles.end(); it3++) {
-			(*(it3->second)).close();
-			delete it3->second;
-		}
-		
-		//sanity check for number of processors
-		if (count < processors) { processors = count; }
-		
-		vector<uchimeData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1); 
-		vector<string> dummy; //used so that we can use the same struct for MyUchimeSeqsThreadFunction and MyUchimeThreadFunction
-		
-		//Create processor worker threads.
-		for( int i=1; i<processors; i++ ){
-			// Allocate memory for thread data.
-			string extension = toString(i) + ".temp";
-			
-			uchimeData* tempUchime = new uchimeData(outputFileName+extension, uchimeLocation, templatefile, files[i], "", "", "", accnos+extension, alns+extension, "", dummy, m, 0, 0,  i);
-			tempUchime->setBooleans(dups, useAbskew, chimealns, useMinH, useMindiv, useXn, useDn, useXa, useChunks, useMinchunk, useIdsmoothwindow, useMinsmoothid, useMaxp, skipgaps, skipgaps2, useMinlen, useMaxlen, ucl, useQueryfract, hasCount);
-			tempUchime->setVariables(abskew, minh, mindiv, xn, dn, xa, chunks, minchunk, idsmoothwindow, minsmoothid, maxp, minlen, maxlen, queryfract, strand);
-			
-			pDataArray.push_back(tempUchime);
-			processIDS.push_back(i);
-			
-			//MySeqSumThreadFunction is in header. It must be global or static to work with the threads.
-			//default security attributes, thread function name, argument to thread function, use default creation flags, returns the thread identifier
-			hThreadArray[i-1] = CreateThread(NULL, 0, MyUchimeSeqsThreadFunction, pDataArray[i-1], 0, &dwThreadIdArray[i-1]);   
-		}
-		
-		
-		//using the main process as a worker saves time and memory
-		num = driver(outputFileName, files[0], accnos, alns, numChimeras);
-		
-		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
-		
-		//Close all thread handles and free memory allocations.
-		for(int i=0; i < pDataArray.size(); i++){
-			num += pDataArray[i]->count;
-			numChimeras += pDataArray[i]->numChimeras;
-			CloseHandle(hThreadArray[i]);
-			delete pDataArray[i];
-		}
-#endif		
-		
+						
 		//append output files
-		for(int i=0;i<processIDS.size();i++){
+		for(int i=0;i<thrds.size();i++){
 			m->appendFiles((outputFileName + toString(processIDS[i]) + ".temp"), outputFileName);
 			m->mothurRemove((outputFileName + toString(processIDS[i]) + ".temp"));
 			
@@ -1791,8 +1684,6 @@ int ChimeraUchimeCommand::createProcesses(string outputFileName, string filename
 int ChimeraUchimeCommand::createProcessesGroups(string outputFName, string filename, string accnos, string alns, string newCountFile, vector<string> groups, string nameFile, string groupFile, string fastaFile) {
 	try {
 		
-		processIDS.clear();
-		int process = 1;
 		int num = 0;
         
         CountTable newCount;
@@ -1813,129 +1704,42 @@ int ChimeraUchimeCommand::createProcessesGroups(string outputFName, string filen
             remainingPairs = remainingPairs - numPairs;
         }
 
-#if defined (UNIX)		
-				
-		//loop through and create all the processes you want
-		while (process != processors) {
-			pid_t pid = fork();
-			
-			if (pid > 0) {
-				processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-				process++;
-			}else if (pid == 0){
-				num = driverGroups(outputFName + toString(m->mothurGetpid(process)) + ".temp", filename + toString(m->mothurGetpid(process)) + ".temp", accnos + toString(m->mothurGetpid(process)) + ".temp", alns + toString(m->mothurGetpid(process)) + ".temp", accnos + ".byCount." + toString(m->mothurGetpid(process)) + ".temp", lines[process].start, lines[process].end, groups);
-				
-				//pass numSeqs to parent
-				ofstream out;
-				string tempFile = outputFName + toString(m->mothurGetpid(process)) + ".num.temp";
-				m->openOutputFile(tempFile, out);
-				out << num << endl;
-				out.close();
-				
-				exit(0);
-            }else {
-                m->mothurOut("[ERROR]: unable to spawn the necessary processes."); m->mothurOutEndLine();
-                for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                exit(0);
-            }
+		vector<thread> thrds(lines.size() - 1);
+		vector<int> nums(lines.size() - 1);
 
+		//loop through and create all the processes you want
+		for (int i = 1; i < lines.size(); i++) {
+			thrds[i - 1] = thread(&ChimeraUchimeCommand::driverGroupsWithCount, this, outputFName + toString(i) + ".temp", filename + toString(i) + ".temp", accnos + toString(i) + ".temp", alns + toString(i) + ".temp", accnos + ".byCount." + toString(i) + ".temp", lines[i].start, lines[i].end, groups, ref(nums[i - 1]));
 		}
-		m->mothurOut(toString( getpid() ) + " here\n");
-            
+
 		//do my part
-		num = driverGroups(outputFName, filename, accnos, alns, accnos + ".byCount", lines[0].start, lines[0].end, groups);
-		
+		num = driverGroups(outputFName, filename, accnos, alns, accnos + ".byCount.0.temp", lines[0].start, lines[0].end, groups);
+
 		//force parent to wait until all the processes are done
-		for (int i=0;i<processIDS.size();i++) { 
-			int temp = processIDS[i];
-			wait(&temp);
+		for (int i = 0; i<thrds.size(); i++) { 
+			thrds[i].join();
+			num += nums[i];
 		}
-        
-		for (int i = 0; i < processIDS.size(); i++) {
-			ifstream in;
-			string tempFile =  outputFName + toString(processIDS[i]) + ".num.temp";
-			m->openInputFile(tempFile, in);
-			if (!in.eof()) { int tempNum = 0; in >> tempNum; num += tempNum; }
-			in.close(); m->mothurRemove(tempFile);
-        }
-        
-#else
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Windows version shared memory, so be careful when passing variables through the uchimeData struct. 
-		//Above fork() will clone, so memory is separate, but that's not the case with windows, 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		vector<uchimeData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1); 
-		
-		//Create processor worker threads.
-		for( int i=1; i<processors; i++ ){
-			// Allocate memory for thread data.
-			string extension = toString(i) + ".temp";
-			
-			uchimeData* tempUchime = new uchimeData(outputFName+extension, uchimeLocation, templatefile, filename+extension, fastaFile, nameFile, groupFile, accnos+extension, alns+extension, accnos+".byCount."+extension, groups, m, lines[i].start, lines[i].end,  i);
-			tempUchime->setBooleans(dups, useAbskew, chimealns, useMinH, useMindiv, useXn, useDn, useXa, useChunks, useMinchunk, useIdsmoothwindow, useMinsmoothid, useMaxp, skipgaps, skipgaps2, useMinlen, useMaxlen, ucl, useQueryfract, hasCount);
-			tempUchime->setVariables(abskew, minh, mindiv, xn, dn, xa, chunks, minchunk, idsmoothwindow, minsmoothid, maxp, minlen, maxlen, queryfract, strand);
-			
-			pDataArray.push_back(tempUchime);
-			processIDS.push_back(i);
-			
-			//MyUchimeThreadFunction is in header. It must be global or static to work with the threads.
-			//default security attributes, thread function name, argument to thread function, use default creation flags, returns the thread identifier
-			hThreadArray[i-1] = CreateThread(NULL, 0, MyUchimeThreadFunction, pDataArray[i-1], 0, &dwThreadIdArray[i-1]);   
-		}
-		
-		
-		//using the main process as a worker saves time and memory
-		num = driverGroups(outputFName, filename, accnos, alns, accnos + ".byCount", lines[0].start, lines[0].end, groups);
-		
-		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
-		
-		//Close all thread handles and free memory allocations.
-		for(int i=0; i < pDataArray.size(); i++){
-			num += pDataArray[i]->count;
-			CloseHandle(hThreadArray[i]);
-			delete pDataArray[i];
-		}
-        
-        
-#endif		
-      
-        //read my own
-        if (hasCount && dups) {
-            if (!m->isBlank(accnos + ".byCount")) {
-                ifstream in2;
-                m->openInputFile(accnos + ".byCount", in2);
-                
-                string name, group;
-                while (!in2.eof()) {
-                    in2 >> name >> group; m->gobble(in2);
-                    newCount.setAbund(name, group, 0);
-                }
-                in2.close();
-            }
-            m->mothurRemove(accnos + ".byCount");
-        }
-       
+                     
 		//append output files
-		for(int i=0;i<processIDS.size();i++){
-			m->appendFiles((outputFName + toString(processIDS[i]) + ".temp"), outputFName);
-			m->mothurRemove((outputFName + toString(processIDS[i]) + ".temp"));
-			
-			m->appendFiles((accnos + toString(processIDS[i]) + ".temp"), accnos);
-			m->mothurRemove((accnos + toString(processIDS[i]) + ".temp"));
-			
-			if (chimealns) {
-				m->appendFiles((alns + toString(processIDS[i]) + ".temp"), alns);
-				m->mothurRemove((alns + toString(processIDS[i]) + ".temp"));
+		for(int i=0; i<lines.size(); i++){
+			if (i > 0) {
+				m->appendFiles((outputFName + toString(i) + ".temp"), outputFName);
+				m->mothurRemove((outputFName + toString(i) + ".temp"));
+
+				m->appendFiles((accnos + toString(i) + ".temp"), accnos);
+				m->mothurRemove((accnos + toString(i) + ".temp"));
+
+				if (chimealns) {
+					m->appendFiles((alns + toString(i) + ".temp"), alns);
+					m->mothurRemove((alns + toString(i) + ".temp"));
+				}
 			}
-            
+
             if (hasCount && dups) {
-                if (!m->isBlank(accnos + ".byCount." + toString(processIDS[i]) + ".temp")) {
+                if (!m->isBlank(accnos + ".byCount." + toString(i) + ".temp")) {
                     ifstream in2;
-                    m->openInputFile(accnos + ".byCount." + toString(processIDS[i]) + ".temp", in2);
+                    m->openInputFile(accnos + ".byCount." + toString(i) + ".temp", in2);
                     
                     string name, group;
                     while (!in2.eof()) {
@@ -1944,9 +1748,8 @@ int ChimeraUchimeCommand::createProcessesGroups(string outputFName, string filen
                     }
                     in2.close();
                 }
-                m->mothurRemove(accnos + ".byCount." + toString(processIDS[i]) + ".temp");
+                m->mothurRemove(accnos + ".byCount." + toString(i) + ".temp");
             }
-
 		}
         
         //print new *.pick.count_table
