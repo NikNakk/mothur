@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8.8)
 project (mothur)
 
 # The version number.
-set (MOTHUR_VERSION 1.36.0)
+set (MOTHUR_VERSION 1.37.0)
 set (MOTHUR_RELEASE_DATE 7/23/2015)
 
 option(USE_READLINE 
@@ -414,6 +414,9 @@ include_directories(
   source/read
   source/svm
 )
+
+find_package(Threads REQUIRED)
+target_link_libraries(mothur ${CMAKE_THREAD_LIBS_INIT})
 
 if (USE_READLINE)
   if (WIN32)
