@@ -399,30 +399,31 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap& groupMap, string 
         vector<unsigned long long> positions;
         vector<linePair> lines;
         unsigned long long numSeqs = 0;
-		vector<thread> thrds(processors - 1);
-		vector<unsigned long long> tNumSeqs(processors - 1);
 
 		positions = m->divideFilePerLine(namefile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
 
+		vector<thread> thrds(lines.size()- 1);
+		vector<unsigned long long> tNumSeqs(lines.size()- 1);
+
 		//loop through and create all the processes you want
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
-			string filename = outputFileName + toString(i + 1) + ".temp";
-			thrds[i] = thread(&CountSeqsCommand::driverWithCount, this, lines[i + 1].start, lines[i + 1].end, filename, ref(groupMap), ref(tNumSeqs[i]));
+		for (int i = 1; i < lines.size(); i++) {
+			string filename = outputFileName + toString(i) + ".temp";
+			thrds[i - 1] = thread(&CountSeqsCommand::driverWithCount, this, lines[i].start, lines[i].end, filename, ref(groupMap), ref(tNumSeqs[i - 1]));
 		}
 
 		numSeqs = driver(lines[0].start, lines[0].end, outputFileName + toString(0) + ".temp", groupMap);
 
 		//force parent to wait until all the processes are done
-		for (int i = 0; i < thrds.size(); i++) {
-			thrds[i].join();
-			numSeqs += tNumSeqs[i];
+		for (int i = 1; i < lines.size(); i++) {
+			thrds[i - 1].join();
+			numSeqs += tNumSeqs[i - 1];
 		}
 		
 		//append output files
-		for(int i = 0; i<processors; i++){
+		for(int i = 0; i<lines.size(); i++){
 			m->appendFiles(outputFileName + toString(i) + ".temp", outputFileName);
 			m->mothurRemove(outputFileName + toString(i) + ".temp");
 		}

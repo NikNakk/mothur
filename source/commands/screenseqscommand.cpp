@@ -1837,12 +1837,12 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
         
 		int num = 0;
 
-		vector<thread> thrds(processors - 1);
-		vector<sumScreenData> ssDataItems(processors - 1);
+		vector<thread> thrds(lines.size()- 1);
+		vector<sumScreenData> ssDataItems(lines.size()- 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
-			thrds[i] = thread(&ScreenSeqsCommand::driverWithCount, this, lines[i + 1], goodFileName + toString(i) + ".temp", badAccnos + toString(i) + ".temp", filename, ref(ssDataItems[i]));
+		for (int i = 1; i < lines.size(); i++) {
+			thrds[i - 1] = thread(&ScreenSeqsCommand::driverWithCount, this, lines[i], goodFileName + toString(i) + ".temp", badAccnos + toString(i - 1) + ".temp", filename, ref(ssDataItems[i - 1]));
 		}
 
 		num = driver(lines[0], goodFileName, badAccnos, filename, badSeqNames);
