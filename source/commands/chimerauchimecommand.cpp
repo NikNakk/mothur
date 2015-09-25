@@ -14,6 +14,7 @@
 #include "referencedb.h"
 #include "systemcommand.h"
 #include <thread>
+#include <iterator>
 
 //**********************************************************************************************************************
 vector<string> ChimeraUchimeCommand::setParameters(){	
@@ -582,13 +583,11 @@ ChimeraUchimeCommand::ChimeraUchimeCommand(string option)  {
 			uchimeCommand = path + "uchime";	//	format the database, -o option gives us the ability
             if (m->debug) { 
                 m->mothurOut("[DEBUG]: Uchime location using \"which uchime\" = "); 
-                Command* newCommand = new SystemCommand("which uchime"); m->mothurOutEndLine();
+                SystemCommand newCommand("which uchime"); m->mothurOutEndLine();
                 newCommand->execute();
-                delete newCommand;
                 m->mothurOut("[DEBUG]: Mothur's location using \"which mothur\" = "); 
-                newCommand = new SystemCommand("which mothur"); m->mothurOutEndLine();
+                SystemCommand newCommand("which mothur"); m->mothurOutEndLine();
                 newCommand->execute();
-                delete newCommand;
             }
 #else
 			uchimeCommand = path + "uchime.exe";
@@ -706,15 +705,14 @@ int ChimeraUchimeCommand::execute(){
                 vector<string> groups;
                 map<string, string> uniqueNames;
                 if (hasCount) {
-                    cparser = new SequenceCountParser(nameFile, fastaFileNames[s]);
-                    groups = cparser->getNamesOfGroups();
-                    uniqueNames = cparser->getAllSeqsMap();
-                }else{
-                    sparser = new SequenceParser(groupFile, fastaFileNames[s], nameFile);
-                    groups = sparser->getNamesOfGroups();
-                    uniqueNames = sparser->getAllSeqsMap();
-                }
-					
+                    sparser = make_shared<SequenceCountParser>(nameFile, fastaFileNames[s]);
+				}
+				else {
+					sparser = make_shared<SequenceParser>(groupFile, fastaFileNames[s], nameFile);
+				}
+                groups = sparser->getNamesOfGroups();
+                uniqueNames = sparser->getAllSeqsMap();
+
 				if (m->control_pressed) { for (int j = 0; j < outputNames.size(); j++) {	m->mothurRemove(outputNames[j]);	}  return 0; }
 								
 				//clears files
@@ -776,10 +774,7 @@ int ChimeraUchimeCommand::execute(){
                         outputNames.push_back(newCountFile); outputTypes["count"].push_back(newCountFile);
                     }
                 }
-                
-                if (hasCount) { delete cparser; }
-                else { delete sparser; }
-                
+                                
 				if (m->control_pressed) {  for (int j = 0; j < outputNames.size(); j++) {	m->mothurRemove(outputNames[j]);	}  return 0;	}				
 					
 			}else{
@@ -1161,12 +1156,12 @@ string ChimeraUchimeCommand::getNamesFile(string& inputFile){
 		m->mothurOut("Running command: unique.seqs(" + inputString + ")"); m->mothurOutEndLine(); 
 		m->mothurCalling = true;
         
-		Command* uniqueCommand = new DeconvoluteCommand(inputString);
-		uniqueCommand->execute();
+		DeconvoluteCommand uniqueCommand(inputString);
+		uniqueCommand.execute();
 		
-		map<string, vector<string> > filenames = uniqueCommand->getOutputFiles();
+
+		map<string, vector<string> > filenames = uniqueCommand.getOutputFiles();
 		
-		delete uniqueCommand;
 		m->mothurCalling = false;
 		m->mothurOut("/******************************************/"); m->mothurOutEndLine(); 
 		
@@ -1198,9 +1193,8 @@ int ChimeraUchimeCommand::driverGroups(string outputFName, string filename, stri
 		for (int i = start; i < end; i++) {
 			int start = time(NULL);	 if (m->control_pressed) {  outCountList.close(); m->mothurRemove(countlist); return 0; }
             
-			int error;
-            if (hasCount) { error = cparser->getSeqs(groups[i], filename, true); if ((error == 1) || m->control_pressed) {  return 0; } }
-            else { error = sparser->getSeqs(groups[i], filename, true); if ((error == 1) || m->control_pressed) {  return 0; } }
+			int error = sparser->getSeqs(groups[i], filename, true);
+			if ((error == 1) || m->control_pressed) {  return 0; }
 			
 			int numSeqs = driver((outputFName + groups[i]), filename, (accnos+groups[i]), (alns+ groups[i]), numChimeras);
 			totalSeqs += numSeqs;
@@ -1225,7 +1219,7 @@ int ChimeraUchimeCommand::driverGroups(string outputFName, string filename, stri
                         }
                         in.close();
                     }else {
-                        map<string, string> thisnamemap = sparser->getNameMap(groups[i]);
+                        map<string, string> thisnamemap = dynamic_pointer_cast<SequenceParser>(sparser)->getNameMap(groups[i]);
                         map<string, string>::iterator itN;
                         ofstream out;
                         m->openOutputFile(accnos+groups[i]+".temp", out);
@@ -1277,275 +1271,124 @@ int ChimeraUchimeCommand::driver(string outputFName, string filename, string acc
 		filename = m->getFullPathName(filename);
 		alns = m->getFullPathName(alns);
 		
-		//to allow for spaces in the path
-		outputFName = "\"" + outputFName + "\"";
-		filename = "\"" + filename + "\"";
-		alns = "\"" + alns + "\"";
-				
-		vector<char*> cPara;
+		vector<string> cPara;
 		
 		string uchimeCommand = uchimeLocation;
         uchimeCommand = "\"" + uchimeCommand + "\" ";
         
-        char* tempUchime;
-		tempUchime= new char[uchimeCommand.length()+1]; 
-		*tempUchime = '\0';
-		strncat(tempUchime, uchimeCommand.c_str(), uchimeCommand.length());
-		cPara.push_back(tempUchime);
+		cPara.push_back(uchimeCommand);
 		
         //are you using a reference file
 		if (templatefile != "self") {
-            string outputFileName = filename.substr(1, filename.length()-2) + ".uchime_formatted";
-            prepFile(filename.substr(1, filename.length()-2), outputFileName);
-            filename = outputFileName;
-            filename = "\"" + filename + "\"";
-			//add reference file
-			char* tempRef = new char[5]; 
-			//strcpy(tempRef, "--db"); 
-			*tempRef = '\0'; strncat(tempRef, "--db", 4);
-			cPara.push_back(tempRef);  
-			char* tempR = new char[templatefile.length()+1];
-			//strcpy(tempR, templatefile.c_str());
-			*tempR = '\0'; strncat(tempR, templatefile.c_str(), templatefile.length());
-			cPara.push_back(tempR);
+            string outputFileName = filename + ".uchime_formatted";
+            prepFile(filename, outputFileName);
+			cPara.push_back("--db");  
+			cPara.push_back("\"" + templatefile + "\"");
 		}
 		
-		char* tempIn = new char[8]; 
-		*tempIn = '\0'; strncat(tempIn, "--input", 7);
-		//strcpy(tempIn, "--input"); 
-		cPara.push_back(tempIn);
-		char* temp = new char[filename.length()+1];
-		*temp = '\0'; strncat(temp, filename.c_str(), filename.length());
-		//strcpy(temp, filename.c_str());
-		cPara.push_back(temp);
+		cPara.push_back("--input");
+		cPara.push_back("\"" + filename + "\"");
 		
-		char* tempO = new char[12]; 
-		*tempO = '\0'; strncat(tempO, "--uchimeout", 11);
-		//strcpy(tempO, "--uchimeout"); 
-		cPara.push_back(tempO);
-		char* tempout = new char[outputFName.length()+1];
-		//strcpy(tempout, outputFName.c_str());
-		*tempout = '\0'; strncat(tempout, outputFName.c_str(), outputFName.length());
-		cPara.push_back(tempout);
+		cPara.push_back("--uchimeout");
+		cPara.push_back("\"" + outputFName + "\"");
 		
 		if (chimealns) {
-			char* tempA = new char[13]; 
-			*tempA = '\0'; strncat(tempA, "--uchimealns", 12);
-			//strcpy(tempA, "--uchimealns"); 
-			cPara.push_back(tempA);
-			char* tempa = new char[alns.length()+1];
-			//strcpy(tempa, alns.c_str());
-			*tempa = '\0'; strncat(tempa, alns.c_str(), alns.length());
-			cPara.push_back(tempa);
+			cPara.push_back("--uchimealns");
+			cPara.push_back("\"" + alns + "\"");
 		}
         
         if (strand != "") {
-			char* tempA = new char[9]; 
-			*tempA = '\0'; strncat(tempA, "--strand", 8);
-			cPara.push_back(tempA);
-			char* tempa = new char[strand.length()+1];
-			*tempa = '\0'; strncat(tempa, strand.c_str(), strand.length());
-			cPara.push_back(tempa);
+			cPara.push_back("--strand");
+			cPara.push_back(strand);
 		}
 		
 		if (useAbskew) {
-			char* tempskew = new char[9];
-			*tempskew = '\0'; strncat(tempskew, "--abskew", 8);
-			//strcpy(tempskew, "--abskew"); 
-			cPara.push_back(tempskew);
-			char* tempSkew = new char[abskew.length()+1];
-			//strcpy(tempSkew, abskew.c_str());
-			*tempSkew = '\0'; strncat(tempSkew, abskew.c_str(), abskew.length());
-			cPara.push_back(tempSkew);
+			cPara.push_back("--abskew");
+			cPara.push_back(abskew);
 		}
 		
 		if (useMinH) {
-			char* tempminh = new char[7]; 
-			*tempminh = '\0'; strncat(tempminh, "--minh", 6);
-			//strcpy(tempminh, "--minh"); 
-			cPara.push_back(tempminh);
-			char* tempMinH = new char[minh.length()+1];
-			*tempMinH = '\0'; strncat(tempMinH, minh.c_str(), minh.length());
-			//strcpy(tempMinH, minh.c_str());
-			cPara.push_back(tempMinH);
+			cPara.push_back("--minh");
+			cPara.push_back(minh);
 		}
 		
 		if (useMindiv) {
-			char* tempmindiv = new char[9]; 
-			*tempmindiv = '\0'; strncat(tempmindiv, "--mindiv", 8);
-			//strcpy(tempmindiv, "--mindiv"); 
-			cPara.push_back(tempmindiv);
-			char* tempMindiv = new char[mindiv.length()+1];
-			*tempMindiv = '\0'; strncat(tempMindiv, mindiv.c_str(), mindiv.length());
-			//strcpy(tempMindiv, mindiv.c_str());
-			cPara.push_back(tempMindiv);
+			cPara.push_back("--mindiv");
+			cPara.push_back(mindiv);
 		}
 		
 		if (useXn) {
-			char* tempxn = new char[5]; 
-			//strcpy(tempxn, "--xn"); 
-			*tempxn = '\0'; strncat(tempxn, "--xn", 4);
-			cPara.push_back(tempxn);
-			char* tempXn = new char[xn.length()+1];
-			//strcpy(tempXn, xn.c_str());
-			*tempXn = '\0'; strncat(tempXn, xn.c_str(), xn.length());
-			cPara.push_back(tempXn);
+			cPara.push_back("--xn");
+			cPara.push_back(xn);
 		}
 		
 		if (useDn) {
-			char* tempdn = new char[5]; 
-			//strcpy(tempdn, "--dn"); 
-			*tempdn = '\0'; strncat(tempdn, "--dn", 4);
-			cPara.push_back(tempdn);
-			char* tempDn = new char[dn.length()+1];
-			*tempDn = '\0'; strncat(tempDn, dn.c_str(), dn.length());
-			//strcpy(tempDn, dn.c_str());
-			cPara.push_back(tempDn);
+			cPara.push_back("--dn");
+			cPara.push_back(dn);
 		}
 		
 		if (useXa) {
-			char* tempxa = new char[5]; 
-			//strcpy(tempxa, "--xa"); 
-			*tempxa = '\0'; strncat(tempxa, "--xa", 4);
-			cPara.push_back(tempxa);
-			char* tempXa = new char[xa.length()+1];
-			*tempXa = '\0'; strncat(tempXa, xa.c_str(), xa.length());
-			//strcpy(tempXa, xa.c_str());
-			cPara.push_back(tempXa);
+			cPara.push_back("--xa");
+			cPara.push_back(xa);
 		}
 		
 		if (useChunks) {
-			char* tempchunks = new char[9]; 
-			//strcpy(tempchunks, "--chunks"); 
-			*tempchunks = '\0'; strncat(tempchunks, "--chunks", 8);
-			cPara.push_back(tempchunks);
-			char* tempChunks = new char[chunks.length()+1];
-			*tempChunks = '\0'; strncat(tempChunks, chunks.c_str(), chunks.length());
-			//strcpy(tempChunks, chunks.c_str());
-			cPara.push_back(tempChunks);
+			cPara.push_back("--chunks");
+			cPara.push_back(chunks);
 		}
 		
 		if (useMinchunk) {
-			char* tempminchunk = new char[11]; 
-			//strcpy(tempminchunk, "--minchunk"); 
-			*tempminchunk = '\0'; strncat(tempminchunk, "--minchunk", 10);
-			cPara.push_back(tempminchunk);
-			char* tempMinchunk = new char[minchunk.length()+1];
-			*tempMinchunk = '\0'; strncat(tempMinchunk, minchunk.c_str(), minchunk.length());
-			//strcpy(tempMinchunk, minchunk.c_str());
-			cPara.push_back(tempMinchunk);
+			cPara.push_back("--minchunk");
+			cPara.push_back(minchunk);
 		}
 		
 		if (useIdsmoothwindow) {
-			char* tempidsmoothwindow = new char[17]; 
-			*tempidsmoothwindow = '\0'; strncat(tempidsmoothwindow, "--idsmoothwindow", 16);
-			//strcpy(tempidsmoothwindow, "--idsmoothwindow"); 
-			cPara.push_back(tempidsmoothwindow);
-			char* tempIdsmoothwindow = new char[idsmoothwindow.length()+1];
-			*tempIdsmoothwindow = '\0'; strncat(tempIdsmoothwindow, idsmoothwindow.c_str(), idsmoothwindow.length());
-			//strcpy(tempIdsmoothwindow, idsmoothwindow.c_str());
-			cPara.push_back(tempIdsmoothwindow);
+			cPara.push_back("--idsmoothwindow");
+			cPara.push_back(idsmoothwindow);
 		}
 		
-		/*if (useMinsmoothid) {
-			char* tempminsmoothid = new char[14]; 
-			//strcpy(tempminsmoothid, "--minsmoothid"); 
-			*tempminsmoothid = '\0'; strncat(tempminsmoothid, "--minsmoothid", 13);
-			cPara.push_back(tempminsmoothid);
-			char* tempMinsmoothid = new char[minsmoothid.length()+1];
-			*tempMinsmoothid = '\0'; strncat(tempMinsmoothid, minsmoothid.c_str(), minsmoothid.length());
-			//strcpy(tempMinsmoothid, minsmoothid.c_str());
-			cPara.push_back(tempMinsmoothid);
-		}*/
-		
 		if (useMaxp) {
-			char* tempmaxp = new char[7]; 
-			//strcpy(tempmaxp, "--maxp"); 
-			*tempmaxp = '\0'; strncat(tempmaxp, "--maxp", 6);
-			cPara.push_back(tempmaxp);
-			char* tempMaxp = new char[maxp.length()+1];
-			*tempMaxp = '\0'; strncat(tempMaxp, maxp.c_str(), maxp.length());
-			//strcpy(tempMaxp, maxp.c_str());
-			cPara.push_back(tempMaxp);
+			cPara.push_back("--maxp");
+			cPara.push_back(maxp);
 		}
 		
 		if (!skipgaps) {
-			char* tempskipgaps = new char[13]; 
-			//strcpy(tempskipgaps, "--[no]skipgaps");
-			*tempskipgaps = '\0'; strncat(tempskipgaps, "--noskipgaps", 12);
-			cPara.push_back(tempskipgaps);
+			cPara.push_back("--noskipgaps");
 		}
 		
 		if (!skipgaps2) {
-			char* tempskipgaps2 = new char[14]; 
-			//strcpy(tempskipgaps2, "--[no]skipgaps2"); 
-			*tempskipgaps2 = '\0'; strncat(tempskipgaps2, "--noskipgaps2", 13);
-			cPara.push_back(tempskipgaps2);
+			cPara.push_back("--noskipgaps2");
 		}
 		
 		if (useMinlen) {
-			char* tempminlen = new char[9]; 
-			*tempminlen = '\0'; strncat(tempminlen, "--minlen", 8);
-			//strcpy(tempminlen, "--minlen"); 
-			cPara.push_back(tempminlen);
-			char* tempMinlen = new char[minlen.length()+1];
-			//strcpy(tempMinlen, minlen.c_str());
-			*tempMinlen = '\0'; strncat(tempMinlen, minlen.c_str(), minlen.length());
-			cPara.push_back(tempMinlen);
+			cPara.push_back("--minlen");
+			cPara.push_back(minlen);
 		}
 		
 		if (useMaxlen) {
-			char* tempmaxlen = new char[9]; 
-			//strcpy(tempmaxlen, "--maxlen"); 
-			*tempmaxlen = '\0'; strncat(tempmaxlen, "--maxlen", 8);
-			cPara.push_back(tempmaxlen);
-			char* tempMaxlen = new char[maxlen.length()+1];
-			*tempMaxlen = '\0'; strncat(tempMaxlen, maxlen.c_str(), maxlen.length());
-			//strcpy(tempMaxlen, maxlen.c_str());
-			cPara.push_back(tempMaxlen);
+			cPara.push_back("--maxlen");
+			cPara.push_back(maxlen);
 		}
 		
 		if (ucl) {
-			char* tempucl = new char[5]; 
-			strcpy(tempucl, "--ucl"); 
-			cPara.push_back(tempucl);
+			cPara.push_back("--ucl");
 		}
 		
 		if (useQueryfract) {
-			char* tempqueryfract = new char[13]; 
-			*tempqueryfract = '\0'; strncat(tempqueryfract, "--queryfract", 12);
-			//strcpy(tempqueryfract, "--queryfract"); 
-			cPara.push_back(tempqueryfract);
-			char* tempQueryfract = new char[queryfract.length()+1];
-			*tempQueryfract = '\0'; strncat(tempQueryfract, queryfract.c_str(), queryfract.length());
-			//strcpy(tempQueryfract, queryfract.c_str());
-			cPara.push_back(tempQueryfract);
+			cPara.push_back("--queryfract");
+			cPara.push_back(queryfract);
 		}
 		
-		
-		char** uchimeParameters;
-		uchimeParameters = new char*[cPara.size()];
-		string commandString = "";
-		for (int i = 0; i < cPara.size(); i++) {  uchimeParameters[i] = cPara[i];  commandString += toString(cPara[i]) + " "; } 
-		//int numArgs = cPara.size();
-		
-		//uchime_main(numArgs, uchimeParameters); 
-		//cout << "commandString = " << commandString << endl;
-#if defined (UNIX)
-#else
+		ostringstream commandBuilder;
+		copy(cPara.begin(), cPara.end(), ostream_iterator<string>(commandBuilder, " "));
+		string commandString = commandBuilder.str();
+		commandString = commandString.substr(0, commandString.length() - 1); // remove trailing space
+
+#if defined (WIN32)
 		commandString = "\"" + commandString + "\"";
 #endif
         if (m->debug) { m->mothurOut("[DEBUG]: uchime command = " + commandString + ".\n"); }
 		system(commandString.c_str());
-		
-		//free memory
-		for(int i = 0; i < cPara.size(); i++)  {  delete cPara[i];  }
-		delete[] uchimeParameters; 
-		
-		//remove "" from filenames
-		outputFName = outputFName.substr(1, outputFName.length()-2);
-		filename = filename.substr(1, filename.length()-2);
-		alns = alns.substr(1, alns.length()-2);
 		
 		if (m->control_pressed) { return 0; }
 		

@@ -18,13 +18,13 @@ if(CMAKE_COMPILER_IS_GNUCXX)
    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
    if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
         message(STATUS "C++11 activated.")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=std++11")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
    else ()
         message(FATAL_ERROR "C++11 needed. Therefore a gcc compiler with a version higher than 4.7 is needed.")   
    endif()
 elseif(CMAKE_CXX_COMPILER_ID MATCHES Clang)
  	message(STATUS "C++11 activated.")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=std++11")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif(CMAKE_COMPILER_IS_GNUCXX)
   
 enable_testing()
@@ -299,6 +299,7 @@ add_executable(mothur
   source/datastructures/flowdata.cpp
   source/datastructures/fullmatrix.cpp
   source/datastructures/groupmap.cpp
+  source/datastructures/isequenceparser.cpp
   source/datastructures/kmer.cpp
   source/datastructures/kmeralign.cpp
   source/datastructures/kmerdb.cpp

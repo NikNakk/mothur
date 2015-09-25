@@ -15,6 +15,7 @@
 #include "mothurout.h"
 #include "sequence.hpp"
 #include "groupmap.h"
+#include "isequenceparser.h"
 
 /* This class reads a fasta and group file with a namesfile as optional and parses the data by group. 
  
@@ -24,35 +25,29 @@
  
  */
 
-class SequenceParser {
+class SequenceParser : public ISequenceParser {
 	
 	public:
 	
 		SequenceParser(string, string);			//group, fasta - file mismatches will set m->control_pressed = true
 		SequenceParser(string, string, string);	//group, fasta, name  - file mismatches will set m->control_pressed = true
-		~SequenceParser();
 		
 		//general operations
-		int getNumGroups();
 		vector<string> getNamesOfGroups();	
 		bool isValidGroup(string);  //return true if string is a valid group
 		
-		int getNumSeqs(string);		//returns the number of unique sequences in a specific group
-		vector<Sequence> getSeqs(string); //returns unique sequences in a specific group
 		map<string, string> getNameMap(string); //returns seqName -> namesOfRedundantSeqs separated by commas for a specific group - the name file format, but each line is parsed by group.
 		
-		int getSeqs(string, string, bool); //prints unique sequences in a specific group to a file - group, filename, uchimeFormat=false
+		virtual vector<Sequence> getSeqs(string g) { return ISequenceParser::getSeqs(g); }; //returns unique sequences in a specific group
+		virtual int getSeqs(string, string, bool); //prints unique sequences in a specific group to a file - group, filename, uchimeFormat=false
 		int getNameMap(string, string); //print seqName -> namesOfRedundantSeqs separated by commas for a specific group - group, filename
-		
-		map<string, string> getAllSeqsMap(){ return allSeqsMap; }  //returns map where the key=sequenceName and the value=representativeSequence - helps us remove duplicates after group by group processing
+		virtual int getNumGroups();
+
 	private:
 	
-		GroupMap* groupMap;
-		MothurOut* m;
+		GroupMap groupMap;
 	
-		int numSeqs;
 		map<string, string> allSeqsMap;
-		map<string, vector<Sequence> > seqs; //a vector for each group
 		map<string, map<string, string> > nameMapPerGroup; //nameMap for each group
 };
 

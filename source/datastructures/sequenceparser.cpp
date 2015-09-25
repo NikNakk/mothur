@@ -11,20 +11,21 @@
 
 
 /************************************************************/
-SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFile) {
+SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFile):
+	groupMap(groupFile)
+{
 	try {
 		
 		m = MothurOut::getInstance();
 		int error;
 		
 		//read group file
-		groupMap = new GroupMap(groupFile);
-		error = groupMap->readMap();
+		error = groupMap.readMap();
 		
 		if (error == 1) { m->control_pressed = true; }
 		
 		//initialize maps
-		vector<string> namesOfGroups = groupMap->getNamesOfGroups();
+		vector<string> namesOfGroups = groupMap.getNamesOfGroups();
 		for (int i = 0; i < namesOfGroups.size(); i++) {
 			vector<Sequence> temp;
 			map<string, string> tempMap;
@@ -48,7 +49,7 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFi
 			
         if (seq.getName() != "") {
 				
-				 string group = groupMap->getGroup(seq.getName());
+				 string group = groupMap.getGroup(seq.getName());
 				 if (group == "not found") {  error = 1; m->mothurOut("[ERROR]: " + seq.getName() + " is in your fasta file and not in your groupfile, please correct."); m->mothurOutEndLine();  }
 				 else {	
 					 seqs[group].push_back(seq);	
@@ -103,7 +104,7 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFi
                     map<string, string>::iterator it;
                     for (int i = 0; i < names.size(); i++) {
                         
-                        string group = groupMap->getGroup(names[i]);
+                        string group = groupMap.getGroup(names[i]);
                         if (group == "not found") {  error = 1; m->mothurOut("[ERROR]: " + names[i] + " is in your name file and not in your groupfile, please correct."); m->mothurOutEndLine();  }
                         else {	
                             
@@ -176,7 +177,7 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFi
                     map<string, string>::iterator it;
                     for (int i = 0; i < names.size(); i++) {
                         
-                        string group = groupMap->getGroup(names[i]);
+                        string group = groupMap.getGroup(names[i]);
                         if (group == "not found") {  error = 1; m->mothurOut("[ERROR]: " + names[i] + " is in your name file and not in your groupfile, please correct."); m->mothurOutEndLine();  }
                         else {	
                             
@@ -223,8 +224,8 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFi
 		
 		if (error == 1) { m->control_pressed = true; }
 		        
-		if (countName != (groupMap->getNumSeqs())) {
-			vector<string> groupseqsnames = groupMap->getNamesSeqs();
+		if (countName != (groupMap.getNumSeqs())) {
+			vector<string> groupseqsnames = groupMap.getNamesSeqs();
 			
 			for (int i = 0; i < groupseqsnames.size(); i++) {
 				set<string>::iterator itnamesfile = thisnames1.find(groupseqsnames[i]);
@@ -234,7 +235,7 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFi
 			}
 			
 			m->mothurOutEndLine();
-			m->mothurOut("[ERROR]: Your name file contains " + toString(countName) + " valid sequences, and your groupfile contains " + toString(groupMap->getNumSeqs()) + ", please correct.");
+			m->mothurOut("[ERROR]: Your name file contains " + toString(countName) + " valid sequences, and your groupfile contains " + toString(groupMap.getNumSeqs()) + ", please correct.");
 			m->mothurOutEndLine();
 			m->control_pressed = true;
 		}
@@ -246,20 +247,21 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile, string nameFi
 	}
 }
 /************************************************************/
-SequenceParser::SequenceParser(string groupFile, string fastaFile) {
+SequenceParser::SequenceParser(string groupFile, string fastaFile) :
+	groupMap(groupFile)
+{
 	try {
 		
 		m = MothurOut::getInstance();
 		int error;
 		
 		//read group file
-		groupMap = new GroupMap(groupFile);
-		error = groupMap->readMap();
+		error = groupMap.readMap();
 		
 		if (error == 1) { m->control_pressed = true; }
 		
 		//initialize maps
-		vector<string> namesOfGroups = groupMap->getNamesOfGroups();
+		vector<string> namesOfGroups = groupMap.getNamesOfGroups();
 		for (int i = 0; i < namesOfGroups.size(); i++) {
 			vector<Sequence> temp;
 			seqs[namesOfGroups[i]] = temp;
@@ -278,7 +280,7 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile) {
 			
 			if (seq.getName() != "") {
 				
-				string group = groupMap->getGroup(seq.getName());
+				string group = groupMap.getGroup(seq.getName());
 				if (group == "not found") {  error = 1; m->mothurOut("[ERROR]: " + seq.getName() + " is in your fasta file and not in your groupfile, please correct."); m->mothurOutEndLine();  }
 				else {	seqs[group].push_back(seq);	count++; }
 			}
@@ -287,10 +289,10 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile) {
 		
 		if (error == 1) { m->control_pressed = true; }
 		
-		if (count != (groupMap->getNumSeqs())) {
+		if (count != (groupMap.getNumSeqs())) {
 			m->mothurOutEndLine();
-			m->mothurOut("[ERROR]: Your fasta file contains " + toString(count) + " valid sequences, and your groupfile contains " + toString(groupMap->getNumSeqs()) + ", please correct.");
-			if (count < (groupMap->getNumSeqs())) { m->mothurOut(" Did you forget to include the name file?"); }
+			m->mothurOut("[ERROR]: Your fasta file contains " + toString(count) + " valid sequences, and your groupfile contains " + toString(groupMap.getNumSeqs()) + ", please correct.");
+			if (count < (groupMap.getNumSeqs())) { m->mothurOut(" Did you forget to include the name file?"); }
 			m->mothurOutEndLine();
 			m->control_pressed = true;
 		}
@@ -302,54 +304,11 @@ SequenceParser::SequenceParser(string groupFile, string fastaFile) {
 	}
 }
 /************************************************************/
-SequenceParser::~SequenceParser(){ delete groupMap; }
+int SequenceParser::getNumGroups(){ return groupMap.getNumGroups(); }
 /************************************************************/
-int SequenceParser::getNumGroups(){ return groupMap->getNumGroups(); }
+vector<string> SequenceParser::getNamesOfGroups(){ return groupMap.getNamesOfGroups(); }
 /************************************************************/
-vector<string> SequenceParser::getNamesOfGroups(){ return groupMap->getNamesOfGroups(); }
-/************************************************************/
-bool SequenceParser::isValidGroup(string g){ return groupMap->isValidGroup(g); }
-/************************************************************/
-int SequenceParser::getNumSeqs(string g){ 
-	try {
-		map<string, vector<Sequence> >::iterator it;
-		int num = 0;
-		
-		it = seqs.find(g);
-		if(it == seqs.end()) {
-			m->mothurOut("[ERROR]: " + g + " is not a valid group, please correct."); m->mothurOutEndLine();
-		}else {
-			num = (it->second).size();
-		}
-		
-		return num; 
-	}
-	catch(exception& e) {
-		m->errorOut(e, "SequenceParser", "getNumSeqs");
-		exit(1);
-	}
-}
-/************************************************************/
-vector<Sequence> SequenceParser::getSeqs(string g){ 
-	try {
-		map<string, vector<Sequence> >::iterator it;
-		vector<Sequence> seqForThisGroup;
-		
-		it = seqs.find(g);
-		if(it == seqs.end()) {
-			m->mothurOut("[ERROR]: No sequences available for group " + g + ", please correct."); m->mothurOutEndLine();
-		}else {
-			seqForThisGroup = it->second;
-            if (m->debug) {  m->mothurOut("[DEBUG]: group " + g + " fasta file has " + toString(seqForThisGroup.size()) + " sequences.");  }
-		}
-		
-		return seqForThisGroup; 
-	}
-	catch(exception& e) {
-		m->errorOut(e, "SequenceParser", "getSeqs");
-		exit(1);
-	}
-}
+bool SequenceParser::isValidGroup(string g){ return groupMap.isValidGroup(g); }
 /************************************************************/
 int SequenceParser::getSeqs(string g, string filename, bool uchimeFormat=false){ 
 	try {

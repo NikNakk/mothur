@@ -602,7 +602,7 @@ int ChimeraPerseusCommand::execute(){
                     parser = new SequenceParser(groupFile, fastaFileNames[s], nameFile);
                     vector<string> groups = parser->getNamesOfGroups();
                     
-                    if (m->control_pressed) { delete parser; for (int j = 0; j < outputNames.size(); j++) {	m->mothurRemove(outputNames[j]);	}  return 0; }
+                    if (m->control_pressed) { for (int j = 0; j < outputNames.size(); j++) {	m->mothurRemove(outputNames[j]);	}  return 0; }
                     
                     //clears files
                     ofstream out, out1, out2;

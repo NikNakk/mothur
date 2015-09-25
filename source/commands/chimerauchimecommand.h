@@ -16,7 +16,7 @@
 #include "sequenceparser.h"
 #include "counttable.h"
 #include "sequencecountparser.h"
-
+#include <memory>
 
 /***********************************************************/
 
@@ -48,8 +48,7 @@ private:
 	string fastafile, groupfile, templatefile, outputDir, namefile, countfile, abskew, minh, mindiv, xn, dn, xa, chunks, minchunk, idsmoothwindow, minsmoothid, maxp, minlen, maxlen, queryfract, uchimeLocation, strand;
 	int processors;
 	
-	SequenceParser* sparser;
-    SequenceCountParser* cparser;
+	shared_ptr<ISequenceParser> sparser;
 	vector<string> outputNames;
 	vector<string> fastaFileNames;
 	vector<string> nameFileNames;

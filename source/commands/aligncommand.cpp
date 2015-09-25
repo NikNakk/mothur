@@ -524,8 +524,8 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		vector<int> nums(lines.size() - 1);
         		
 		//loop through and create all the processes you want
-		for (int i = 0; i < thrds.size(); i++) {
-			thrds[i] = thread(&AlignCommand::driverWithCount, this, lines[i + 1], alignFileName + toString(i) + ".temp", reportFileName + toString(i) + ".temp", accnosFName + toString(i) + ".temp", filename, ref(nums[i]));
+		for (int i = 1; i < lines.size(); i++) {
+			thrds[i - 1] = thread(&AlignCommand::driverWithCount, this, lines[i], alignFileName + toString(i) + ".temp", reportFileName + toString(i) + ".temp", accnosFName + toString(i) + ".temp", filename, ref(nums[i - 1]));
 		}
 				
 		//do my part
@@ -534,14 +534,14 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		//force parent to wait until all the processes are done
 		for (int i=0; i<thrds.size(); i++) {
 			thrds[i].join();
+			num += nums[i];
 		}
 		
 		vector<string> nonBlankAccnosFiles;
 		if (!(m->isBlank(accnosFName))) { nonBlankAccnosFiles.push_back(accnosFName); }
 		else { m->mothurRemove(accnosFName); } //remove so other files can be renamed to it
 			
-		for (int i = 0; i < thrds.size(); i++) {
-			num += nums[i];
+		for (int i = 1; i < lines.size(); i++) {
 			
 			m->appendFiles(alignFileName + toString(i) + ".temp", alignFileName);
 			m->mothurRemove(alignFileName + toString(i) + ".temp");

@@ -13,6 +13,7 @@
 #include "mothurout.h"
 #include "sequence.hpp"
 #include "counttable.h"
+#include "isequenceparser.h"
 
 /* This class reads a fasta and count file and parses the data by group. The countfile must contain group information.
  
@@ -22,34 +23,25 @@
  
  */
 
-class SequenceCountParser {
+class SequenceCountParser : public ISequenceParser {
 	
 public:
-	
-    SequenceCountParser(string, string);			//count, fasta - file mismatches will set m->control_pressed = true
-    SequenceCountParser(string, CountTable&);		//fasta, counttable - file mismatches will set m->control_pressed = true
-    ~SequenceCountParser();
-    
-    //general operations
-    int getNumGroups();
-    vector<string> getNamesOfGroups();	
-    
-    int getNumSeqs(string);		//returns the number of unique sequences in a specific group
-    vector<Sequence> getSeqs(string); //returns unique sequences in a specific group
+	SequenceCountParser(string, string);			//count, fasta - file mismatches will set m->control_pressed = true
+	SequenceCountParser(string, CountTable&);		//fasta, counttable - file mismatches will set m->control_pressed = true
+	virtual ~SequenceCountParser();
+
+	//general operations
+	virtual int getNumGroups();
+	virtual vector<string> getNamesOfGroups();
+
+	virtual vector<Sequence> getSeqs(string g) { return ISequenceParser::getSeqs(g); }; //returns unique sequences in a specific group
+	virtual int getSeqs(string, string, bool); //prints unique sequences in a specific group to a file - group, filename, uchimeFormat=false
+
     map<string, int> getCountTable(string); //returns seqName -> numberOfRedundantSeqs for a specific group - the count file format, but each line is parsed by group.
-    
-    int getSeqs(string, string, bool); //prints unique sequences in a specific group to a file - group, filename, uchimeFormat=false
     int getCountTable(string, string); //print seqName -> numberRedundantSeqs for a specific group - group, filename
-    
-    map<string, string> getAllSeqsMap(){ return allSeqsMap; }  //returns map where the key=sequenceName and the value=representativeSequence - helps us remove duplicates after group by group processing
+
 private:
-	
-    CountTable countTable;
-    MothurOut* m;
-	
-    int numSeqs;
-    map<string, string> allSeqsMap;
-    map<string, vector<Sequence> > seqs; //a vector for each group
+    CountTable countTable;	
     map<string, map<string, int> > countTablePerGroup; //countTable for each group
     vector<string> namesOfGroups;
 };

@@ -1185,8 +1185,8 @@ int ScreenSeqsCommand::createProcessesContigsSummary(vector<int>& oLength, vecto
 		vector<contigsSumData> csDataItems(contigsLines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < thrds.size(); i++) {
-			thrds[i] = thread(&ScreenSeqsCommand::driverContigsSummaryWithData, this, ref(csDataItems[i]), contigsLines[i + 1]);
+		for (int i = 1; i < contigsLines.size(); i++) {
+			thrds[i - 1] = thread(&ScreenSeqsCommand::driverContigsSummaryWithData, this, ref(csDataItems[i - 1]), contigsLines[i]);
 		}
 
 		num = driverContigsSummary(oLength, ostartPosition, oendPosition, omismatches, numNs, contigsLines[0]);
@@ -1327,8 +1327,8 @@ int ScreenSeqsCommand::createProcessesAlignSummary(vector<float>& sims, vector<f
 		vector<alignsData> aDataItems(alignLines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < thrds.size(); i++) {
-			thrds[i] = thread(&ScreenSeqsCommand::driverAlignSummaryWithData, this, ref(aDataItems[i]), alignLines[i + 1]);
+		for (int i = 1; i < alignLines.size(); i++) {
+			thrds[i - 1] = thread(&ScreenSeqsCommand::driverAlignSummaryWithData, this, ref(aDataItems[i - 1]), alignLines[i]);
 		}
 
 		num = driverAlignSummary(sims, scores, inserts, alignLines[0]);
@@ -1472,8 +1472,8 @@ int ScreenSeqsCommand::createProcessesCreateSummary(vector<int>& startPosition, 
 		vector<sumData> sDataItems(lines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < thrds.size(); i++) {
-			thrds[i] = thread(&ScreenSeqsCommand::driverCreateSummaryWithData, this, ref(sDataItems[i]), fastafile, lines[i + 1]);
+		for (int i = 1; i < lines.size(); i++) {
+			thrds[i - 1] = thread(&ScreenSeqsCommand::driverCreateSummaryWithData, this, ref(sDataItems[i - 1]), fastafile, lines[i]);
 		}
 
 		num = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[0]);
@@ -1841,8 +1841,8 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
 		vector<sumScreenData> ssDataItems(lines.size()- 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < thrds.size(); i++) {
-			thrds[i] = thread(&ScreenSeqsCommand::driverWithCount, this, lines[i + 1], goodFileName + toString(i) + ".temp", badAccnos + toString(i) + ".temp", filename, ref(ssDataItems[i]));
+		for (int i = 1; i < lines.size(); i++) {
+			thrds[i - 1] = thread(&ScreenSeqsCommand::driverWithCount, this, lines[i], goodFileName + toString(i) + ".temp", badAccnos + toString(i) + ".temp", filename, ref(ssDataItems[i - 1]));
 		}
 
 		num = driver(lines[0], goodFileName, badAccnos, filename, badSeqNames);
@@ -1852,10 +1852,10 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
 			thrds[i].join();
 			num += ssDataItems[i].numSeqs;
 			badSeqNames.insert(ssDataItems[i].badSeqs.begin(), ssDataItems[i].badSeqs.end());
-			m->appendFiles((goodFileName + toString(i) + ".temp"), goodFileName);
-			m->mothurRemove(goodFileName + toString(i) + ".temp");
-			m->appendFiles((badAccnos + toString(i) + ".temp"), badAccnos);
-			m->mothurRemove(badAccnos + toString(i) + ".temp");
+			m->appendFiles((goodFileName + toString(i + 1) + ".temp"), goodFileName);
+			m->mothurRemove(goodFileName + toString(i + 1) + ".temp");
+			m->appendFiles((badAccnos + toString(i + 1) + ".temp"), badAccnos);
+			m->mothurRemove(badAccnos + toString(i + 1) + ".temp");
 		}
         return num;
         
