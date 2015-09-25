@@ -584,10 +584,10 @@ ChimeraUchimeCommand::ChimeraUchimeCommand(string option)  {
             if (m->debug) { 
                 m->mothurOut("[DEBUG]: Uchime location using \"which uchime\" = "); 
                 SystemCommand newCommand("which uchime"); m->mothurOutEndLine();
-                newCommand->execute();
+                newCommand.execute();
                 m->mothurOut("[DEBUG]: Mothur's location using \"which mothur\" = "); 
-                SystemCommand newCommand("which mothur"); m->mothurOutEndLine();
-                newCommand->execute();
+                newCommand = SystemCommand("which mothur"); m->mothurOutEndLine();
+                newCommand.execute();
             }
 #else
 			uchimeCommand = path + "uchime.exe";
