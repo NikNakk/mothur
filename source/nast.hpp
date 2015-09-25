@@ -20,6 +20,7 @@
 
 #include "mothur.h"
 #include "mothurout.h"
+#include <memory>
 
 class Alignment;
 class Sequence;
@@ -29,7 +30,7 @@ class Sequence;
 class Nast {
 	
 public:
-	Nast(Alignment*, Sequence*, Sequence*);
+	Nast(shared_ptr<Alignment>, shared_ptr<Sequence>, shared_ptr<Sequence>);
 	~Nast(){};
 	float getSimilarityScore();
 	int getMaxInsertLength();
@@ -39,9 +40,9 @@ private:
 	void regapSequences();
 	void removeExtraGaps(string&, string, string);
 	
-	Alignment* alignment;
-	Sequence* candidateSeq;
-	Sequence* templateSeq;
+	shared_ptr<Alignment> alignment;
+	shared_ptr<Sequence> candidateSeq;
+	shared_ptr<Sequence> templateSeq;
 	
 	int maxInsertLength;
 	MothurOut* m;

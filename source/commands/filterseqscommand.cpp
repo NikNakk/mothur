@@ -347,7 +347,7 @@ int FilterSeqsCommand::filterSequences() {
 		
 		for (int s = 0; s < fastafileNames.size(); s++) {
 			
-				for (int i = 0; i < lines.size(); i++) {  delete lines[i];  }  lines.clear();
+				lines.clear();
 				
                 map<string, string> variables; 
                 variables["[filename]"] = outputDir + m->getRootName(m->getSimpleName(fastafileNames[s]));
@@ -361,7 +361,7 @@ int FilterSeqsCommand::filterSequences() {
 			//vector<unsigned long long> positions = m->divideFile(fastafileNames[s], processors);
 			
 			for (int i = 0; i < (positions.size()-1); i++) {
-				lines.push_back(new linePair(positions[i], positions[(i+1)]));
+				lines.push_back(linePair(positions[i], positions[(i+1)]));
 			}	
 			
 				if(processors == 1){
@@ -385,7 +385,7 @@ int FilterSeqsCommand::filterSequences() {
 	}
 }
 /**************************************************************************************/
-int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string inputFilename, linePair* filePos) {	
+int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string inputFilename, linePair filePos) {	
 	try {
 		ofstream out;
 		m->openOutputFile(outputFilename, out);
@@ -393,10 +393,10 @@ int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string i
 		ifstream in;
 		m->openInputFile(inputFilename, in);
 				
-		in.seekg(filePos->start);
+		in.seekg(filePos.start);
         
         //adjust start if null strings
-        if (filePos->start == 0) {  m->zapGremlins(in); m->gobble(in);  }
+        if (filePos.start == 0) {  m->zapGremlins(in); m->gobble(in);  }
 
 		bool done = false;
 		int count = 0;
@@ -421,7 +421,7 @@ int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string i
 			}
 			
 				unsigned long long pos = in.tellg();
-				if ((pos == -1) || (pos >= filePos->end)) { break; }
+				if ((pos == -1) || (pos >= filePos.end)) { break; }
 			
 			//report progress
 			if((count) % 100 == 0){	m->mothurOutJustToScreen(toString(count)+"\n"); 	}
@@ -442,8 +442,8 @@ int FilterSeqsCommand::driverRunFilter(string F, string outputFilename, string i
 }
 /**************************************************************************************************/
 
-void FilterSeqsCommand::driverRunFilterWithCount(string F, string outputFilename, string inputFilename, linePair* filePos, int* count) {
-	*count = driverRunFilter(F, outputFilename, inputFilename, filePos);
+void FilterSeqsCommand::driverRunFilterWithCount(string F, string outputFilename, string inputFilename, linePair filePos, int & count) {
+	count = driverRunFilter(F, outputFilename, inputFilename, filePos);
 }
 
 int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, string filteredFastaName) {
@@ -454,7 +454,7 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		//loop through and create all the processes you want
 		for (int i = 0; i < processors - 1; i++) {
 			string filteredFasta = filename + toString(i + 1) + ".temp";
-			thrds[i] = thread(&FilterSeqsCommand::driverRunFilterWithCount, this, F, filteredFasta, filename, lines[i + 1], &nums[i]);
+			thrds[i] = thread(&FilterSeqsCommand::driverRunFilterWithCount, this, F, filteredFasta, filename, lines[i + 1], ref(nums[i]));
 		}
 
 		// Task for main thread
@@ -500,13 +500,13 @@ string FilterSeqsCommand::createFilter() {
 		if(trump != '*' || m->isTrue(vertical) || soft != 0){
 			for (int s = 0; s < fastafileNames.size(); s++) {
 			
-				for (int i = 0; i < lines.size(); i++) {  delete lines[i];  }  lines.clear();
+				lines.clear();
 			
 				
                 vector<unsigned long long> positions;
 				positions = m->divideFile(fastafileNames[s], processors);
 				for (int i = 0; i < (positions.size()-1); i++) {
-					lines.push_back(new linePair(positions[i], positions[(i+1)]));
+					lines.push_back(linePair(positions[i], positions[(i+1)]));
 				}	
 				
 				if(processors == 1){
@@ -536,16 +536,16 @@ string FilterSeqsCommand::createFilter() {
 	}
 }
 /**************************************************************************************/
-int FilterSeqsCommand::driverCreateFilter(Filters& F, string filename, linePair* filePos) {	
+int FilterSeqsCommand::driverCreateFilter(Filters& F, string filename, linePair filePos) {	
 	try {
 		
 		ifstream in;
 		m->openInputFile(filename, in);
 				
-		in.seekg(filePos->start);
+		in.seekg(filePos.start);
         
         //adjust start if null strings
-        if (filePos->start == 0) {  m->zapGremlins(in); m->gobble(in);  }
+        if (filePos.start == 0) {  m->zapGremlins(in); m->gobble(in);  }
 
 		bool done = false;
 		int count = 0;
@@ -567,7 +567,7 @@ int FilterSeqsCommand::driverCreateFilter(Filters& F, string filename, linePair*
 			}
 			
 			unsigned long long pos = in.tellg();
-			if ((pos == -1) || (pos >= filePos->end)) { break; }
+			if ((pos == -1) || (pos >= filePos.end)) { break; }
 			
 			//report progress
 			if((count) % 100 == 0){	m->mothurOutJustToScreen(toString(count)+"\n"); 		}

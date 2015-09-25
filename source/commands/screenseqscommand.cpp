@@ -9,6 +9,7 @@
 
 #include "screenseqscommand.h"
 #include "counttable.h"
+#include <thread>
 
 //**********************************************************************************************************************
 vector<string> ScreenSeqsCommand::setParameters(){	
@@ -560,25 +561,8 @@ int ScreenSeqsCommand::screenReports(map<string, string>& badSeqNames){
             getSummary(positions); 
             summarizedFasta = true;
         } else {
-            #if defined (UNIX)
-                positions = m->divideFile(fastafile, processors);
-                for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
-            #else 
-                if(processors == 1){ lines.push_back(linePair(0, 1000));  }
-                else {
-                    int numFastaSeqs = 0;
-                    positions = m->setFilePosFasta(fastafile, numFastaSeqs); 
-                    if (positions.size() < processors) { processors = positions.size(); }
-                
-                    //figure out how many sequences you have to process
-                    int numSeqsPerProcessor = numFastaSeqs / processors;
-                    for (int i = 0; i < processors; i++) {
-                        int startIndex =  i * numSeqsPerProcessor;
-                        if(i == (processors - 1)){	numSeqsPerProcessor = numFastaSeqs - i * numSeqsPerProcessor; 	}
-                        lines.push_back(linePair(positions[startIndex], numSeqsPerProcessor));
-                    }
-                }
-            #endif
+            positions = m->divideFile(fastafile, processors);
+            for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
         }
         
         if ((summaryfile != "") && ((m->inUsersGroups("maxambig", optimize)) ||(m->inUsersGroups("maxhomop", optimize)) ||(m->inUsersGroups("maxlength", optimize)) || (m->inUsersGroups("minlength", optimize)) || (m->inUsersGroups("start", optimize)) || (m->inUsersGroups("end", optimize))) && !summarizedFasta) { //summarize based on summaryfile
@@ -895,25 +879,8 @@ int ScreenSeqsCommand::screenFasta(map<string, string>& badSeqNames){
             }
 			getSummary(positions); 
 		}else { 
-#if defined (UNIX)
             positions = m->divideFile(fastafile, processors);
             for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }
-#else 
-            if(processors == 1){ lines.push_back(linePair(0, 1000));  }
-            else {
-                int numFastaSeqs = 0;
-                positions = m->setFilePosFasta(fastafile, numFastaSeqs); 
-                if (positions.size() < processors) { processors = positions.size(); }
-                
-                //figure out how many sequences you have to process
-                int numSeqsPerProcessor = numFastaSeqs / processors;
-                for (int i = 0; i < processors; i++) {
-                    int startIndex =  i * numSeqsPerProcessor;
-                    if(i == (processors - 1)){	numSeqsPerProcessor = numFastaSeqs - i * numSeqsPerProcessor; 	}
-                    lines.push_back(linePair(positions[startIndex], numSeqsPerProcessor));
-                }
-            }
-#endif
 		}
         
         if (m->control_pressed) { return 0; }
@@ -1111,48 +1078,30 @@ int ScreenSeqsCommand::optimizeContigs(){
 		
         vector<unsigned long long> positions;
         vector<linePair> contigsLines;
-#if defined (UNIX)
 		positions = m->divideFilePerLine(contigsreport, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { contigsLines.push_back(linePair(positions[i], positions[(i+1)])); }	
-#else
-		if(processors == 1){ contigsLines.push_back(linePair(0, 1000));  }
-        else {
-            int numContigsSeqs = 0;
-            positions = m->setFilePosEachLine(contigsreport, numContigsSeqs); 
-            if (positions.size() < processors) { processors = positions.size(); }
-            
-            //figure out how many sequences you have to process
-            int numSeqsPerProcessor = numContigsSeqs / processors;
-            for (int i = 0; i < processors; i++) {
-                int startIndex =  i * numSeqsPerProcessor;
-                if(i == (processors - 1)){	numSeqsPerProcessor = numContigsSeqs - i * numSeqsPerProcessor; 	}
-                contigsLines.push_back(linePair(positions[startIndex], numSeqsPerProcessor));
-            }
-        }
-#endif
 		
-
-            createProcessesContigsSummary(olengths, oStarts, oEnds, numMismatches, numNs, contigsLines); 
+        createProcessesContigsSummary(olengths, oStarts, oEnds, numMismatches, numNs, contigsLines); 
             
-			if (m->control_pressed) {  return 0; }
+		if (m->control_pressed) {  return 0; }
 
-            sort(olengths.begin(), olengths.end());
-            sort(oStarts.begin(), oStarts.end());
-            sort(oEnds.begin(), oEnds.end());
-            sort(numMismatches.begin(), numMismatches.end());
-            sort(numNs.begin(), numNs.end());
+        sort(olengths.begin(), olengths.end());
+        sort(oStarts.begin(), oStarts.end());
+        sort(oEnds.begin(), oEnds.end());
+        sort(numMismatches.begin(), numMismatches.end());
+        sort(numNs.begin(), numNs.end());
             
-            //numSeqs is the number of unique seqs, startPosition.size() is the total number of seqs, we want to optimize using all seqs
-            int criteriaPercentile	= int(oStarts.size() * (criteria / (float) 100));
+        //numSeqs is the number of unique seqs, startPosition.size() is the total number of seqs, we want to optimize using all seqs
+        int criteriaPercentile	= int(oStarts.size() * (criteria / (float) 100));
             
-            for (int i = 0; i < optimize.size(); i++) {
-                if (optimize[i] == "ostart") { oStart = oStarts[criteriaPercentile]; m->mothurOut("Optimizing ostart to " + toString(oStart) + "."); m->mothurOutEndLine(); }
-                else if (optimize[i] == "oend") { int endcriteriaPercentile = int(oEnds.size() * ((100 - criteria) / (float) 100));  oEnd = oEnds[endcriteriaPercentile]; m->mothurOut("Optimizing oend to " + toString(oEnd) + "."); m->mothurOutEndLine();}
-                else if (optimize[i] == "mismatches") { mismatches = numMismatches[criteriaPercentile]; m->mothurOut("Optimizing mismatches to " + toString(mismatches) + "."); m->mothurOutEndLine(); }
-                else if (optimize[i] == "maxn") { maxN = numNs[criteriaPercentile]; m->mothurOut("Optimizing maxn to " + toString(maxN) + "."); m->mothurOutEndLine(); }
-                else if (optimize[i] == "minoverlap") { int mincriteriaPercentile = int(olengths.size() * ((100 - criteria) / (float) 100)); minOverlap = olengths[mincriteriaPercentile]; m->mothurOut("Optimizing minoverlap to " + toString(minOverlap) + "."); m->mothurOutEndLine(); }
+        for (int i = 0; i < optimize.size(); i++) {
+            if (optimize[i] == "ostart") { oStart = oStarts[criteriaPercentile]; m->mothurOut("Optimizing ostart to " + toString(oStart) + "."); m->mothurOutEndLine(); }
+            else if (optimize[i] == "oend") { int endcriteriaPercentile = int(oEnds.size() * ((100 - criteria) / (float) 100));  oEnd = oEnds[endcriteriaPercentile]; m->mothurOut("Optimizing oend to " + toString(oEnd) + "."); m->mothurOutEndLine();}
+            else if (optimize[i] == "mismatches") { mismatches = numMismatches[criteriaPercentile]; m->mothurOut("Optimizing mismatches to " + toString(mismatches) + "."); m->mothurOutEndLine(); }
+            else if (optimize[i] == "maxn") { maxN = numNs[criteriaPercentile]; m->mothurOut("Optimizing maxn to " + toString(maxN) + "."); m->mothurOutEndLine(); }
+            else if (optimize[i] == "minoverlap") { int mincriteriaPercentile = int(olengths.size() * ((100 - criteria) / (float) 100)); minOverlap = olengths[mincriteriaPercentile]; m->mothurOut("Optimizing minoverlap to " + toString(minOverlap) + "."); m->mothurOutEndLine(); }
 
-            }
+        }
             
 		return 0;
 	}
@@ -1208,12 +1157,8 @@ int ScreenSeqsCommand::driverContigsSummary(vector<int>& oLength, vector<int>& o
             count++;
 			
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-#if defined (UNIX)
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
-#else
-            if (in.eof()) { break; }
-#endif
 		}
 		
 		in.close();
@@ -1226,193 +1171,44 @@ int ScreenSeqsCommand::driverContigsSummary(vector<int>& oLength, vector<int>& o
 	}
 }
 
+void ScreenSeqsCommand::driverContigsSummaryWithData(contigsSumData& csData, linePair filePos) {
+	csData.numSeqs = driverContigsSummary(csData.oLength, csData.ostartPosition, csData.oendPosition, csData.omismatches, csData.numNs, filePos);
+}
+
 /**************************************************************************************************/
 int ScreenSeqsCommand::createProcessesContigsSummary(vector<int>& oLength, vector<int>& ostartPosition, vector<int>& oendPosition, vector<int>& omismatches, vector<int>& numNs, vector<linePair> contigsLines) {
 	try {
-        
-        int process = 1;
-		int num = 0;
-		vector<int> processIDS;
-        bool recalc = false;
-        
-        
-#if defined (UNIX)
+        int num = 0;
         
 		//loop through and create all the processes you want
-		while (process != processors) {
-			pid_t pid = fork();
-			
-			if (pid > 0) {
-				processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-				process++;
-			}else if (pid == 0){
-				num = driverContigsSummary(oLength, ostartPosition, oendPosition, omismatches, numNs, contigsLines[process]);
-				
-				//pass numSeqs to parent
-				ofstream out;
-				string tempFile = contigsreport + m->mothurGetpid(process) + ".num.temp";
-				m->openOutputFile(tempFile, out);
-				
-				out << num << endl;
-				out << ostartPosition.size() << endl;
-				for (int k = 0; k < ostartPosition.size(); k++)		{		out << ostartPosition[k] << '\t';   }  out << endl;
-				for (int k = 0; k < oendPosition.size(); k++)		{		out << oendPosition[k] << '\t';     }  out << endl;
-				for (int k = 0; k < oLength.size(); k++)			{		out << oLength[k] << '\t';          }  out << endl;
-				for (int k = 0; k < omismatches.size(); k++)        {		out << omismatches[k] << '\t';      }  out << endl;
-                for (int k = 0; k < numNs.size(); k++)              {		out << numNs[k] << '\t';            }  out << endl;
-				
-				out.close();
-				
-				exit(0);
-			}else { 
-                m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(process) + "\n"); processors = process;
-                for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                //wait to die
-                for (int i=0;i<processIDS.size();i++) {
-                    int temp = processIDS[i];
-                    wait(&temp);
-                }
-                m->control_pressed = false;
-                for (int i=0;i<processIDS.size();i++) {
-                    m->mothurRemove(contigsreport + (toString(processIDS[i]) + ".num.temp"));
-                }
-                recalc = true;
-                break;
-			}
+		vector<thread> thrds(processors - 1);
+		vector<contigsSumData> csDataItems(processors - 1);
+
+		//loop through and create all the processes you want
+		for (int i = 0; i < processors - 1; i++) {
+			thrds[i] = thread(&ScreenSeqsCommand::driverContigsSummaryWithData, this, ref(csDataItems[i]), contigsLines[i + 1]);
 		}
-        
-        if (recalc) {
-            //test line, also set recalc to true.
-            //for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); } for (int i=0;i<processIDS.size();i++) { int temp = processIDS[i]; wait(&temp); } m->control_pressed = false;  for (int i=0;i<processIDS.size();i++) {m->mothurRemove(contigsreport + (toString(processIDS[i]) + ".num.temp"));}processors=3; m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(processors) + "\n");
-            
-            vector<unsigned long long> positions;
-            contigsLines.clear();
-            positions = m->divideFilePerLine(contigsreport, processors);
-            for (int i = 0; i < (positions.size()-1); i++) { contigsLines.push_back(linePair(positions[i], positions[(i+1)])); }
-            
-            //redo file divide
-            lines.clear(); positions.clear();
-            positions = m->divideFile(fastafile, processors);
-            for (int i = 0; i < (positions.size()-1); i++) {  lines.push_back(linePair(positions[i], positions[(i+1)]));  }
-            
-            ostartPosition.clear();
-            oendPosition.clear();
-            oLength.clear();
-            omismatches.clear();
-            numNs.clear();
-            
-            num = 0;
-            processIDS.resize(0);
-            process = 1;
-            
-            //loop through and create all the processes you want
-            while (process != processors) {
-                pid_t pid = fork();
-                
-                if (pid > 0) {
-                    processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-                    process++;
-                }else if (pid == 0){
-                    num = driverContigsSummary(oLength, ostartPosition, oendPosition, omismatches, numNs, contigsLines[process]);
-                    
-                    //pass numSeqs to parent
-                    ofstream out;
-                    string tempFile = contigsreport + m->mothurGetpid(process) + ".num.temp";
-                    m->openOutputFile(tempFile, out);
-                    
-                    out << num << endl;
-                    out << ostartPosition.size() << endl;
-                    for (int k = 0; k < ostartPosition.size(); k++)		{		out << ostartPosition[k] << '\t';   }  out << endl;
-                    for (int k = 0; k < oendPosition.size(); k++)		{		out << oendPosition[k] << '\t';     }  out << endl;
-                    for (int k = 0; k < oLength.size(); k++)			{		out << oLength[k] << '\t';          }  out << endl;
-                    for (int k = 0; k < omismatches.size(); k++)        {		out << omismatches[k] << '\t';      }  out << endl;
-                    for (int k = 0; k < numNs.size(); k++)              {		out << numNs[k] << '\t';            }  out << endl;
-                    
-                    out.close();
-                    
-                    exit(0);
-                }else { 
-                    m->mothurOut("[ERROR]: unable to spawn the necessary processes."); m->mothurOutEndLine(); 
-                    for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                    exit(0);
-                }
-            }
-        }
-		
+
 		num = driverContigsSummary(oLength, ostartPosition, oendPosition, omismatches, numNs, contigsLines[0]);
         
 		//force parent to wait until all the processes are done
-		for (int i=0;i<processIDS.size();i++) { 
-			int temp = processIDS[i];
-			wait(&temp);
+		for (int i = 0;i < thrds.size();i++) {
+			thrds[i].join();
+			num += csDataItems[i].numSeqs;
 		}
-		
-		//parent reads in and combine Filter info
-		for (int i = 0; i < processIDS.size(); i++) {
-			string tempFilename = contigsreport + toString(processIDS[i]) + ".num.temp";
-			ifstream in;
-			m->openInputFile(tempFilename, in);
-			
-			int temp, tempNum;
-			in >> tempNum; m->gobble(in); num += tempNum;
-			in >> tempNum; m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; ostartPosition.push_back(temp);		}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; oendPosition.push_back(temp);		}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; oLength.push_back(temp);			}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; omismatches.push_back(temp);        }		m->gobble(in);
-            for (int k = 0; k < tempNum; k++)			{		in >> temp; numNs.push_back(temp);              }		m->gobble(in);
-            
-			in.close();
-			m->mothurRemove(tempFilename);
-		}
-		
-		
-#else 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Windows version shared memory, so be careful when passing variables through the seqSumData struct. 
-		//Above fork() will clone, so memory is separate, but that's not the case with windows, 
-		//Taking advantage of shared memory to allow both threads to add info to vectors.
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		/*
-		vector<contigsSumData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1); 
-		
-		//Create processor worker threads.
-		for( int i=0; i<processors-1; i++ ){
-            
-			// Allocate memory for thread data.
-			contigsSumData* tempSum = new contigsSumData(contigsreport, m, contigsLines[i].start, contigsLines[i].end, namefile, countfile, nameMap);
-			pDataArray.push_back(tempSum);
-			
-			//MySeqSumThreadFunction is in header. It must be global or static to work with the threads.
-			//default security attributes, thread function name, argument to thread function, use default creation flags, returns the thread identifier
-			hThreadArray[i] = CreateThread(NULL, 0, MyContigsSumThreadFunction, pDataArray[i], 0, &dwThreadIdArray[i]);   
-		}
-		*/
-        contigsLines[processors-1].start = 0;
-        //do your part
-		num = driverContigsSummary(oLength, ostartPosition, oendPosition, omismatches, numNs, contigsLines[processors-1]);
-        /*
-		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
-		
-		//Close all thread handles and free memory allocations.
-		for(int i=0; i < pDataArray.size(); i++){
-			num += pDataArray[i]->count;
-            if (pDataArray[i]->count != pDataArray[i]->end) {
-                m->mothurOut("[ERROR]: process " + toString(i) + " only processed " + toString(pDataArray[i]->count) + " of " + toString(pDataArray[i]->end) + " sequences assigned to it, quitting. \n"); m->control_pressed = true; 
-            }
-            for (int k = 0; k < pDataArray[i]->ostartPosition.size(); k++)  {	ostartPosition.push_back(pDataArray[i]->ostartPosition[k]);     }
-			for (int k = 0; k < pDataArray[i]->oendPosition.size(); k++)    {	oendPosition.push_back(pDataArray[i]->oendPosition[k]);         }
-            for (int k = 0; k < pDataArray[i]->oLength.size(); k++)         {	oLength.push_back(pDataArray[i]->oLength[k]);                   }
-            for (int k = 0; k < pDataArray[i]->omismatches.size(); k++)     {	omismatches.push_back(pDataArray[i]->omismatches[k]);           }
-            for (int k = 0; k < pDataArray[i]->numNs.size(); k++)           {	numNs.push_back(pDataArray[i]->numNs[k]);                       }
-			CloseHandle(hThreadArray[i]);
-			delete pDataArray[i];
-		}
-        */
-#endif		
+
+		ostartPosition.reserve(num);
+		oendPosition.reserve(num);
+		oLength.reserve(num);
+		omismatches.reserve(num);
+		numNs.reserve(num);
+		for (int i = 0; i < csDataItems.size(); i++) {
+			ostartPosition.insert(ostartPosition.end(), csDataItems[i].ostartPosition.begin(), csDataItems[i].ostartPosition.end());
+			oendPosition.insert(oendPosition.end(), csDataItems[i].oendPosition.begin(), csDataItems[i].oendPosition.end());
+			oLength.insert(oLength.end(), csDataItems[i].oLength.begin(), csDataItems[i].oLength.end());
+			omismatches.insert(omismatches.end(), csDataItems[i].omismatches.begin(), csDataItems[i].omismatches.end());
+			numNs.insert(numNs.end(), csDataItems[i].numNs.begin(), csDataItems[i].numNs.end());
+		}		
         return num;
 	}
 	catch(exception& e) {
@@ -1430,27 +1226,9 @@ int ScreenSeqsCommand::optimizeAlign(){
 		
         vector<unsigned long long> positions;
         vector<linePair> alignLines;
-#if defined (UNIX)
 		positions = m->divideFilePerLine(alignreport, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { alignLines.push_back(linePair(positions[i], positions[(i+1)])); }	
-#else
-		if(processors == 1){ alignLines.push_back(linePair(0, 1000));  }
-        else {
-            int numAlignSeqs = 0;
-            positions = m->setFilePosEachLine(alignreport, numAlignSeqs); 
-            if (positions.size() < processors) { processors = positions.size(); }
-            
-            //figure out how many sequences you have to process
-            int numSeqsPerProcessor = numAlignSeqs / processors;
-            for (int i = 0; i < processors; i++) {
-                int startIndex =  i * numSeqsPerProcessor;
-                if(i == (processors - 1)){	numSeqsPerProcessor = numAlignSeqs - i * numSeqsPerProcessor; 	}
-                alignLines.push_back(linePair(positions[startIndex], numSeqsPerProcessor));
-            }
-        }
-#endif
-		
-        
+		        
         createProcessesAlignSummary(sims, scores, inserts, alignLines);
         
         if (m->control_pressed) {  return 0; }
@@ -1521,12 +1299,8 @@ int ScreenSeqsCommand::driverAlignSummary(vector<float>& sims, vector<float>& sc
             count++;
 			
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-#if defined (UNIX)
             unsigned long long pos = in.tellg();
             if ((pos == -1) || (pos >= filePos.end)) { break; }
-#else
-            if (in.eof()) { break; }
-#endif
 		}
 		
 		in.close();
@@ -1539,183 +1313,41 @@ int ScreenSeqsCommand::driverAlignSummary(vector<float>& sims, vector<float>& sc
 	}
 }
 
+void ScreenSeqsCommand::driverAlignSummaryWithData(alignsData& aData, linePair filePos) {
+	driverAlignSummary(aData.sims, aData.scores, aData.inserts, filePos);
+}
+
 /**************************************************************************************************/
 int ScreenSeqsCommand::createProcessesAlignSummary(vector<float>& sims, vector<float>& scores, vector<int>& inserts, vector<linePair> alignLines) {
 	try {
-        
-        int process = 1;
+
 		int num = 0;
-		vector<int> processIDS;
-        bool recalc = false;
-        
-#if defined (UNIX)
-        
+
+		vector<thread> thrds(processors - 1);
+		vector<alignsData> aDataItems(processors - 1);
+
 		//loop through and create all the processes you want
-		while (process != processors) {
-			pid_t pid = fork();
-			
-			if (pid > 0) {
-				processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-				process++;
-			}else if (pid == 0){
-				num = driverAlignSummary(sims, scores, inserts, alignLines[process]);
-				
-				//pass numSeqs to parent
-				ofstream out;
-				string tempFile = alignreport + m->mothurGetpid(process) + ".num.temp";
-				m->openOutputFile(tempFile, out);
-				
-				out << num << endl;
-				out << sims.size() << endl;
-				for (int k = 0; k < sims.size(); k++)		{		out << sims[k] << '\t';         }  out << endl;
-				for (int k = 0; k < scores.size(); k++)		{		out << scores[k] << '\t';       }  out << endl;
-				for (int k = 0; k < inserts.size(); k++)	{		out << inserts[k] << '\t';      }  out << endl;
-				
-				out.close();
-				
-				exit(0);
-			}else { 
-                m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(process) + "\n"); processors = process;
-                for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                //wait to die
-                for (int i=0;i<processIDS.size();i++) {
-                    int temp = processIDS[i];
-                    wait(&temp);
-                }
-                m->control_pressed = false;
-                for (int i=0;i<processIDS.size();i++) {
-                    m->mothurRemove(contigsreport + (toString(processIDS[i]) + ".num.temp"));
-                }
-                recalc = true;
-                break;
-			}
+		for (int i = 0; i < processors - 1; i++) {
+			thrds[i] = thread(&ScreenSeqsCommand::driverAlignSummaryWithData, this, ref(aDataItems[i]), alignLines[i + 1]);
 		}
-        
-        if (recalc) {
-            //test line, also set recalc to true.
-            //for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); } for (int i=0;i<processIDS.size();i++) { int temp = processIDS[i]; wait(&temp); } m->control_pressed = false;  for (int i=0;i<processIDS.size();i++) {m->mothurRemove(contigsreport + (toString(processIDS[i]) + ".num.temp"));}processors=3; m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(processors) + "\n");
-            
-            vector<unsigned long long> positions;
-            alignLines.clear();
-            positions = m->divideFilePerLine(contigsreport, processors);
-            for (int i = 0; i < (positions.size()-1); i++) { alignLines.push_back(linePair(positions[i], positions[(i+1)])); }
-            
-            //redo file divide
-            lines.clear(); positions.clear();
-            positions = m->divideFile(fastafile, processors);
-            for (int i = 0; i < (positions.size()-1); i++) {  lines.push_back(linePair(positions[i], positions[(i+1)]));  }
-            
-            sims.clear();
-            scores.clear();
-            inserts.clear();
-            
-            num = 0;
-            processIDS.resize(0);
-            process = 1;
-            
-            //loop through and create all the processes you want
-            while (process != processors) {
-                pid_t pid = fork();
-                
-                if (pid > 0) {
-                    processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-                    process++;
-                }else if (pid == 0){
-                    num = driverAlignSummary(sims, scores, inserts, alignLines[process]);
-                    
-                    //pass numSeqs to parent
-                    ofstream out;
-                    string tempFile = alignreport + m->mothurGetpid(process) + ".num.temp";
-                    m->openOutputFile(tempFile, out);
-                    
-                    out << num << endl;
-                    out << sims.size() << endl;
-                    for (int k = 0; k < sims.size(); k++)		{		out << sims[k] << '\t';         }  out << endl;
-                    for (int k = 0; k < scores.size(); k++)		{		out << scores[k] << '\t';       }  out << endl;
-                    for (int k = 0; k < inserts.size(); k++)	{		out << inserts[k] << '\t';      }  out << endl;
-                    
-                    out.close();
-                    
-                    exit(0);
-                }else { 
-                    m->mothurOut("[ERROR]: unable to spawn the necessary processes."); m->mothurOutEndLine(); 
-                    for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                    exit(0);
-                }
-            }
-        }
-		
+
 		num = driverAlignSummary(sims, scores, inserts, alignLines[0]);
-		
+
 		//force parent to wait until all the processes are done
-		for (int i=0;i<processIDS.size();i++) { 
-			int temp = processIDS[i];
-			wait(&temp);
+		for (int i = 0;i < thrds.size();i++) {
+			thrds[i].join();
+			num += aDataItems[i].numSeqs;
 		}
-		
-		//parent reads in and combine Filter info
-		for (int i = 0; i < processIDS.size(); i++) {
-			string tempFilename = alignreport + toString(processIDS[i]) + ".num.temp";
-			ifstream in;
-			m->openInputFile(tempFilename, in);
-			
-			int temp, tempNum;
-            float temp2;
-			in >> tempNum; m->gobble(in); num += tempNum;
-			in >> tempNum; m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp2; sims.push_back(temp2);		}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp2; scores.push_back(temp2);		}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; inserts.push_back(temp);	}		m->gobble(in);
-			  
-			in.close();
-			m->mothurRemove(tempFilename);
+
+		sims.reserve(num);
+		scores.reserve(num);
+		inserts.reserve(num);
+		for (int i = 0; i < aDataItems.size(); i++) {
+			sims.insert(sims.end(), aDataItems[i].sims.begin(), aDataItems[i].sims.end());
+			scores.insert(scores.end(), aDataItems[i].scores.begin(), aDataItems[i].scores.end());
+			inserts.insert(inserts.end(), aDataItems[i].inserts.begin(), aDataItems[i].inserts.end());
 		}
-		
-		
-#else 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Windows version shared memory, so be careful when passing variables through the seqSumData struct. 
-		//Above fork() will clone, so memory is separate, but that's not the case with windows, 
-		//Taking advantage of shared memory to allow both threads to add info to vectors.
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		/*
-		vector<alignsData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1); 
-		
-		//Create processor worker threads.
-		for( int i=0; i<processors-1; i++ ){
-            
-			// Allocate memory for thread data.
-			alignsData* tempSum = new alignsData(alignreport, m, alignLines[i].start, alignLines[i].end, namefile, countfile, nameMap);
-			pDataArray.push_back(tempSum);
-			
-			//MySeqSumThreadFunction is in header. It must be global or static to work with the threads.
-			//default security attributes, thread function name, argument to thread function, use default creation flags, returns the thread identifier
-			hThreadArray[i] = CreateThread(NULL, 0, MyAlignsThreadFunction, pDataArray[i], 0, &dwThreadIdArray[i]);   
-		}*/
-		alignLines[processors-1].start = 0;
-        //do your part
-		num = driverAlignSummary(sims, scores, inserts, alignLines[processors-1]);
-       /*
-		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
-		
-		//Close all thread handles and free memory allocations.
-		for(int i=0; i < pDataArray.size(); i++){
-			num += pDataArray[i]->count;
-            if (pDataArray[i]->count != pDataArray[i]->end) {
-                m->mothurOut("[ERROR]: process " + toString(i) + " only processed " + toString(pDataArray[i]->count) + " of " + toString(pDataArray[i]->end) + " sequences assigned to it, quitting. \n"); m->control_pressed = true; 
-            }
-            for (int k = 0; k < pDataArray[i]->sims.size(); k++)        {	sims.push_back(pDataArray[i]->sims[k]);         }
-			for (int k = 0; k < pDataArray[i]->scores.size(); k++)      {	scores.push_back(pDataArray[i]->scores[k]);     }
-            for (int k = 0; k < pDataArray[i]->inserts.size(); k++)     {	inserts.push_back(pDataArray[i]->inserts[k]);   }
-           	CloseHandle(hThreadArray[i]);
-			delete pDataArray[i];
-		}
-        */
-#endif		
-        return num;
+		return num;
 	}
 	catch(exception& e) {
 		m->errorOut(e, "ScreenSeqsCommand", "createProcessesAlignSummary");
@@ -1733,26 +1365,8 @@ int ScreenSeqsCommand::getSummary(vector<unsigned long long>& positions){
 		vector<int> longHomoPolymer;
         vector<int> numNs;
 		
-#if defined (UNIX)
 		positions = m->divideFile(fastafile, processors);
 		for (int i = 0; i < (positions.size()-1); i++) { lines.push_back(linePair(positions[i], positions[(i+1)])); }	
-#else
-		if(processors == 1){ lines.push_back(linePair(0, 1000));  }
-        else {
-            int numFastaSeqs = 0;
-            positions = m->setFilePosFasta(fastafile, numFastaSeqs); 
-            if (positions.size() < processors) { processors = positions.size(); }
-            
-            //figure out how many sequences you have to process
-            int numSeqsPerProcessor = numFastaSeqs / processors;
-            for (int i = 0; i < processors; i++) {
-                int startIndex =  i * numSeqsPerProcessor;
-                if(i == (processors - 1)){	numSeqsPerProcessor = numFastaSeqs - i * numSeqsPerProcessor; 	}
-                lines.push_back(linePair(positions[startIndex], numSeqsPerProcessor));
-            }
-        }
-#endif
-		
 
 		int numSeqs = 0;
 		sort(startPosition.begin(), startPosition.end());
@@ -1829,12 +1443,8 @@ int ScreenSeqsCommand::driverCreateSummary(vector<int>& startPosition, vector<in
 				count++;
 			}
 			//if((count) % 100 == 0){	m->mothurOut("Optimizing sequence: " + toString(count)); m->mothurOutEndLine();		}
-			#if defined (UNIX)
-				unsigned long long pos = in.tellg();
-				if ((pos == -1) || (pos >= filePos.end)) { break; }
-			#else
-				if (in.eof()) { break; }
-			#endif
+			unsigned long long pos = in.tellg();
+			if ((pos == -1) || (pos >= filePos.end)) { break; }
 			
 		}
 		
@@ -1847,192 +1457,47 @@ int ScreenSeqsCommand::driverCreateSummary(vector<int>& startPosition, vector<in
 		exit(1);
 	}
 }
+
+void ScreenSeqsCommand::driverCreateSummaryWithData(sumData& sData, string filename, linePair filePos) {
+	sData.numSeqs = driverCreateSummary(sData.startPosition, sData.endPosition, sData.seqLength, sData.ambigBases, sData.longHomoPolymer, sData.numNs, filename, filePos);
+}
 /**************************************************************************************************/
 int ScreenSeqsCommand::createProcessesCreateSummary(vector<int>& startPosition, vector<int>& endPosition, vector<int>& seqLength, vector<int>& ambigBases, vector<int>& longHomoPolymer, vector<int>& numNs, string filename) {
 	try {
         
-        int process = 1;
 		int num = 0;
-		vector<int> processIDS;
-        bool recalc = false;
-
-#if defined (UNIX)
 				
 		//loop through and create all the processes you want
-		while (process != processors) {
-			pid_t pid = fork();
-			
-			if (pid > 0) {
-				processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-				process++;
-			}else if (pid == 0){
-				num = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[process]);
-				
-				//pass numSeqs to parent
-				ofstream out;
-				string tempFile = fastafile + m->mothurGetpid(process) + ".num.temp";
-				m->openOutputFile(tempFile, out);
-				
-				out << num << endl;
-				out << startPosition.size() << endl;
-				for (int k = 0; k < startPosition.size(); k++)		{		out << startPosition[k] << '\t'; }  out << endl;
-				for (int k = 0; k < endPosition.size(); k++)		{		out << endPosition[k] << '\t'; }  out << endl;
-				for (int k = 0; k < seqLength.size(); k++)			{		out << seqLength[k] << '\t'; }  out << endl;
-				for (int k = 0; k < ambigBases.size(); k++)			{		out << ambigBases[k] << '\t'; }  out << endl;
-				for (int k = 0; k < longHomoPolymer.size(); k++)	{		out << longHomoPolymer[k] << '\t'; }  out << endl;
-                for (int k = 0; k < numNs.size(); k++)	{		out << numNs[k] << '\t'; }  out << endl;
-				
-				out.close();
-				
-				exit(0);
-			}else { 
-                m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(process) + "\n"); processors = process;
-                for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                //wait to die
-                for (int i=0;i<processIDS.size();i++) {
-                    int temp = processIDS[i];
-                    wait(&temp);
-                }
-                m->control_pressed = false;
-                for (int i=0;i<processIDS.size();i++) {
-                    m->mothurRemove(contigsreport + (toString(processIDS[i]) + ".num.temp"));
-                }
-                recalc = true;
-                break;
-			}
-		}
-        
-        if (recalc) {
-            //test line, also set recalc to true.
-            //for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); } for (int i=0;i<processIDS.size();i++) { int temp = processIDS[i]; wait(&temp); } m->control_pressed = false;  for (int i=0;i<processIDS.size();i++) {m->mothurRemove(contigsreport + (toString(processIDS[i]) + ".num.temp"));}processors=3; m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(processors) + "\n");
-            
-            vector<unsigned long long> positions;
-            lines.clear();
-            positions = m->divideFile(fastafile, processors);
-            for (int i = 0; i < (positions.size()-1); i++) {  lines.push_back(linePair(positions[i], positions[(i+1)]));  }
-            
-            startPosition.clear();
-            endPosition.clear();
-            seqLength.clear();
-            ambigBases.clear();
-            longHomoPolymer.clear();
-            numNs.clear();
-            
-            num = 0;
-            processIDS.resize(0);
-            process = 1;
-            
-            //loop through and create all the processes you want
-            while (process != processors) {
-                pid_t pid = fork();
-                
-                if (pid > 0) {
-                    processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-                    process++;
-                }else if (pid == 0){
-                    num = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[process]);
-                    
-                    //pass numSeqs to parent
-                    ofstream out;
-                    string tempFile = fastafile + m->mothurGetpid(process) + ".num.temp";
-                    m->openOutputFile(tempFile, out);
-                    
-                    out << num << endl;
-                    out << startPosition.size() << endl;
-                    for (int k = 0; k < startPosition.size(); k++)		{		out << startPosition[k] << '\t'; }  out << endl;
-                    for (int k = 0; k < endPosition.size(); k++)		{		out << endPosition[k] << '\t'; }  out << endl;
-                    for (int k = 0; k < seqLength.size(); k++)			{		out << seqLength[k] << '\t'; }  out << endl;
-                    for (int k = 0; k < ambigBases.size(); k++)			{		out << ambigBases[k] << '\t'; }  out << endl;
-                    for (int k = 0; k < longHomoPolymer.size(); k++)	{		out << longHomoPolymer[k] << '\t'; }  out << endl;
-                    for (int k = 0; k < numNs.size(); k++)	{		out << numNs[k] << '\t'; }  out << endl;
-                    
-                    out.close();
-                    
-                    exit(0);
-                }else { 
-                    m->mothurOut("[ERROR]: unable to spawn the necessary processes."); m->mothurOutEndLine(); 
-                    for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                    exit(0);
-                }
-            }
-        }
+		vector<thread> thrds(processors - 1);
+		vector<sumData> sDataItems(processors - 1);
 
-		
+		//loop through and create all the processes you want
+		for (int i = 0; i < processors - 1; i++) {
+			thrds[i] = thread(&ScreenSeqsCommand::driverCreateSummaryWithData, this, ref(sDataItems[i]), fastafile, lines[i + 1]);
+		}
+
 		num = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[0]);
-		
+
 		//force parent to wait until all the processes are done
-		for (int i=0;i<processIDS.size();i++) { 
-			int temp = processIDS[i];
-			wait(&temp);
-		}
-		
-		//parent reads in and combine Filter info
-		for (int i = 0; i < processIDS.size(); i++) {
-			string tempFilename = fastafile + toString(processIDS[i]) + ".num.temp";
-			ifstream in;
-			m->openInputFile(tempFilename, in);
-			
-			int temp, tempNum;
-			in >> tempNum; m->gobble(in); num += tempNum;
-			in >> tempNum; m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; startPosition.push_back(temp);		}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; endPosition.push_back(temp);		}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; seqLength.push_back(temp);			}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; ambigBases.push_back(temp);			}		m->gobble(in);
-			for (int k = 0; k < tempNum; k++)			{		in >> temp; longHomoPolymer.push_back(temp);	}		m->gobble(in);
-            for (int k = 0; k < tempNum; k++)			{		in >> temp; numNs.push_back(temp);	}		m->gobble(in);
-				
-			in.close();
-			m->mothurRemove(tempFilename);
-		}
-		
-		
-#else 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Windows version shared memory, so be careful when passing variables through the seqSumData struct. 
-		//Above fork() will clone, so memory is separate, but that's not the case with windows, 
-		//Taking advantage of shared memory to allow both threads to add info to vectors.
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		vector<sumData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1); 
-		
-		//Create processor worker threads.
-		for( int i=0; i<processors-1; i++ ){
-            
-			// Allocate memory for thread data.
-			sumData* tempSum = new sumData(filename, m, lines[i].start, lines[i].end, namefile, countfile, nameMap);
-			pDataArray.push_back(tempSum);
-			
-			//MySeqSumThreadFunction is in header. It must be global or static to work with the threads.
-			//default security attributes, thread function name, argument to thread function, use default creation flags, returns the thread identifier
-			hThreadArray[i] = CreateThread(NULL, 0, MySumThreadFunction, pDataArray[i], 0, &dwThreadIdArray[i]);   
-		}
-		
-        //do your part
-		num = driverCreateSummary(startPosition, endPosition, seqLength, ambigBases, longHomoPolymer, numNs, fastafile, lines[processors-1]);
-         
-		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
-		
-		//Close all thread handles and free memory allocations.
-		for(int i=0; i < pDataArray.size(); i++){
-			num += pDataArray[i]->count;
-            if (pDataArray[i]->count != pDataArray[i]->end) {
-                m->mothurOut("[ERROR]: process " + toString(i) + " only processed " + toString(pDataArray[i]->count) + " of " + toString(pDataArray[i]->end) + " sequences assigned to it, quitting. \n"); m->control_pressed = true; 
-            }
-            for (int k = 0; k < pDataArray[i]->startPosition.size(); k++) {	startPosition.push_back(pDataArray[i]->startPosition[k]);       }
-			for (int k = 0; k < pDataArray[i]->endPosition.size(); k++) {	endPosition.push_back(pDataArray[i]->endPosition[k]);       }
-            for (int k = 0; k < pDataArray[i]->seqLength.size(); k++) {	seqLength.push_back(pDataArray[i]->seqLength[k]);       }
-            for (int k = 0; k < pDataArray[i]->ambigBases.size(); k++) {	ambigBases.push_back(pDataArray[i]->ambigBases[k]);       }
-            for (int k = 0; k < pDataArray[i]->longHomoPolymer.size(); k++) {	longHomoPolymer.push_back(pDataArray[i]->longHomoPolymer[k]);       }
-            for (int k = 0; k < pDataArray[i]->numNs.size(); k++) {	numNs.push_back(pDataArray[i]->numNs[k]);       }
-			CloseHandle(hThreadArray[i]);
-			delete pDataArray[i];
+		for (int i = 0;i < thrds.size();i++) {
+			thrds[i].join();
+			num += sDataItems[i].numSeqs;
 		}
 
-#endif		
+		startPosition.reserve(num);
+		endPosition.reserve(num);
+		seqLength.reserve(num);
+		ambigBases.reserve(num);
+		longHomoPolymer.reserve(num);
+		numNs.reserve(num);
+		for (int i = 0; i < sDataItems.size(); i++) {
+			startPosition.insert(startPosition.end(), sDataItems[i].startPosition.begin(), sDataItems[i].startPosition.end());
+			endPosition.insert(endPosition.end(), sDataItems[i].endPosition.begin(), sDataItems[i].endPosition.end());
+			seqLength.insert(seqLength.end(), sDataItems[i].seqLength.begin(), sDataItems[i].seqLength.end());
+			ambigBases.insert(seqLength.end(), sDataItems[i].ambigBases.begin(), sDataItems[i].ambigBases.end());
+			longHomoPolymer.insert(longHomoPolymer.end(), sDataItems[i].longHomoPolymer.begin(), sDataItems[i].longHomoPolymer.end());
+			numNs.insert(numNs.end(), sDataItems[i].numNs.begin(), sDataItems[i].numNs.end());
+		}
         return num;
 	}
 	catch(exception& e) {
@@ -2340,12 +1805,8 @@ int ScreenSeqsCommand::driver(linePair filePos, string goodFName, string badAccn
                 count++;
 			}
 			
-			#if defined (UNIX)
-				unsigned long long pos = inFASTA.tellg();
-				if ((pos == -1) || (pos >= filePos.end)) { break; }
-			#else
-				if (inFASTA.eof()) { break; }
-			#endif
+			unsigned long long pos = inFASTA.tellg();
+			if ((pos == -1) || (pos >= filePos.end)) { break; }
 			
 			//report progress
 			if((count) % 100 == 0){	m->mothurOutJustToScreen("Processing sequence: " + toString(count)+"\n"); 		}
@@ -2367,179 +1828,35 @@ int ScreenSeqsCommand::driver(linePair filePos, string goodFName, string badAccn
 }
 /**************************************************************************************************/
 
+void ScreenSeqsCommand::driverWithCount(linePair filePos, string goodFName, string badAccnosFName, string filename, sumScreenData& ssData) {
+	ssData.numSeqs = driver(filePos, goodFName, badAccnosFName, filename, ssData.badSeqs);
+}
+
 int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, string filename, map<string, string>& badSeqNames) {
 	try {
         
-        vector<int> processIDS;   
-        int process = 1;
 		int num = 0;
-        bool recalc = false;
 
-#if defined (UNIX)
-				
+		vector<thread> thrds(processors - 1);
+		vector<sumScreenData> ssDataItems(processors - 1);
+
 		//loop through and create all the processes you want
-		while (process != processors) {
-			pid_t pid = fork();
-			
-			if (pid > 0) {
-				processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-				process++;
-			}else if (pid == 0){
-				num = driver(lines[process], goodFileName + m->mothurGetpid(process) + ".temp", badAccnos + m->mothurGetpid(process) + ".temp", filename, badSeqNames);
-				
-				//pass numSeqs to parent
-				ofstream out;
-				string tempFile = filename + m->mothurGetpid(process) + ".num.temp";
-				m->openOutputFile(tempFile, out);
-				out << num << endl;
-				out.close();
-				
-				exit(0);
-			}else { 
-                m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(process) + "\n"); processors = process;
-                for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                //wait to die
-                for (int i=0;i<processIDS.size();i++) {
-                    int temp = processIDS[i];
-                    wait(&temp);
-                }
-                m->control_pressed = false;
-                for (int i=0;i<processIDS.size();i++) {
-                    m->mothurRemove(filename + (toString(processIDS[i]) + ".num.temp"));
-                }
-                recalc = true;
-                break;
-			}
-		}
-        
-        if (recalc) {
-            //test line, also set recalc to true.
-            //for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); } for (int i=0;i<processIDS.size();i++) { int temp = processIDS[i]; wait(&temp); } m->control_pressed = false;  for (int i=0;i<processIDS.size();i++) {m->mothurRemove(filename + (toString(processIDS[i]) + ".num.temp"));}processors=3; m->mothurOut("[ERROR]: unable to spawn the number of processes you requested, reducing number to " + toString(processors) + "\n");
-            
-            //redo file divide
-            lines.clear();
-            vector<unsigned long long> positions = m->divideFile(filename, processors);
-            for (int i = 0; i < (positions.size()-1); i++) {  lines.push_back(linePair(positions[i], positions[(i+1)]));  }
-            
-            num = 0;
-            processIDS.resize(0);
-            process = 1;
-            
-            //loop through and create all the processes you want
-            while (process != processors) {
-                pid_t pid = fork();
-                
-                if (pid > 0) {
-                    processIDS.push_back(pid);  //create map from line number to pid so you can append files in correct order later
-                    process++;
-                }else if (pid == 0){
-                    num = driver(lines[process], goodFileName + m->mothurGetpid(process) + ".temp", badAccnos + m->mothurGetpid(process) + ".temp", filename, badSeqNames);
-                    
-                    //pass numSeqs to parent
-                    ofstream out;
-                    string tempFile = filename + m->mothurGetpid(process) + ".num.temp";
-                    m->openOutputFile(tempFile, out);
-                    out << num << endl;
-                    out.close();
-                    
-                    exit(0);
-                }else { 
-                    m->mothurOut("[ERROR]: unable to spawn the necessary processes."); m->mothurOutEndLine(); 
-                    for (int i = 0; i < processIDS.size(); i++) { kill (processIDS[i], SIGINT); }
-                    exit(0);
-                }
-            }
-        }
-		
-        num = driver(lines[0], goodFileName, badAccnos, filename, badSeqNames);
-        
-		//force parent to wait until all the processes are done
-		for (int i=0;i<processIDS.size();i++) { 
-			int temp = processIDS[i];
-			wait(&temp);
-		}
-		
-		for (int i = 0; i < processIDS.size(); i++) {
-			ifstream in;
-			string tempFile =  filename + toString(processIDS[i]) + ".num.temp";
-			m->openInputFile(tempFile, in);
-			if (!in.eof()) { int tempNum = 0; in >> tempNum; num += tempNum; }
-			in.close(); m->mothurRemove(tempFile);
-            
-            m->appendFiles((goodFileName + toString(processIDS[i]) + ".temp"), goodFileName);
-            m->mothurRemove((goodFileName + toString(processIDS[i]) + ".temp"));
-			
-            m->appendFiles((badAccnos + toString(processIDS[i]) + ".temp"), badAccnos);
-            m->mothurRemove((badAccnos + toString(processIDS[i]) + ".temp"));
-		}
-		
-        //read badSeqs in because root process doesnt know what other "bad" seqs the children found
-        ifstream inBad;
-        int ableToOpen = m->openInputFile(badAccnos, inBad, "no error");
-        
-        if (ableToOpen == 0) {
-            badSeqNames.clear();
-            string tempName, trashCode;
-            while (!inBad.eof()) {
-                inBad >> tempName >> trashCode; m->gobble(inBad);
-                badSeqNames[tempName] = trashCode;
-            }
-            inBad.close();
-        }
-#else
-        
-        //////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Windows version shared memory, so be careful when passing variables through the sumScreenData struct. 
-		//Above fork() will clone, so memory is separate, but that's not the case with windows, 
-		//Taking advantage of shared memory to allow both threads to add info to badSeqNames.
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		vector<sumScreenData*> pDataArray; 
-		vector<DWORD> dwThreadIdArray(processors-1);
-		vector<HANDLE> hThreadArray(processors-1); 
-		
-		//Create processor worker threads.
-		for( int i=0; i<processors-1; i++ ){
-            
-            string extension = "";
-            if (i!=0) {extension += toString(i) + ".temp"; processIDS.push_back(i); }
-            
-			// Allocate memory for thread data.
-			sumScreenData* tempSum = new sumScreenData(startPos, endPos, maxAmbig, maxHomoP, minLength, maxLength, maxN, badSeqNames, filename, summaryfile, contigsreport, m, lines[i].start, lines[i].end,goodFileName+extension, badAccnos+extension);
-			pDataArray.push_back(tempSum);
-			
-			//default security attributes, thread function name, argument to thread function, use default creation flags, returns the thread identifier
-			hThreadArray[i] = CreateThread(NULL, 0, MySumScreenThreadFunction, pDataArray[i], 0, &dwThreadIdArray[i]);   
-		}
-		
-        //do your part
-        num = driver(lines[processors-1], (goodFileName+toString(processors-1)+".temp"), (badAccnos+toString(processors-1)+".temp"), filename, badSeqNames);
-        processIDS.push_back(processors-1);
-        
-		//Wait until all threads have terminated.
-		WaitForMultipleObjects(processors-1, &(hThreadArray[0]), TRUE, INFINITE);
-		
-		//Close all thread handles and free memory allocations.
-		for(int i=0; i < pDataArray.size(); i++){
-			num += pDataArray[i]->count;
-            if (pDataArray[i]->count != pDataArray[i]->end) {
-                m->mothurOut("[ERROR]: process " + toString(i) + " only processed " + toString(pDataArray[i]->count) + " of " + toString(pDataArray[i]->end) + " sequences assigned to it, quitting. \n"); m->control_pressed = true; 
-            }
-            for (map<string, string>::iterator it = pDataArray[i]->badSeqNames.begin(); it != pDataArray[i]->badSeqNames.end(); it++) {	badSeqNames[it->first] = it->second;       }
-			CloseHandle(hThreadArray[i]);
-			delete pDataArray[i];
-		}
-        
-        for (int i = 0; i < processIDS.size(); i++) {
-            m->appendFiles((goodFileName + toString(processIDS[i]) + ".temp"), goodFileName);
-            m->mothurRemove((goodFileName + toString(processIDS[i]) + ".temp"));
-			
-            m->appendFiles((badAccnos + toString(processIDS[i]) + ".temp"), badAccnos);
-            m->mothurRemove((badAccnos + toString(processIDS[i]) + ".temp"));
+		for (int i = 0; i < processors - 1; i++) {
+			thrds[i] = thread(&ScreenSeqsCommand::driverWithCount, this, lines[i + 1], goodFileName + toString(i) + ".temp", badAccnos + toString(i) + ".temp", filename, ref(ssDataItems[i]));
 		}
 
-#endif	
-        
+		num = driver(lines[0], goodFileName, badAccnos, filename, badSeqNames);
+
+		//force parent to wait until all the processes are done
+		for (int i = 0;i < thrds.size();i++) {
+			thrds[i].join();
+			num += ssDataItems[i].numSeqs;
+			badSeqNames.insert(ssDataItems[i].badSeqs.begin(), ssDataItems[i].badSeqs.end());
+			m->appendFiles((goodFileName + toString(i) + ".temp"), goodFileName);
+			m->mothurRemove(goodFileName + toString(i) + ".temp");
+			m->appendFiles((badAccnos + toString(i) + ".temp"), badAccnos);
+			m->mothurRemove(badAccnos + toString(i) + ".temp");
+		}
         return num;
         
 	}

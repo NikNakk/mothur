@@ -303,20 +303,14 @@ AlignCommand::AlignCommand(string option)  {
 	}
 }
 //**********************************************************************************************************************
-AlignCommand::~AlignCommand(){	
-
-	if (abort == false) {
-		for (int i = 0; i < lines.size(); i++) {  delete lines[i];  }  lines.clear();
-		delete templateDB;
-	}
-}
+AlignCommand::~AlignCommand(){}
 //**********************************************************************************************************************
 
 int AlignCommand::execute(){
 	try {
 		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
 
-		templateDB = new AlignmentDB(templateFileName, search, kmerSize, gapOpen, gapExtend, match, misMatch, rand());
+		templateDB = make_shared<AlignmentDB>(templateFileName, search, kmerSize, gapOpen, gapExtend, match, misMatch, rand());
 		
 		for (int s = 0; s < candidateFileNames.size(); s++) {
 			if (m->control_pressed) { outputTypes.clear(); return 0; }
@@ -332,13 +326,13 @@ int AlignCommand::execute(){
 			bool hasAccnos = true;
 			
 			int numFastaSeqs = 0;
-			for (int i = 0; i < lines.size(); i++) {  delete lines[i];  }  lines.clear();
+			lines.clear();
 			int start = time(NULL);
 		
 
 			vector<unsigned long long> positions; 
 			positions = m->divideFile(candidateFileNames[s], processors);
-			for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(new linePair(positions[i], positions[(i+1)]));	}
+			for (int i = 0; i < (positions.size()-1); i++) {	lines.push_back(linePair(positions[i], positions[(i+1)]));	}
 			
 			if(processors == 1){
 				numFastaSeqs = driver(lines[0], alignFileName, reportFileName, accnosFileName, candidateFileNames[s]);
@@ -388,7 +382,7 @@ int AlignCommand::execute(){
 }
 
 //**********************************************************************************************************************
-int AlignCommand::driver(linePair* filePos, string alignFName, string reportFName, string accnosFName, string filename){
+int AlignCommand::driver(linePair filePos, string alignFName, string reportFName, string accnosFName, string filename){
 	try {
 		ofstream alignmentFile;
 		m->openOutputFile(alignFName, alignmentFile);
@@ -401,31 +395,31 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 		ifstream inFASTA;
 		m->openInputFile(filename, inFASTA);
 
-		inFASTA.seekg(filePos->start);
+		inFASTA.seekg(filePos.start);
 
 		bool done = false;
 		int count = 0;
 		
 		//moved this into driver to avoid deep copies in windows paralellized version
-		Alignment* alignment;
+		shared_ptr<Alignment> alignment;
 		int longestBase = templateDB->getLongestBase();
         if (m->debug) { m->mothurOut("[DEBUG]: template longest base = "  + toString(templateDB->getLongestBase()) + " \n"); }
-		if(align == "gotoh")			{	alignment = new GotohOverlap(gapOpen, gapExtend, match, misMatch, longestBase);			}
-		else if(align == "needleman")	{	alignment = new NeedlemanOverlap(gapOpen, match, misMatch, longestBase);				}
-		else if(align == "blast")		{	alignment = new BlastAlignment(gapOpen, gapExtend, match, misMatch);		}
-		else if(align == "noalign")		{	alignment = new NoAlign();													}
+		if(align == "gotoh")			{	alignment = (shared_ptr<Alignment>)make_shared<GotohOverlap>(gapOpen, gapExtend, match, misMatch, longestBase);			}
+		else if(align == "needleman")	{	alignment = (shared_ptr<Alignment>)make_shared<NeedlemanOverlap>(gapOpen, match, misMatch, longestBase);				}
+		else if(align == "blast")		{	alignment = (shared_ptr<Alignment>)make_shared<BlastAlignment>(gapOpen, gapExtend, match, misMatch);		}
+		else if(align == "noalign")		{	alignment = (shared_ptr<Alignment>)make_shared<NoAlign>();													}
 		else {
 			m->mothurOut(align + " is not a valid alignment option. I will run the command using needleman.");
 			m->mothurOutEndLine();
-			alignment = new NeedlemanOverlap(gapOpen, match, misMatch, longestBase);
+			alignment = (shared_ptr<Alignment>)make_shared<NeedlemanOverlap>(gapOpen, match, misMatch, longestBase);
 		}
 	
 		while (!done) {
 			
 			if (m->control_pressed) {  break; }
 			
-			Sequence* candidateSeq = new Sequence(inFASTA);  m->gobble(inFASTA);
-			report.setCandidate(candidateSeq);
+			shared_ptr<Sequence> candidateSeq = make_shared<Sequence>(inFASTA);  m->gobble(inFASTA);
+			report.setCandidate(candidateSeq.get());
 
 			int origNumBases = candidateSeq->getNumBases();
 			string originalUnaligned = candidateSeq->getUnaligned();
@@ -436,21 +430,13 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
                     if (m->debug) { m->mothurOut("[DEBUG]: " + candidateSeq->getName() + " " + toString(candidateSeq->getUnaligned().length()) + " " + toString(alignment->getnRows()) + " \n"); }
 					alignment->resize(candidateSeq->getUnaligned().length()+2);
 				}
-				Sequence temp = templateDB->findClosestSequence(candidateSeq);
-				Sequence* templateSeq = new Sequence(temp.getName(), temp.getAligned());
+				Sequence temp = templateDB->findClosestSequence(candidateSeq.get());
+				shared_ptr<Sequence> templateSeq = make_shared<Sequence>(temp.getName(), temp.getAligned());
 				
 				float searchScore = templateDB->getSearchScore();
 								
-				Nast* nast = new Nast(alignment, candidateSeq, templateSeq);
+				Nast nast = Nast(alignment, candidateSeq, templateSeq);
 		
-				Sequence* copy;
-				
-				Nast* nast2;
-				bool needToDeleteCopy = false;  //this is needed in case you have you enter the ifs below
-												//since nast does not make a copy of hte sequence passed, and it is used by the reporter below
-												//you can't delete the copy sequence til after you report, but you may choose not to create it in the first place
-												//so this bool tells you if you need to delete it
-												
 				//if there is a possibility that this sequence should be reversed
 				if (candidateSeq->getNumBases() < numBasesNeeded) {
 					
@@ -459,37 +445,31 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 					if (flip) {
 				
 						//get reverse compliment
-						copy = new Sequence(candidateSeq->getName(), originalUnaligned);
+						shared_ptr<Sequence> copy = make_shared<Sequence>(candidateSeq->getName(), originalUnaligned);
 						copy->reverseComplement();
                         
                         if (m->debug) { m->mothurOut("[DEBUG]: flipping "  + candidateSeq->getName() + " \n"); }
 						
 						//rerun alignment
-						Sequence temp2 = templateDB->findClosestSequence(copy);
-						Sequence* templateSeq2 = new Sequence(temp2.getName(), temp2.getAligned());
+						Sequence temp2 = templateDB->findClosestSequence(copy.get());
+						shared_ptr<Sequence> templateSeq2 = make_shared<Sequence>(temp2.getName(), temp2.getAligned());
                         
                         if (m->debug) { m->mothurOut("[DEBUG]: closest template "  + temp2.getName() + " \n"); }
 						
 						searchScore = templateDB->getSearchScore();
 						
-						nast2 = new Nast(alignment, copy, templateSeq2);
+						Nast nast2 = Nast(alignment, copy, templateSeq2);
                         
                         if (m->debug) { m->mothurOut("[DEBUG]: completed Nast2 "  + candidateSeq->getName() + " flipped numBases = " + toString(copy->getNumBases()) + " old numbases = " + toString(candidateSeq->getNumBases()) +" \n"); }
 			
 						//check if any better
 						if (copy->getNumBases() > candidateSeq->getNumBases()) {
 							candidateSeq->setAligned(copy->getAligned());  //use reverse compliments alignment since its better
-                            delete templateSeq;
 							templateSeq = templateSeq2;
-							delete nast;
 							nast = nast2;
-							needToDeleteCopy = true;
 							wasBetter = "\treverse complement produced a better alignment, so mothur used the reverse complement.";
 						}else{  
 							wasBetter = "\treverse complement did NOT produce a better alignment so it was not used, please check sequence.";
-							delete nast2;
-                            delete templateSeq2;
-							delete copy;	
 						}
                         if (m->debug) { m->mothurOut("[DEBUG]: done.\n"); }
 					}
@@ -498,24 +478,20 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 					accnosFile << candidateSeq->getName() << wasBetter << endl;
 				}
 				
-				report.setTemplate(templateSeq);
+				report.setTemplate(templateSeq.get());
 				report.setSearchParameters(search, searchScore);
-				report.setAlignmentParameters(align, alignment);
-				report.setNastParameters(*nast);
+				report.setAlignmentParameters(align, alignment.get());
+				report.setNastParameters(nast);
 	
 				alignmentFile << '>' << candidateSeq->getName() << '\n' << candidateSeq->getAligned() << endl;
 				
 				report.print();
-				delete nast;
-                delete templateSeq;
-				if (needToDeleteCopy) {   delete copy;   }
 				
 				count++;
 			}
-			delete candidateSeq;
 			
 			unsigned long long pos = inFASTA.tellg();
-			if ((pos == -1) || (pos >= filePos->end)) { break; }
+			if ((pos == -1) || (pos >= filePos.end)) { break; }
 			
 			//report progress
 			if((count) % 100 == 0){	m->mothurOutJustToScreen(toString(count) + "\n"); 		}
@@ -524,7 +500,6 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 		//report progress
 		if((count) % 100 != 0){	m->mothurOutJustToScreen(toString(count) + "\n"); 		}
 		
-		delete alignment;
 		alignmentFile.close();
 		inFASTA.close();
 		accnosFile.close();
@@ -538,8 +513,8 @@ int AlignCommand::driver(linePair* filePos, string alignFName, string reportFNam
 }
 /**************************************************************************************************/
 
-void AlignCommand::driverWithCount(linePair* filePos, string alignFName, string reportFName, string accnosFName, string filename, int* count) {
-	*count = driver(filePos, alignFName, reportFName, accnosFName, filename);
+void AlignCommand::driverWithCount(linePair filePos, string alignFName, string reportFName, string accnosFName, string filename, int & count) {
+	count = driver(filePos, alignFName, reportFName, accnosFName, filename);
 }
 
 int AlignCommand::createProcesses(string alignFileName, string reportFileName, string accnosFName, string filename) {
@@ -550,7 +525,7 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
         		
 		//loop through and create all the processes you want
 		for (int i = 0; i < processors - 1; i++) {
-			thrds[i] = thread(&AlignCommand::driverWithCount, this, lines[i + 1], alignFileName + toString(i) + ".temp", reportFileName + toString(i) + ".temp", accnosFName + toString(i) + ".temp", filename, &nums[i]);
+			thrds[i] = thread(&AlignCommand::driverWithCount, this, lines[i + 1], alignFileName + toString(i) + ".temp", reportFileName + toString(i) + ".temp", accnosFName + toString(i) + ".temp", filename, ref(nums[i]));
 		}
 				
 		//do my part

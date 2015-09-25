@@ -21,7 +21,7 @@
 
 /**************************************************************************************************/
 
-Nast::Nast(Alignment* method, Sequence* cand, Sequence* temp) : alignment(method), candidateSeq(cand), templateSeq(temp) {
+Nast::Nast(shared_ptr<Alignment> method, shared_ptr<Sequence> cand, shared_ptr<Sequence> temp) : alignment(method), candidateSeq(cand), templateSeq(temp) {
 	try {
 		m = MothurOut::getInstance();
 		maxInsertLength = 0;

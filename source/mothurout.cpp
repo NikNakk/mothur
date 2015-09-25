@@ -2220,8 +2220,6 @@ vector<unsigned long long> MothurOut::divideFile(string filename, int& proc, cha
         char secondaryDelim = '>';
         if (delimChar == '@') { secondaryDelim = '+'; }
         
-#if defined (UNIX)
-        
         //estimate file breaks
         unsigned long long chunkSize = 0;
         chunkSize = size / proc;
@@ -2285,11 +2283,6 @@ vector<unsigned long long> MothurOut::divideFile(string filename, int& proc, cha
         }
         
         proc = (filePos.size() - 1);
-#else
-        mothurOut("[ERROR]: Windows version should not be calling the divideFile function."); mothurOutEndLine();
-        proc=1;
-        filePos.push_back(size);
-#endif
         return filePos;
     }
     catch(exception& e) {
@@ -2319,8 +2312,6 @@ vector<unsigned long long> MothurOut::divideFilePerLine(string filename, int& pr
 			fclose (pFile);
 		}
 		
-#if defined (UNIX)
-        
 		//estimate file breaks
 		unsigned long long chunkSize = 0;
 		chunkSize = size / proc;
@@ -2363,11 +2354,6 @@ vector<unsigned long long> MothurOut::divideFilePerLine(string filename, int& pr
 		}
         
 		proc = (filePos.size() - 1);
-#else
-		mothurOut("[ERROR]: Windows version should not be calling the divideFile function."); mothurOutEndLine();
-		proc=1;
-		filePos.push_back(size);
-#endif
 		return filePos;
 	}
 	catch(exception& e) {

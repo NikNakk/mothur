@@ -36,7 +36,7 @@ public:
 	
 private:
 
-	vector<linePair*> lines;
+	vector<linePair> lines;
 	vector<int> processIDS;
     map<int, vector<unsigned long long> > savedPositions;
 
@@ -55,9 +55,9 @@ private:
 	int filterSequences();
 	int createProcessesCreateFilter(Filters&, string);
 	int createProcessesRunFilter(string, string, string);
-	int driverRunFilter(string, string, string, linePair*);
-	void driverRunFilterWithCount(string F, string outputFilename, string inputFilename, linePair * filePos, int * count);
-	int driverCreateFilter(Filters& F, string filename, linePair* line);
+	int driverRunFilter(string, string, string, linePair);
+	void driverRunFilterWithCount(string F, string outputFilename, string inputFilename, linePair filePos, int & count);
+	int driverCreateFilter(Filters& F, string filename, linePair line);
 	
 };
 #endif

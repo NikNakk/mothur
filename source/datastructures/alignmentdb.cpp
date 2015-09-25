@@ -14,15 +14,16 @@
 #include "referencedb.h"
 
 /**************************************************************************************************/
-AlignmentDB::AlignmentDB(string fastaFileName, string s, int kmerSize, float gapOpen, float gapExtend, float match, float misMatch, int tid){		//	This assumes that the template database is in fasta format, may 
+AlignmentDB::AlignmentDB(string fastaFileName, string s, int kmerSize, float gapOpen, float gapExtend, float match, float misMatch, int tid):
+	longest(0),
+	method(s),
+	threadID(tid)
+{		//	This assumes that the template database is in fasta format, may 
 	try {											//	need to alter this in the future?
 		m = MothurOut::getInstance();
-		longest = 0;
-		method = s;
 		bool needToGenerate = true;
 		ReferenceDB* rdb = ReferenceDB::getInstance();
 		bool silent = false;
-		threadID = tid;
 		
 		if (fastaFileName == "saved-silent") {
 			fastaFileName = "saved"; silent = true;

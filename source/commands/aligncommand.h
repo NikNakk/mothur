@@ -46,12 +46,12 @@ public:
 	
 private:
 	vector<int> processIDS;   //processid
-	vector<linePair*> lines;
+	vector<linePair> lines;
 	
-	AlignmentDB* templateDB;
+	shared_ptr<AlignmentDB> templateDB;
 	
-	int driver(linePair*, string, string, string, string);
-	void driverWithCount(linePair * filePos, string alignFName, string reportFName, string accnosFName, string filename, int * count);
+	int driver(linePair, string, string, string, string);
+	void driverWithCount(linePair filePos, string alignFName, string reportFName, string accnosFName, string filename, int & count);
 	int createProcesses(string, string, string, string);
 	void appendReportFiles(string, string);
 		
