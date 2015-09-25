@@ -520,11 +520,11 @@ void AlignCommand::driverWithCount(linePair filePos, string alignFName, string r
 int AlignCommand::createProcesses(string alignFileName, string reportFileName, string accnosFName, string filename) {
 	try {
 		int num = 0;
-		vector<thread> thrds(processors - 1);
-		vector<int> nums(processors - 1);
+		vector<thread> thrds(lines.size() - 1);
+		vector<int> nums(lines.size() - 1);
         		
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			thrds[i] = thread(&AlignCommand::driverWithCount, this, lines[i + 1], alignFileName + toString(i) + ".temp", reportFileName + toString(i) + ".temp", accnosFName + toString(i) + ".temp", filename, ref(nums[i]));
 		}
 				
@@ -532,7 +532,7 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		num = driver(lines[0], alignFileName, reportFileName, accnosFName, filename);		        
 		
 		//force parent to wait until all the processes are done
-		for (int i=0; i<processors - 1; i++) { 
+		for (int i=0; i<thrds.size(); i++) {
 			thrds[i].join();
 		}
 		
@@ -540,7 +540,7 @@ int AlignCommand::createProcesses(string alignFileName, string reportFileName, s
 		if (!(m->isBlank(accnosFName))) { nonBlankAccnosFiles.push_back(accnosFName); }
 		else { m->mothurRemove(accnosFName); } //remove so other files can be renamed to it
 			
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			num += nums[i];
 			
 			m->appendFiles(alignFileName + toString(i) + ".temp", alignFileName);

@@ -407,19 +407,17 @@ unsigned long long CountSeqsCommand::createProcesses(GroupMap& groupMap, string 
 		vector<unsigned long long> tNumSeqs(lines.size()- 1);
 
 		//loop through and create all the processes you want
-
-		//loop through and create all the processes you want
-		for (int i = 1; i < lines.size(); i++) {
-			string filename = outputFileName + toString(i) + ".temp";
-			thrds[i - 1] = thread(&CountSeqsCommand::driverWithCount, this, lines[i].start, lines[i].end, filename, ref(groupMap), ref(tNumSeqs[i - 1]));
+		for (int i = 0; i < thrds.size(); i++) {
+			string filename = outputFileName + toString(i + 1) + ".temp";
+			thrds[i] = thread(&CountSeqsCommand::driverWithCount, this, lines[i + 1].start, lines[i + 1].end, filename, ref(groupMap), ref(tNumSeqs[i]));
 		}
 
 		numSeqs = driver(lines[0].start, lines[0].end, outputFileName + toString(0) + ".temp", groupMap);
 
 		//force parent to wait until all the processes are done
-		for (int i = 1; i < lines.size(); i++) {
-			thrds[i - 1].join();
-			numSeqs += tNumSeqs[i - 1];
+		for (int i = 0; i < thrds.size(); i++) {
+			thrds[i].join();
+			numSeqs += tNumSeqs[i];
 		}
 		
 		//append output files

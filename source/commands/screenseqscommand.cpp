@@ -1181,11 +1181,11 @@ int ScreenSeqsCommand::createProcessesContigsSummary(vector<int>& oLength, vecto
         int num = 0;
         
 		//loop through and create all the processes you want
-		vector<thread> thrds(processors - 1);
-		vector<contigsSumData> csDataItems(processors - 1);
+		vector<thread> thrds(contigsLines.size() - 1);
+		vector<contigsSumData> csDataItems(contigsLines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			thrds[i] = thread(&ScreenSeqsCommand::driverContigsSummaryWithData, this, ref(csDataItems[i]), contigsLines[i + 1]);
 		}
 
@@ -1323,11 +1323,11 @@ int ScreenSeqsCommand::createProcessesAlignSummary(vector<float>& sims, vector<f
 
 		int num = 0;
 
-		vector<thread> thrds(processors - 1);
-		vector<alignsData> aDataItems(processors - 1);
+		vector<thread> thrds(alignLines.size() - 1);
+		vector<alignsData> aDataItems(alignLines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			thrds[i] = thread(&ScreenSeqsCommand::driverAlignSummaryWithData, this, ref(aDataItems[i]), alignLines[i + 1]);
 		}
 
@@ -1468,11 +1468,11 @@ int ScreenSeqsCommand::createProcessesCreateSummary(vector<int>& startPosition, 
 		int num = 0;
 				
 		//loop through and create all the processes you want
-		vector<thread> thrds(processors - 1);
-		vector<sumData> sDataItems(processors - 1);
+		vector<thread> thrds(lines.size() - 1);
+		vector<sumData> sDataItems(lines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			thrds[i] = thread(&ScreenSeqsCommand::driverCreateSummaryWithData, this, ref(sDataItems[i]), fastafile, lines[i + 1]);
 		}
 
@@ -1841,8 +1841,8 @@ int ScreenSeqsCommand::createProcesses(string goodFileName, string badAccnos, st
 		vector<sumScreenData> ssDataItems(lines.size()- 1);
 
 		//loop through and create all the processes you want
-		for (int i = 1; i < lines.size(); i++) {
-			thrds[i - 1] = thread(&ScreenSeqsCommand::driverWithCount, this, lines[i], goodFileName + toString(i) + ".temp", badAccnos + toString(i - 1) + ".temp", filename, ref(ssDataItems[i - 1]));
+		for (int i = 0; i < thrds.size(); i++) {
+			thrds[i] = thread(&ScreenSeqsCommand::driverWithCount, this, lines[i + 1], goodFileName + toString(i) + ".temp", badAccnos + toString(i) + ".temp", filename, ref(ssDataItems[i]));
 		}
 
 		num = driver(lines[0], goodFileName, badAccnos, filename, badSeqNames);

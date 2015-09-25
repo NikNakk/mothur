@@ -448,11 +448,11 @@ void FilterSeqsCommand::driverRunFilterWithCount(string F, string outputFilename
 
 int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, string filteredFastaName) {
 	try {
-		vector<thread> thrds(processors - 1);
-		vector<int> nums(processors - 1);
+		vector<thread> thrds(lines.size() - 1);
+		vector<int> nums(lines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			string filteredFasta = filename + toString(i + 1) + ".temp";
 			thrds[i] = thread(&FilterSeqsCommand::driverRunFilterWithCount, this, F, filteredFasta, filename, lines[i + 1], ref(nums[i]));
 		}
@@ -460,12 +460,12 @@ int FilterSeqsCommand::createProcessesRunFilter(string F, string filename, strin
 		// Task for main thread
 		int num = driverRunFilter(F, filteredFastaName, filename, lines[0]);
 
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			thrds[i].join();
 			num += nums[i];
 		}
 					
-		for (int i = 1; i < processors; i++) {
+		for (int i = 1; i < lines.size(); i++) {
             m->appendFiles(filename + toString(i) + ".temp", filteredFastaName);
             m->mothurRemove(filename + toString(i) + ".temp");
 		}
@@ -592,11 +592,11 @@ int FilterSeqsCommand::createProcessesCreateFilter(Filters& F, string filename) 
 	try {
 		int num = 0;
 
-		vector<Filters> pDataArray(processors - 1);
-		vector<thread> thrds(processors - 1);
+		vector<Filters> pDataArray(lines.size() - 1);
+		vector<thread> thrds(lines.size() - 1);
 
 		//loop through and create all the processes you want
-		for (int i = 0; i < processors - 1; i++) {
+		for (int i = 0; i < thrds.size(); i++) {
 			if (soft != 0) { pDataArray[i].setSoft(soft); }
 			if (trump != '*') { pDataArray[i].setTrump(trump); }
 
