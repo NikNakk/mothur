@@ -83,7 +83,9 @@ string ChimeraPintailCommand::getOutputPattern(string type) {
     }
 }
 //**********************************************************************************************************************
-ChimeraPintailCommand::ChimeraPintailCommand(){	
+ChimeraPintailCommand::ChimeraPintailCommand():
+	rdb(ReferenceDB::getInstance())
+{	
 	try {
 		abort = true; calledHelp = true;
 		setParameters();
@@ -98,10 +100,11 @@ ChimeraPintailCommand::ChimeraPintailCommand(){
 	}
 }
 //***************************************************************************************************************
-ChimeraPintailCommand::ChimeraPintailCommand(string option)  {
+ChimeraPintailCommand::ChimeraPintailCommand(string option):
+	rdb(ReferenceDB::getInstance())
+{
 	try {
 		abort = false; calledHelp = false;   
-		rdb = ReferenceDB::getInstance();
 		
 		//allow user to run help
 		if(option == "help") { help(); abort = true; calledHelp = true; }
@@ -251,16 +254,16 @@ ChimeraPintailCommand::ChimeraPintailCommand(string option)  {
 			
 			temp = validParameter.validFile(parameters, "save", false);			if (temp == "not found"){	temp = "f";				}
 			save = m->isTrue(temp); 
-			rdb->save = save; 
+			rdb.save = save; 
 			if (save) { //clear out old references
-				rdb->clearMemory();	
+				rdb.clearMemory();	
 			}
 			
 			//this has to go after save so that if the user sets save=t and provides no reference we abort
 			templatefile = validParameter.validFile(parameters, "reference", true);
 			if (templatefile == "not found") { 
 				//check for saved reference sequences
-				if (rdb->referenceSeqs.size() != 0) {
+				if (rdb.referenceSeqs.size() != 0) {
 					templatefile = "saved";
 				}else {
 					m->mothurOut("[ERROR]: You don't have any saved reference sequences and the reference parameter is a required."); 
@@ -268,7 +271,7 @@ ChimeraPintailCommand::ChimeraPintailCommand(string option)  {
 					abort = true; 
 				}
 			}else if (templatefile == "not open") { abort = true; }	
-			else {	if (save) {	rdb->setSavedReference(templatefile);	}	}
+			else {	if (save) {	rdb.setSavedReference(templatefile);	}	}
 			
 			
 			maskfile = validParameter.validFile(parameters, "mask", false);
@@ -368,7 +371,7 @@ int ChimeraPintailCommand::execute(){
 			
 			//check for quantile to save the time
 			string baseName = templatefile;
-			if (templatefile == "saved") { baseName = rdb->getSavedReference(); }
+			if (templatefile == "saved") { baseName = rdb.getSavedReference(); }
 			
 			string tempQuan = "";
 			if ((!filter) && (maskfile == "")) {

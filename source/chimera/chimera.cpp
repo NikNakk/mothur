@@ -100,15 +100,15 @@ vector<Sequence*> Chimera::readSeqs(string file) {
 		int count = 0;
 		length = 0;
 		unaligned = false;
-		ReferenceDB* rdb = ReferenceDB::getInstance();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
 		
 		if (file == "saved") {
 			
 			
-			m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb->getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine();
+			m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb.getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine();
 			
-			for (int i = 0; i < rdb->referenceSeqs.size(); i++) {
-				Sequence* temp = new Sequence(rdb->referenceSeqs[i].getName(), rdb->referenceSeqs[i].getAligned());
+			for (int i = 0; i < rdb.referenceSeqs.size(); i++) {
+				Sequence* temp = new Sequence(rdb.referenceSeqs[i].getName(), rdb.referenceSeqs[i].getAligned());
 				
 				if (count == 0) {  length = temp->getAligned().length();  count++;  } //gets first seqs length
 				else if (length != temp->getAligned().length()) {	unaligned = true;	}
@@ -116,7 +116,7 @@ vector<Sequence*> Chimera::readSeqs(string file) {
 				if (temp->getName() != "") {  container.push_back(temp);  }
 			}
 			
-			templateFileName = rdb->getSavedReference();
+			templateFileName = rdb.getSavedReference();
 			
 		}else {
 			
@@ -138,7 +138,7 @@ vector<Sequence*> Chimera::readSeqs(string file) {
 							
 				if (current->getName() != "") {  
 					container.push_back(current);  
-					if (rdb->save) { rdb->referenceSeqs.push_back(*current); }
+					if (rdb.save) { rdb.referenceSeqs.push_back(*current); }
 				}
 			}
 			in.close();

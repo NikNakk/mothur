@@ -113,7 +113,7 @@ AlignCommand::AlignCommand(){
 AlignCommand::AlignCommand(string option)  {
 	try {
 		abort = false; calledHelp = false;
-		ReferenceDB* rdb = ReferenceDB::getInstance();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
 		
 		//allow user to run help
 		if(option == "help") { help(); abort = true; calledHelp = true;}
@@ -266,16 +266,16 @@ AlignCommand::AlignCommand(string option)  {
 			
 			temp = validParameter.validFile(parameters, "save", false);			if (temp == "not found"){	temp = "f";				}
 			save = m->isTrue(temp); 
-			rdb->save = save; 
+			rdb.save = save; 
 			if (save) { //clear out old references
-				rdb->clearMemory();
+				rdb.clearMemory();
 			}
 			
 			//this has to go after save so that if the user sets save=t and provides no reference we abort
 			templateFileName = validParameter.validFile(parameters, "reference", true);
 			if (templateFileName == "not found") { 
 				//check for saved reference sequences
-				if (rdb->referenceSeqs.size() != 0) {
+				if (rdb.referenceSeqs.size() != 0) {
 					templateFileName = "saved";
 				}else {
 					m->mothurOut("[ERROR]: You don't have any saved reference sequences and the reference parameter is a required for the align.seqs command."); 
@@ -283,7 +283,7 @@ AlignCommand::AlignCommand(string option)  {
 					abort = true; 
 				}
 			}else if (templateFileName == "not open") { abort = true; }	
-			else {	if (save) {	rdb->setSavedReference(templateFileName);	}	}
+			else {	if (save) {	rdb.setSavedReference(templateFileName);	}	}
 			
 			temp = validParameter.validFile(parameters, "threshold", false);	if (temp == "not found"){	temp = "0.50";			}
 			m->mothurConvert(temp, threshold); 
@@ -310,7 +310,7 @@ int AlignCommand::execute(){
 	try {
 		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
 
-		templateDB = make_shared<AlignmentDB>(templateFileName, search, kmerSize, gapOpen, gapExtend, match, misMatch, rand());
+		templateDB = unique_ptr<AlignmentDB>(new AlignmentDB(templateFileName, search, kmerSize, gapOpen, gapExtend, match, misMatch, rand()));
 		
 		for (int s = 0; s < candidateFileNames.size(); s++) {
 			if (m->control_pressed) { outputTypes.clear(); return 0; }
@@ -404,14 +404,14 @@ int AlignCommand::driver(linePair filePos, string alignFName, string reportFName
 		shared_ptr<Alignment> alignment;
 		int longestBase = templateDB->getLongestBase();
         if (m->debug) { m->mothurOut("[DEBUG]: template longest base = "  + toString(templateDB->getLongestBase()) + " \n"); }
-		if(align == "gotoh")			{	alignment = (shared_ptr<Alignment>)make_shared<GotohOverlap>(gapOpen, gapExtend, match, misMatch, longestBase);			}
-		else if(align == "needleman")	{	alignment = (shared_ptr<Alignment>)make_shared<NeedlemanOverlap>(gapOpen, match, misMatch, longestBase);				}
-		else if(align == "blast")		{	alignment = (shared_ptr<Alignment>)make_shared<BlastAlignment>(gapOpen, gapExtend, match, misMatch);		}
-		else if(align == "noalign")		{	alignment = (shared_ptr<Alignment>)make_shared<NoAlign>();													}
+		if(align == "gotoh")			{	alignment = make_shared<GotohOverlap>(gapOpen, gapExtend, match, misMatch, longestBase);			}
+		else if(align == "needleman")	{	alignment = make_shared<NeedlemanOverlap>(gapOpen, match, misMatch, longestBase);				}
+		else if(align == "blast")		{	alignment = make_shared<BlastAlignment>(gapOpen, gapExtend, match, misMatch);		}
+		else if(align == "noalign")		{	alignment = make_shared<NoAlign>();													}
 		else {
 			m->mothurOut(align + " is not a valid alignment option. I will run the command using needleman.");
 			m->mothurOutEndLine();
-			alignment = (shared_ptr<Alignment>)make_shared<NeedlemanOverlap>(gapOpen, match, misMatch, longestBase);
+			alignment = make_shared<NeedlemanOverlap>(gapOpen, match, misMatch, longestBase);
 		}
 	
 		while (!done) {

@@ -10,14 +10,11 @@
 #include "referencedb.h"
 
 //needed for testing project
-//ReferenceDB* ReferenceDB::myInstance;
 
 /******************************************************/
-ReferenceDB* ReferenceDB::getInstance()  {
-	 if(myInstance == NULL) {
-		myInstance = new ReferenceDB();
-	 }
-	 return myInstance;
+ReferenceDB& ReferenceDB::getInstance()  {
+	static ReferenceDB instance;
+	return instance;
  }
 /******************************************************/
 void ReferenceDB::clearMemory()  {

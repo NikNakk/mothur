@@ -15,17 +15,17 @@
 Bayesian::Bayesian(string tfile, string tempFile, string method, int ksize, int cutoff, int i, int tid, bool f, bool sh) : 
 Classify(), kmerSize(ksize), confidenceThreshold(cutoff), iters(i) {
 	try {
-		ReferenceDB* rdb = ReferenceDB::getInstance();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
 		
 		threadID = tid;
 		flip = f;
         shortcuts = sh;
 		string baseName = tempFile;
 			
-		if (baseName == "saved") { baseName = rdb->getSavedReference(); }
+		if (baseName == "saved") { baseName = rdb.getSavedReference(); }
 		
 		string baseTName = tfile;
-		if (baseTName == "saved") { baseTName = rdb->getSavedTaxonomy(); }
+		if (baseTName == "saved") { baseTName = rdb.getSavedTaxonomy(); }
 		
 		/************calculate the probablity that each word will be in a specific taxonomy*************/
 		string tfileroot = m->getFullPathName(baseTName.substr(0,baseTName.find_last_of(".")+1));
@@ -52,7 +52,7 @@ Classify(), kmerSize(ksize), confidenceThreshold(cutoff), iters(i) {
 		}
 		
 		//if you want to save, but you dont need to calculate then just read
-		if (rdb->save && probFileTest && probFileTest2 && phyloTreeTest && probFileTest3 && FilesGood && (tempFile != "saved")) {  
+		if (rdb.save && probFileTest && probFileTest2 && phyloTreeTest && probFileTest3 && FilesGood && (tempFile != "saved")) {  
 			ifstream saveIn;
 			m->openInputFile(tempFile, saveIn);
 			
@@ -60,13 +60,13 @@ Classify(), kmerSize(ksize), confidenceThreshold(cutoff), iters(i) {
 				Sequence temp(saveIn);
 				m->gobble(saveIn);
 				
-				rdb->referenceSeqs.push_back(temp); 
+				rdb.referenceSeqs.push_back(temp); 
 			}
 			saveIn.close();			
 		}
 
 		if(probFileTest && probFileTest2 && phyloTreeTest && probFileTest3 && FilesGood){	
-			if (tempFile == "saved") { m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb->getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine(); }
+			if (tempFile == "saved") { m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb.getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine(); }
 			
 			m->mothurOut("Reading template taxonomy...     "); cout.flush();
 			
@@ -78,16 +78,16 @@ Classify(), kmerSize(ksize), confidenceThreshold(cutoff), iters(i) {
 			genusTotals = phyloTree->getGenusTotals();
 			
 			if (tfile == "saved") { 
-				m->mothurOutEndLine();  m->mothurOut("Using probabilties from " + rdb->getSavedTaxonomy() + " that are saved in memory...    ");	cout.flush();; 
-				wordGenusProb = rdb->wordGenusProb;
-				WordPairDiffArr = rdb->WordPairDiffArr;
+				m->mothurOutEndLine();  m->mothurOut("Using probabilties from " + rdb.getSavedTaxonomy() + " that are saved in memory...    ");	cout.flush();; 
+				wordGenusProb = rdb.wordGenusProb;
+				WordPairDiffArr = rdb.WordPairDiffArr;
 			}else {
 				m->mothurOut("Reading template probabilities...     "); cout.flush();
 				readProbFile(probFileTest, probFileTest2, probFileName, probFileName2);
 			}	
 			
 			//save probabilities
-			if (rdb->save) { rdb->wordGenusProb = wordGenusProb; rdb->WordPairDiffArr = WordPairDiffArr; }
+			if (rdb.save) { rdb.wordGenusProb = wordGenusProb; rdb.WordPairDiffArr = WordPairDiffArr; }
 		}else{
 		
 			//create search database and names vector
@@ -187,7 +187,7 @@ Classify(), kmerSize(ksize), confidenceThreshold(cutoff), iters(i) {
 				phyloTree = new PhyloTree(phyloTreeTest, phyloTreeName);
                 
 				//save probabilities
-				if (rdb->save) { rdb->wordGenusProb = wordGenusProb; rdb->WordPairDiffArr = WordPairDiffArr; }
+				if (rdb.save) { rdb.wordGenusProb = wordGenusProb; rdb.WordPairDiffArr = WordPairDiffArr; }
 			}
 		}
 		
@@ -196,7 +196,7 @@ Classify(), kmerSize(ksize), confidenceThreshold(cutoff), iters(i) {
         if (m->debug) { m->mothurOut("[DEBUG]: done generateWordPairDiffArr\n"); }
 		
 		//save probabilities
-		if (rdb->save) { rdb->wordGenusProb = wordGenusProb; rdb->WordPairDiffArr = WordPairDiffArr; }
+		if (rdb.save) { rdb.wordGenusProb = wordGenusProb; rdb.WordPairDiffArr = WordPairDiffArr; }
 		
 		m->mothurOut("DONE."); m->mothurOutEndLine();
 		m->mothurOut("It took " + toString(time(NULL) - start) + " seconds get probabilities. "); m->mothurOutEndLine();

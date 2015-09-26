@@ -68,7 +68,7 @@ private:
 	map<string,  vector<string> >::iterator itNames;
 	
 	Classify* classify;
-	ReferenceDB* rdb;
+	ReferenceDB& rdb;
 	
 	string fastaFileName, templateFileName, countfile, distanceFileName, namefile, search, method, taxonomyFileName, outputDir, groupfile;
 	int processors, kmerSize, numWanted, cutoff, iters;

@@ -57,8 +57,8 @@ int ClearMemoryCommand::execute(){
 		
 		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
 		
-		ReferenceDB* rdb = ReferenceDB::getInstance();
-		rdb->clearMemory();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
+		rdb.clearMemory();
 		
 		return 0;
 	}

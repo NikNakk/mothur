@@ -106,7 +106,9 @@ string ClassifySeqsCommand::getOutputPattern(string type) {
     }
 }
 //**********************************************************************************************************************
-ClassifySeqsCommand::ClassifySeqsCommand(){	
+ClassifySeqsCommand::ClassifySeqsCommand() :
+	rdb(ReferenceDB::getInstance())
+{	
 	try {
 		abort = true; calledHelp = true; 
 		setParameters();
@@ -122,10 +124,12 @@ ClassifySeqsCommand::ClassifySeqsCommand(){
 	}
 }
 //**********************************************************************************************************************
-ClassifySeqsCommand::ClassifySeqsCommand(string option)  {
+ClassifySeqsCommand::ClassifySeqsCommand(string option):
+	rdb(ReferenceDB::getInstance())
+{
 	try {
 		abort = false; calledHelp = false;   
-		rdb = ReferenceDB::getInstance(); hasName = false; hasCount=false;
+		hasName = false; hasCount=false;
 		
 		//allow user to run help
 		if(option == "help") { help(); abort = true; calledHelp = true; }
@@ -494,16 +498,16 @@ ClassifySeqsCommand::ClassifySeqsCommand(string option)  {
 			
 			temp = validParameter.validFile(parameters, "save", false);			if (temp == "not found"){	temp = "f";				}
 			save = m->isTrue(temp); 
-			rdb->save = save; 
+			rdb.save = save; 
 			if (save) { //clear out old references
-				rdb->clearMemory();	
+				rdb.clearMemory();	
 			}
 			
 			//this has to go after save so that if the user sets save=t and provides no reference we abort
 			templateFileName = validParameter.validFile(parameters, "reference", true);
 			if (templateFileName == "not found") { 
 				//check for saved reference sequences
-				if (rdb->referenceSeqs.size() != 0) {
+				if (rdb.referenceSeqs.size() != 0) {
 					templateFileName = "saved";
 				}else {
 					m->mothurOut("[ERROR]: You don't have any saved reference sequences and the reference parameter is a required for the classify.seqs command."); 
@@ -511,13 +515,13 @@ ClassifySeqsCommand::ClassifySeqsCommand(string option)  {
 					abort = true; 
 				}
 			}else if (templateFileName == "not open") { abort = true; }	
-			else {	if (save) {	rdb->setSavedReference(templateFileName);	}	}
+			else {	if (save) {	rdb.setSavedReference(templateFileName);	}	}
 			
 			//this has to go after save so that if the user sets save=t and provides no reference we abort
 			taxonomyFileName = validParameter.validFile(parameters, "taxonomy", true);
 			if (taxonomyFileName == "not found") { 
 				//check for saved reference sequences
-				if (rdb->wordGenusProb.size() != 0) {
+				if (rdb.wordGenusProb.size() != 0) {
 					taxonomyFileName = "saved";
 				}else {
 					m->mothurOut("[ERROR]: You don't have any saved taxonomy information and the taxonomy parameter is a required for the classify.seqs command."); 
@@ -525,7 +529,7 @@ ClassifySeqsCommand::ClassifySeqsCommand(string option)  {
 					abort = true; 
 				}
 			}else if (taxonomyFileName == "not open") { abort = true; }	
-			else {	if (save) {	rdb->setSavedTaxonomy(taxonomyFileName);	}	}
+			else {	if (save) {	rdb.setSavedTaxonomy(taxonomyFileName);	}	}
 			
 			search = validParameter.validFile(parameters, "search", false);		if (search == "not found"){	search = "kmer";		}
 			
@@ -633,7 +637,7 @@ int ClassifySeqsCommand::execute(){
 			m->mothurOut("Classifying sequences from " + fastaFileNames[s] + " ..." ); m->mothurOutEndLine();
 			
 			string baseTName = m->getSimpleName(taxonomyFileName);
-			if (taxonomyFileName == "saved") {  baseTName = rdb->getSavedTaxonomy();	}
+			if (taxonomyFileName == "saved") {  baseTName = rdb.getSavedTaxonomy();	}
 			
             //set rippedTaxName to 
 			string RippedTaxName = "";

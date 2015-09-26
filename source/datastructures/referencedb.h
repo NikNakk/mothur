@@ -20,7 +20,7 @@ class ReferenceDB {
 	
 	public:
 	
-		static ReferenceDB* getInstance();
+		static ReferenceDB& getInstance();
 		void clearMemory();
 	
 		bool save;
@@ -35,11 +35,10 @@ class ReferenceDB {
 	
 	private:
 	
-		static ReferenceDB* myInstance;
 		ReferenceDB() { referencefile = ""; taxonomyfile = ""; save = false; }
 		ReferenceDB(const ReferenceDB&){}// Disable copy constructor
 		void operator=(const ReferenceDB&){} // Disable assignment operator
-		~ReferenceDB(){ myInstance = 0; }
+		~ReferenceDB(){}
 	
 		string referencefile, taxonomyfile;	
 };

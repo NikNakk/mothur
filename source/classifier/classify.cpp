@@ -18,9 +18,9 @@
 /**************************************************************************************************/
 void Classify::generateDatabaseAndNames(string tfile, string tempFile, string method, int kmerSize, float gapOpen, float gapExtend, float match, float misMatch)  {		
 	try {	
-		ReferenceDB* rdb = ReferenceDB::getInstance();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
 		
-		if (tfile == "saved") { tfile = rdb->getSavedTaxonomy(); }
+		if (tfile == "saved") { tfile = rdb.getSavedTaxonomy(); }
 		
 		taxFile = tfile;
 		
@@ -28,11 +28,11 @@ void Classify::generateDatabaseAndNames(string tfile, string tempFile, string me
 		
 		if (tempFile == "saved") {
 			int start = time(NULL);
-			m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb->getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine();
+			m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb.getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine();
 			
-			numSeqs = rdb->referenceSeqs.size();
-			templateFile = rdb->getSavedReference();
-			tempFile = rdb->getSavedReference();
+			numSeqs = rdb.referenceSeqs.size();
+			templateFile = rdb.getSavedReference();
+			tempFile = rdb.getSavedReference();
 			
 			bool needToGenerate = true;
 			string kmerDBName;
@@ -56,8 +56,8 @@ void Classify::generateDatabaseAndNames(string tfile, string tempFile, string me
 			}
 			
 			if (needToGenerate) {
-				for (int k = 0; k < rdb->referenceSeqs.size(); k++) {
-					Sequence temp(rdb->referenceSeqs[k].getName(), rdb->referenceSeqs[k].getAligned());
+				for (int k = 0; k < rdb.referenceSeqs.size(); k++) {
+					Sequence temp(rdb.referenceSeqs[k].getName(), rdb.referenceSeqs[k].getAligned());
 					names.push_back(temp.getName());
 					database->addSequence(temp);	
 				}
@@ -67,14 +67,14 @@ void Classify::generateDatabaseAndNames(string tfile, string tempFile, string me
 				ifstream kmerFileTest(kmerDBName.c_str());
 				database->readKmerDB(kmerFileTest);	
 				
-				for (int k = 0; k < rdb->referenceSeqs.size(); k++) {
-					names.push_back(rdb->referenceSeqs[k].getName());
+				for (int k = 0; k < rdb.referenceSeqs.size(); k++) {
+					names.push_back(rdb.referenceSeqs[k].getName());
 				}			
 			}	
 			
 			database->setNumSeqs(numSeqs);
 			
-			m->mothurOut("It took " + toString(time(NULL) - start) + " to load " + toString(rdb->referenceSeqs.size()) + " sequences and generate the search databases.");m->mothurOutEndLine();  
+			m->mothurOut("It took " + toString(time(NULL) - start) + " to load " + toString(rdb.referenceSeqs.size()) + " sequences and generate the search databases.");m->mothurOutEndLine();  
 			
 		}else {
 			
@@ -121,7 +121,7 @@ void Classify::generateDatabaseAndNames(string tfile, string tempFile, string me
 					Sequence temp(fastaFile);
 					m->gobble(fastaFile);
 					
-					if (rdb->save) { rdb->referenceSeqs.push_back(temp); }
+					if (rdb.save) { rdb.referenceSeqs.push_back(temp); }
 					
 					names.push_back(temp.getName());
 								
@@ -143,7 +143,7 @@ void Classify::generateDatabaseAndNames(string tfile, string tempFile, string me
 					Sequence temp(fastaFile);
 					m->gobble(fastaFile);
 					
-					if (rdb->save) { rdb->referenceSeqs.push_back(temp); }
+					if (rdb.save) { rdb.referenceSeqs.push_back(temp); }
 					names.push_back(temp.getName());
 				}
 				fastaFile.close();

@@ -94,7 +94,7 @@ ChimeraCheckCommand::ChimeraCheckCommand(){
 ChimeraCheckCommand::ChimeraCheckCommand(string option)  {
 	try {
 		abort = false; calledHelp = false;  
-		ReferenceDB* rdb = ReferenceDB::getInstance();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
 		
 		//allow user to run help
 		if(option == "help") { help(); abort = true; calledHelp = true; }
@@ -298,16 +298,16 @@ ChimeraCheckCommand::ChimeraCheckCommand(string option)  {
 			
 			temp = validParameter.validFile(parameters, "save", false);			if (temp == "not found"){	temp = "f";				}
 			save = m->isTrue(temp); 
-			rdb->save = save; 
+			rdb.save = save; 
 			if (save) { //clear out old references
-				rdb->clearMemory();	
+				rdb.clearMemory();	
 			}
 			
 			//this has to go after save so that if the user sets save=t and provides no reference we abort
 			templatefile = validParameter.validFile(parameters, "reference", true);
 			if (templatefile == "not found") { 
 				//check for saved reference sequences
-				if (rdb->referenceSeqs.size() != 0) {
+				if (rdb.referenceSeqs.size() != 0) {
 					templatefile = "saved";
 				}else {
 					m->mothurOut("[ERROR]: You don't have any saved reference sequences and the reference parameter is a required."); 
@@ -315,7 +315,7 @@ ChimeraCheckCommand::ChimeraCheckCommand(string option)  {
 					abort = true; 
 				}
 			}else if (templatefile == "not open") { abort = true; }	
-			else {	if (save) {	rdb->setSavedReference(templatefile);	}	}
+			else {	if (save) {	rdb.setSavedReference(templatefile);	}	}
 			
 			
 			temp = validParameter.validFile(parameters, "ksize", false);			if (temp == "not found") { temp = "7"; }

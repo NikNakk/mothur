@@ -23,7 +23,7 @@ PhyloSummary::PhyloSummary(string refTfile, CountTable* c, bool r){
         groupmap = NULL;
         
 		//check for necessary files
-        if (refTfile == "saved") { ReferenceDB* rdb = ReferenceDB::getInstance(); refTfile = rdb->getSavedTaxonomy(); }
+        if (refTfile == "saved") { ReferenceDB& rdb = ReferenceDB::getInstance(); refTfile = rdb.getSavedTaxonomy(); }
 		string taxFileNameTest = m->getFullPathName((refTfile.substr(0,refTfile.find_last_of(".")+1) + "tree.sum"));
 		ifstream FileTest(taxFileNameTest.c_str());
 		
@@ -77,7 +77,7 @@ PhyloSummary::PhyloSummary(string refTfile, GroupMap* g, bool r){
         ct = NULL;
 				
 		//check for necessary files
-        if (refTfile == "saved") { ReferenceDB* rdb = ReferenceDB::getInstance(); refTfile = rdb->getSavedTaxonomy(); }
+        if (refTfile == "saved") { ReferenceDB& rdb = ReferenceDB::getInstance(); refTfile = rdb.getSavedTaxonomy(); }
 		string taxFileNameTest = m->getFullPathName((refTfile.substr(0,refTfile.find_last_of(".")+1) + "tree.sum"));
 		ifstream FileTest(taxFileNameTest.c_str());
 		

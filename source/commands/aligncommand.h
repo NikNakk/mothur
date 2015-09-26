@@ -48,7 +48,7 @@ private:
 	vector<int> processIDS;   //processid
 	vector<linePair> lines;
 	
-	shared_ptr<AlignmentDB> templateDB;
+	unique_ptr<AlignmentDB> templateDB;
 	
 	int driver(linePair, string, string, string, string);
 	void driverWithCount(linePair filePos, string alignFName, string reportFName, string accnosFName, string filename, int & count);

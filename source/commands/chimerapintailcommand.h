@@ -37,7 +37,7 @@ public:
 	int execute(); 
 	void help() { m->mothurOut(getHelpString()); }		
 private:
-	ReferenceDB* rdb;
+	ReferenceDB& rdb;
 	
 	vector<int> processIDS;   //processid
 	vector<linePair*> lines;

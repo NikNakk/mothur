@@ -139,7 +139,7 @@ ChimeraSlayerCommand::ChimeraSlayerCommand(){
 ChimeraSlayerCommand::ChimeraSlayerCommand(string option)  {
 	try {
 		abort = false; calledHelp = false;   
-		ReferenceDB* rdb = ReferenceDB::getInstance();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
         hasCount = false;
         hasName = false;
 		
@@ -491,9 +491,9 @@ ChimeraSlayerCommand::ChimeraSlayerCommand(string option)  {
 			
 			temp = validParameter.validFile(parameters, "save", false);			if (temp == "not found"){	temp = "f";				}
 			save = m->isTrue(temp); 
-			rdb->save = save; 
+			rdb.save = save; 
 			if (save) { //clear out old references
-				rdb->clearMemory();	
+				rdb.clearMemory();	
 			}
 			
 			string path;
@@ -516,14 +516,14 @@ ChimeraSlayerCommand::ChimeraSlayerCommand(string option)  {
 					templatefile = validParameter.validFile(parameters, "reference", true);
 					if (templatefile == "not open") { abort = true; }
 					else if (templatefile == "not found") { //check for saved reference sequences
-						if (rdb->referenceSeqs.size() != 0) {
+						if (rdb.referenceSeqs.size() != 0) {
 							templatefile = "saved";
 						}else {
 							m->mothurOut("[ERROR]: You don't have any saved reference sequences and the reference parameter is a required."); 
 							m->mothurOutEndLine();
 							abort = true; 
 						}
-					}else {	if (save) {	rdb->setSavedReference(templatefile);	}	}	
+					}else {	if (save) {	rdb.setSavedReference(templatefile);	}	}	
 				}
 			}else if (hasName) {  templatefile = "self"; 
 				if (save) {
@@ -539,7 +539,7 @@ ChimeraSlayerCommand::ChimeraSlayerCommand(string option)  {
 				}
 			}
 			else { 
-				if (rdb->referenceSeqs.size() != 0) {
+				if (rdb.referenceSeqs.size() != 0) {
 					templatefile = "saved";
 				}else {
 					m->mothurOut("[ERROR]: You don't have any saved reference sequences and the reference parameter is a required."); 

@@ -22,7 +22,7 @@ AlignmentDB::AlignmentDB(string fastaFileName, string s, int kmerSize, float gap
 	try {											//	need to alter this in the future?
 		m = MothurOut::getInstance();
 		bool needToGenerate = true;
-		ReferenceDB* rdb = ReferenceDB::getInstance();
+		ReferenceDB& rdb = ReferenceDB::getInstance();
 		bool silent = false;
 		
 		if (fastaFileName == "saved-silent") {
@@ -32,17 +32,17 @@ AlignmentDB::AlignmentDB(string fastaFileName, string s, int kmerSize, float gap
 		if (fastaFileName == "saved") {
 			int start = time(NULL);
 			
-			if (!silent) { m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb->getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine(); }
+			if (!silent) { m->mothurOutEndLine();  m->mothurOut("Using sequences from " + rdb.getSavedReference() + " that are saved in memory.");	m->mothurOutEndLine(); }
 
-			for (int i = 0; i < rdb->referenceSeqs.size(); i++) {
-				templateSequences.push_back(rdb->referenceSeqs[i]);
+			for (int i = 0; i < rdb.referenceSeqs.size(); i++) {
+				templateSequences.push_back(rdb.referenceSeqs[i]);
 				//save longest base
-				if (rdb->referenceSeqs[i].getUnaligned().length() >= longest)  { longest = (rdb->referenceSeqs[i].getUnaligned().length()+1); }
+				if (rdb.referenceSeqs[i].getUnaligned().length() >= longest)  { longest = (rdb.referenceSeqs[i].getUnaligned().length()+1); }
 			}
-			fastaFileName = rdb->getSavedReference();
+			fastaFileName = rdb.getSavedReference();
 			
 			numSeqs = templateSequences.size();
-			if (!silent) { m->mothurOut("It took " + toString(time(NULL) - start) + " to load " + toString(rdb->referenceSeqs.size()) + " sequences.");m->mothurOutEndLine();  }
+			if (!silent) { m->mothurOut("It took " + toString(time(NULL) - start) + " to load " + toString(rdb.referenceSeqs.size()) + " sequences.");m->mothurOutEndLine();  }
             
 		}else {
 			int start = time(NULL);
@@ -62,7 +62,7 @@ AlignmentDB::AlignmentDB(string fastaFileName, string s, int kmerSize, float gap
 				if (temp.getName() != "") {
 					templateSequences.push_back(temp);
 					
-					if (rdb->save) { rdb->referenceSeqs.push_back(temp); }
+					if (rdb.save) { rdb.referenceSeqs.push_back(temp); }
 					
 					//save longest base
 					if (temp.getUnaligned().length() >= longest)  { longest = (temp.getUnaligned().length()+1); }
