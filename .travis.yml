@@ -1,5 +1,5 @@
 language: cpp
-suso: true
+sudo: true
 before_install:
     - sudo add-apt-repository ppa:kalakris/cmake -y
     # g++4.8.1
