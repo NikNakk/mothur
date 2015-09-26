@@ -92,8 +92,6 @@ int GetCurrentCommand::execute(){
 		
 		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
         
-		cFactory = CommandFactory::getInstance();
-        
 		//user wants to clear a type
 		if (types.size() != 0) {
 			for (int i = 0; i < types.size(); i++) {
@@ -164,12 +162,12 @@ int GetCurrentCommand::execute(){
 			m->printCurrentFiles();
 		}
         
-        string inputDir = cFactory->getInputDir();
+        string inputDir = m->getInputDir();
         if (inputDir != "") {
             m->mothurOutEndLine(); m->mothurOut("Current input directory saved by mothur: " + inputDir); m->mothurOutEndLine();
         }
         
-        string outputDir = cFactory->getOutputDir();
+        string outputDir = m->getOutputDir();
         if (outputDir != "") {
             m->mothurOutEndLine(); m->mothurOut("Current output directory saved by mothur: " + outputDir); m->mothurOutEndLine();
         }

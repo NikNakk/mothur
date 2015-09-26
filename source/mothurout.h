@@ -48,6 +48,8 @@ class MothurOut {
 		void setDefaultPath(string);
 		string getOutputDir() { return outputDir; }
 		void setOutputDir(string);
+		string getInputDir() { return inputDir; }
+		void setInputDir(string);
 		
 		string getReleaseDate() { return releaseDate; }
 		void setReleaseDate(string r) { releaseDate = r; }
@@ -278,49 +280,24 @@ class MothurOut {
 		static MothurOut* _uniqueInstance;
 		MothurOut( const MothurOut& ); // Disable copy constructor
 		void operator=( const MothurOut& ); // Disable assignment operator
-		MothurOut() { 
-			control_pressed = false; defaultPath="";
-            filefile = "";
-			phylipfile = "";
-			columnfile = "";
-			listfile = "";
-			rabundfile = "";
-			sabundfile = "";
-			namefile = "";
-			groupfile = "";
-			designfile = "";
-			orderfile = "";
-			treefile = "";
-			sharedfile = "";
-			ordergroupfile = "";
-			relabundfile = "";
-			fastafile = "";
-			qualfile = "";
-			sfffile = "";
-			oligosfile = "";
-			accnosfile = "";
-			taxonomyfile = "";
-			processors = "1";
-			flowfile = "";
-            biomfile = "";
-            counttablefile = "";
-            summaryfile = "";
-			gui = false;
-			printedSharedHeaders = false;
-            printedListHeaders = false;
-			commandInputsConvertError = false;
-            mothurCalling = false;
-            debug = false;
-            quietMode = false;
-			sharedHeaderMode = "";
-            groupMode = "group";
-            changedSeqNames = false;
-            modifyNames = true;
-		}
+		MothurOut() : 
+			control_pressed(false),
+			processors("1"),
+			gui(false),
+			printedSharedHeaders(false),
+            printedListHeaders(false),
+			commandInputsConvertError(false),
+            mothurCalling(false),
+            debug(false),
+            quietMode(false),
+            groupMode("group"),
+            changedSeqNames(false),
+            modifyNames(true)
+			{}
 		~MothurOut();
 
 		string logFileName;
-		string defaultPath, outputDir;
+		string defaultPath, outputDir, inputDir;
 		string releaseDate, version;
 	
 		string accnosfile, phylipfile, columnfile, listfile, rabundfile, sabundfile, namefile, groupfile, designfile, taxonomyfile, biomfile, filefile;

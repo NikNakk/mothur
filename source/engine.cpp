@@ -96,7 +96,7 @@ bool InteractEngine::getInput(){
                     mout->printedListHeaders = false;
                     mout->listBinLabelsInFile.clear();
 							
-					Command* command = cFactory->getCommand(commandName, options);
+					unique_ptr<Command> command = cFactory->getCommand(commandName, options);
 					if (mout->commandInputsConvertError) { quitCommandCalled = 2; }
 					else { quitCommandCalled = command->execute(); }
 							
@@ -240,7 +240,7 @@ bool BatchEngine::getInput(){
                     mout->listBinLabelsInFile.clear();
 
 							
-					Command* command = cFactory->getCommand(commandName, options);
+					unique_ptr<Command> command = cFactory->getCommand(commandName, options);
 					if (mout->commandInputsConvertError) { quitCommandCalled = 2; }
 					else { quitCommandCalled = command->execute(); }
 							
@@ -374,7 +374,7 @@ bool ScriptEngine::getInput(){
                     mout->printedListHeaders = false;
                     mout->listBinLabelsInFile.clear();
 
-					Command* command = cFactory->getCommand(commandName, options);
+					unique_ptr<Command> command = cFactory->getCommand(commandName, options);
 					if (mout->commandInputsConvertError) { quitCommandCalled = 2; }
 					else { quitCommandCalled = command->execute(); }
 					

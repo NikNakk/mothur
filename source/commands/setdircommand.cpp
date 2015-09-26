@@ -141,32 +141,32 @@ int SetDirectoryCommand::execute(){
             m->mothurOut("Mothur's directories:"); m->mothurOutEndLine();
             
             //redirect output
-            if ((output == "clear") || (output == "")) {  output = "";  commandFactory->setOutputDirectory(output);  }
+            if ((output == "clear") || (output == "")) {  output = "";  m->setOutputDir(output);  }
             else if (output == "default") {
                 string exepath = m->argv;
                 output = exepath.substr(0, (exepath.find_last_of('m')));
                 
                 m->mothurOut("outputDir=" + output); m->mothurOutEndLine();
-                commandFactory->setOutputDirectory(output);
+                m->setOutputDir(output);
             }else {
                 if (m->mkDir(output)) {
                     m->mothurOut("outputDir=" + output); m->mothurOutEndLine();
-                    commandFactory->setOutputDirectory(output);
+                    m->setOutputDir(output);
                 }
             }
             
             //redirect input
-            if ((input == "clear") || (input == "")) {  input = "";  commandFactory->setInputDirectory(input);  }
+			if ((input == "clear") || (input == "")) { input = "";  m->setInputDir(input); }
             else if (input == "default") {
                 string exepath = m->argv;
                 input = exepath.substr(0, (exepath.find_last_of('m')));
                 
                 m->mothurOut("inputDir=" + input); m->mothurOutEndLine();
-                commandFactory->setInputDirectory(input);
+                m->setInputDir(input);
             }else {
                 if (m->dirCheck(input)) {
                     m->mothurOut("inputDir=" + input); m->mothurOutEndLine();
-                    commandFactory->setInputDirectory(input);
+                    m->setInputDir(input);
                 }
             }
             

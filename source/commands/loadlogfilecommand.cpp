@@ -182,7 +182,7 @@ int LoadLogfileCommand::execute(){
                     else {  theseOutputNames.push_back(line);  }
                 }
                 //ask command for the output names for each type based on inputs
-                Command* command = cFactory->getCommand(commandName);
+                unique_ptr<Command> command = cFactory->getCommand(commandName);
                 map<string, vector<string> > thisOutputTypes = command->getOutputFiles();
                 
                 

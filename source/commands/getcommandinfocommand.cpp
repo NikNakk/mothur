@@ -87,15 +87,15 @@ int GetCommandInfoCommand::execute(){
 		out << "mothurLocation=" << m->getFullPathName(m->argv) << endl;
 		out << "mothurVersion=" << m->getVersion() << endl;
 		
-		map<string, string> commands = commandFactory->getListCommands();
-		map<string, string>::iterator it;
+		unique_ptr<vector<string>> commands = commandFactory->getListCommands();
+		vector<string>::iterator it;
 		
 		//loop through each command outputting info
-		for (it = commands.begin(); it != commands.end(); it++) {
+		for (it = commands->begin(); it != commands->end(); it++) {
 			
 			if (m->control_pressed) { m->mothurOut("[ERROR]: did not complete making the file."); m->mothurOutEndLine(); out.close(); m->mothurRemove((output+".temp")); }
 			
-			Command* thisCommand = commandFactory->getCommand(it->first);
+			unique_ptr<Command> thisCommand = commandFactory->getCommand(*it);
 			
 			//don't add hidden commands
 			if (thisCommand->getCommandCategory() != "Hidden") {

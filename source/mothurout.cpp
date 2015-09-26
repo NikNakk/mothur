@@ -291,10 +291,24 @@ void MothurOut::setDefaultPath(string pathname)  {
 /*********************************************************************************************/
 void MothurOut::setOutputDir(string pathname)  {
 	try {
-		outputDir = pathname;
+		if (dirCheck(pathname) || (pathname == "")) {
+			outputDir = pathname;
+		}
 	}
 	catch(exception& e) {
 		errorOut(e, "MothurOut", "setOutputDir");
+		exit(1);
+	}
+}
+/*********************************************************************************************/
+void MothurOut::setInputDir(string pathname) {
+	try {
+		if (dirCheck(pathname) || (pathname == "")) {
+			inputDir = pathname;
+		}
+	}
+	catch (exception& e) {
+		errorOut(e, "MothurOut", "setInputDir");
 		exit(1);
 	}
 }

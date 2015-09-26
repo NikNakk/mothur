@@ -13,29 +13,33 @@
 #include "mothur.h"
 #include "mothurout.h"
 #include "currentfile.h"
+#include "commandmaker.h"
 
 class Command;
 
 class CommandFactory {
 public:
 	static CommandFactory* getInstance();
-	Command* getCommand(string, string, string);
-	Command* getCommand(string, string);
-	Command* getCommand(string);
-	//Command* getCommand();
+	unique_ptr<Command> getCommand(string, string, string);
+	unique_ptr<Command> getCommand(string, string);
+	unique_ptr<Command> getCommand(string);
 	bool isValidCommand(string);
 	bool isValidCommand(string, string);
 	void printCommands(ostream&);
     void printCommandsCategories(ostream&);
-	void setOutputDirectory(string o)		{	if(m->dirCheck(o) || (o == "")) {  outputDir = o; m->setOutputDir(o); }	}
-	void setInputDirectory(string i)		{	if(m->dirCheck(i) || (i == "")) {  inputDir = i;	}	}
+	void setOutputDirectory(string o) { if (m->dirCheck(o) || (o == "")) { outputDir = o; m->setOutputDir(o); } }
+	void setInputDirectory(string i) { if (m->dirCheck(i) || (i == "")) { inputDir = i; } }
 	void setLogfileName(string n, bool a)	{	logFileName = n;  append = a;		}
+	string getOutputDir() { return outputDir; }
+	string getInputDir() { return inputDir; }
 	string getLogfileName()					{	return logFileName; 	}
 	bool getAppend()						{	return append;			}
-	string getOutputDir()					{	return outputDir;		}
-    string getInputDir()					{	return inputDir;		}
-	map<string, string> getListCommands()	{	return commands;		}
-	
+	typedef map<string, unique_ptr<CommandMakerBase>> TMapCommands;
+	unique_ptr<vector<string>> getListCommands();
+	void Register(string command, unique_ptr<CommandMakerBase> creator);
+	unique_ptr<Command> Create(string command, string optionString);
+	unique_ptr<Command> Create(string command);
+
 private:
 	Command* command;
 	Command* shellcommand;
@@ -44,10 +48,11 @@ private:
 	MothurOut* m;
 	CurrentFile* currentFile;
 	
-	map<string, string> commands;
 	map<string, string>::iterator it;
 	string outputDir, inputDir, logFileName;
 	bool append;
+
+	TMapCommands commandMakers;
 	
     int checkForRedirects(string);
     

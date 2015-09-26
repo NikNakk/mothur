@@ -241,7 +241,7 @@ int PipelineCommand::execute(){
 				string options = parser.getOptionString();
 				
 				//executes valid command
-				Command* command = cFactory->getCommand(commandName, options, "pipe");
+				unique_ptr<Command> command = cFactory->getCommand(commandName, options, "pipe");
 				command->execute();
 				
 				//add output files to list
@@ -336,7 +336,7 @@ bool PipelineCommand::checkForValidAndRequiredParameters(string name, string opt
 		if (name == "system") { return false; }
 		
 		//get shell of the command so we can check to make sure its valid without running it
-		Command* command = cFactory->getCommand(name);
+		unique_ptr<Command> command = cFactory->getCommand(name);
 			
 		//check to make sure all parameters are valid for command
 		vector<string> validParameters = command->setParameters();
@@ -429,7 +429,7 @@ int PipelineCommand::runUsersPipeline(){
 				if (m->control_pressed) { return 0; }
 					
 				//executes valid command
-				Command* command = cFactory->getCommand(commandName, options, "pipe");
+				unique_ptr<Command> command = cFactory->getCommand(commandName, options, "pipe");
 				command->execute();
 				
 				//add output files to list
