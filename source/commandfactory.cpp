@@ -281,6 +281,7 @@ append(false)
 	Register("make.shared", unique_ptr<CommandMakerBase>(new CommandMaker<SharedCommand>));
 	Register("get.commandinfo", unique_ptr<CommandMakerBase>(new CommandMaker<GetCommandInfoCommand>));
 	Register("deunique.tree", unique_ptr<CommandMakerBase>(new CommandMaker<DeuniqueTreeCommand>));
+	Register("count.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<CountSeqsCommand>));
 	Register("make.table", unique_ptr<CommandMakerBase>(new CommandMaker<CountSeqsCommand>));
 	Register("count.groups", unique_ptr<CommandMakerBase>(new CommandMaker<CountGroupsCommand>));
 	Register("clear.memory", unique_ptr<CommandMakerBase>(new CommandMaker<ClearMemoryCommand>));
