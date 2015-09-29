@@ -302,7 +302,7 @@ RemoveSeqsCommand::RemoveSeqsCommand(string option)  {
             if (countfile == "") {
                 if ((fastafile != "") && (namefile == "")) {
                     vector<string> files; files.push_back(fastafile);
-                    parser.getNameFile(files);
+                    OptionParser::getNameFile(files);
                 }
             }
 		}

@@ -24,7 +24,7 @@ public:
     OptionParser(string, map<string, string>&);
 	~OptionParser() {}
 	map<string, string> getParameters();
-	bool getNameFile(vector<string>);
+	static bool getNameFile(vector<string>);
 private:
 	map<string, string> parameters;
 	MothurOut* m;

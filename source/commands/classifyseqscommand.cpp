@@ -107,7 +107,7 @@ string ClassifySeqsCommand::getOutputPattern(string type) {
 }
 //**********************************************************************************************************************
 ClassifySeqsCommand::ClassifySeqsCommand() :
-	rdb(ReferenceDB::getInstance())
+	Command(), rdb(ReferenceDB::getInstance())
 {	
 	try {
 		abort = true; calledHelp = true; 
@@ -591,7 +591,7 @@ ClassifySeqsCommand::ClassifySeqsCommand(string option):
                     if (namefileNames.size() == 0){
                         if (fastaFileNames.size() != 0) {
                             vector<string> files; files.push_back(fastaFileNames[fastaFileNames.size()-1]); 
-                            parser.getNameFile(files);
+                            OptionParser::getNameFile(files);
                         }
                     }
                 }

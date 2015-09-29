@@ -121,8 +121,7 @@ int LoadLogfileCommand::execute(){
         m->mothurOut("Extracting current files names..."); m->mothurOutEndLine(); 
         m->mothurOutEndLine(); 
         
-        CommandFactory* cFactory;
-        cFactory = CommandFactory::getInstance();
+        CommandFactory cFactory;
         
         ifstream in;
         m->openInputFile(logfile, in);
@@ -182,7 +181,7 @@ int LoadLogfileCommand::execute(){
                     else {  theseOutputNames.push_back(line);  }
                 }
                 //ask command for the output names for each type based on inputs
-                unique_ptr<Command> command = cFactory->getCommand(commandName);
+                unique_ptr<Command> command = cFactory.getCommand(commandName);
                 map<string, vector<string> > thisOutputTypes = command->getOutputFiles();
                 
                 

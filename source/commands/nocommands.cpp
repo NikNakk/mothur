@@ -19,8 +19,8 @@ int NoCommand::execute(){
 	//Could choose to give more help here?fdsah
 	cout << "Invalid command.\n";
    
-	CommandFactory* valid =  CommandFactory::getInstance();
-	valid->printCommands(cout);
+	CommandFactory valid;
+	valid.printCommands(cout);
 	
 	return 0;
 }

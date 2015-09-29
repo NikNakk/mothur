@@ -77,7 +77,7 @@ int GetCommandInfoCommand::execute(){
 		
 		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
 		
-		commandFactory = CommandFactory::getInstance();
+		CommandFactory commandFactory;
 		
 		ofstream out;
 		m->openOutputFile(output+".temp", out);
@@ -87,7 +87,7 @@ int GetCommandInfoCommand::execute(){
 		out << "mothurLocation=" << m->getFullPathName(m->argv) << endl;
 		out << "mothurVersion=" << m->getVersion() << endl;
 		
-		unique_ptr<vector<string>> commands = commandFactory->getListCommands();
+		unique_ptr<vector<string>> commands = commandFactory.getListCommands();
 		vector<string>::iterator it;
 		
 		//loop through each command outputting info
@@ -95,7 +95,7 @@ int GetCommandInfoCommand::execute(){
 			
 			if (m->control_pressed) { m->mothurOut("[ERROR]: did not complete making the file."); m->mothurOutEndLine(); out.close(); m->mothurRemove((output+".temp")); }
 			
-			unique_ptr<Command> thisCommand = commandFactory->getCommand(*it);
+			unique_ptr<Command> thisCommand = commandFactory.getCommand(*it);
 			
 			//don't add hidden commands
 			if (thisCommand->getCommandCategory() != "Hidden") {

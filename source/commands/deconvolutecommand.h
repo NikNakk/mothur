@@ -33,9 +33,10 @@ public:
 	string getCitation() { return "http://www.mothur.org/wiki/Unique.seqs"; }
 	string getDescription()		{ return "creates a fasta containing the unique sequences as well as a namesfile with the names each sequence represents"; }
 
+	virtual void setOutputTypes();
+
 	
 	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
 	
 	
 private:

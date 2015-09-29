@@ -74,7 +74,7 @@ string VennCommand::getOutputPattern(string type) {
         string pattern = "";
         
         if (type == "svg") {  pattern = "[filename],svg"; } 
-        else { m->mothurOut("[ERROR]: No definition for type " + type + " output pattern.\n"); m->control_pressed = true;  }
+        else { LOG(LOGERROR) << "No definition for type " + type + " output pattern.\n"; m->control_pressed = true;  }
         
         return pattern;
     }
@@ -227,7 +227,7 @@ VennCommand::VennCommand(string option)  {
             }
 			m->mothurConvert(temp, perm);
             if ((perm == 1) || (perm == 2) || (perm == 3) || (perm == 4)) { }
-            else { m->mothurOut("[ERROR]: Not a valid permute value.  Valid values are 1, 2, 3, 4 and true."); m->mothurOutEndLine(); abort = true;  }
+            else { LOG(LOGERROR) << "Not a valid permute value.  Valid values are 1, 2, 3, 4 and true."; m->mothurOutEndLine(); abort = true;  }
             
             temp = validParameter.validFile(parameters, "sharedotus", false);		if (temp == "not found"){	temp = "t";				}
 			sharedOtus = m->isTrue(temp); 

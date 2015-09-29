@@ -271,7 +271,7 @@ SeqErrorCommand::SeqErrorCommand(string option)  {
 
 			if ((namesFileName == "") && (queryFileName != "")){
 				vector<string> files; files.push_back(queryFileName); 
-				parser.getNameFile(files);
+				OptionParser::getNameFile(files);
 			}
 
             if(aligned == true){

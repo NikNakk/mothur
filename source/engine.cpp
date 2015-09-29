@@ -15,9 +15,8 @@
 #include "engine.hpp"
 
 /***********************************************************************/
-Engine::Engine(){
+Engine::Engine() : app(Application::getApplication()) {
 	try {
-		cFactory = CommandFactory::getInstance();
 		mout = MothurOut::getInstance();
 	}
 	catch(exception& e) {
@@ -29,7 +28,9 @@ Engine::Engine(){
 
 /***********************************************************************/
 
-InteractEngine::InteractEngine(string path){
+InteractEngine::InteractEngine(string path) :
+	Engine()
+{
 
 	
 	string temppath = path.substr(0, (path.find_last_of("othur")-5));
@@ -80,7 +81,7 @@ bool InteractEngine::getInput(){
 			options = parser.getOptionString();
 			
 			if (commandName != "") {
-					mout->executing = true;
+					app->startExecuting();
 
 					//executes valid command
                     mout->changedSeqNames = false;
@@ -96,15 +97,15 @@ bool InteractEngine::getInput(){
                     mout->printedListHeaders = false;
                     mout->listBinLabelsInFile.clear();
 							
-					unique_ptr<Command> command = cFactory->getCommand(commandName, options);
+					unique_ptr<Command> command = cFactory.getCommand(commandName, options);
 					if (mout->commandInputsConvertError) { quitCommandCalled = 2; }
-					else { quitCommandCalled = command->execute(); }
+					else if (!(command->aborted())) { quitCommandCalled = command->execute(); }
 							
 					//if we aborted command
 					if (quitCommandCalled == 2) {  mout->mothurOut("[ERROR]: did not complete " + commandName + ".\n");  }
 
 					mout->control_pressed = 0;
-					mout->executing = false;
+					app->stopExecuting();
 										
 				}else {		
 					mout->mothurOut("Invalid.\n");
@@ -153,7 +154,9 @@ string Engine::getCommand()  {
 }
 /***********************************************************************/
 //This function opens the batchfile to be used by BatchEngine::getInput.
-BatchEngine::BatchEngine(string path, string batchFileName){
+BatchEngine::BatchEngine(string path, string batchFileName) :
+Engine()
+{
 	try {
 	
 		openedBatch = mout->openInputFile(batchFileName, inputBatchFile);
@@ -240,7 +243,7 @@ bool BatchEngine::getInput(){
                     mout->listBinLabelsInFile.clear();
 
 							
-					unique_ptr<Command> command = cFactory->getCommand(commandName, options);
+					unique_ptr<Command> command = cFactory.getCommand(commandName, options);
 					if (mout->commandInputsConvertError) { quitCommandCalled = 2; }
 					else { quitCommandCalled = command->execute(); }
 							
@@ -374,7 +377,7 @@ bool ScriptEngine::getInput(){
                     mout->printedListHeaders = false;
                     mout->listBinLabelsInFile.clear();
 
-					unique_ptr<Command> command = cFactory->getCommand(commandName, options);
+					unique_ptr<Command> command = cFactory.getCommand(commandName, options);
 					if (mout->commandInputsConvertError) { quitCommandCalled = 2; }
 					else { quitCommandCalled = command->execute(); }
 					

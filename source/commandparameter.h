@@ -20,11 +20,11 @@
 class CommandParameter {
 	
 	public:
-    CommandParameter() { name = ""; type = ""; options = ""; optionsDefault = ""; chooseOnlyOneGroup = ""; chooseAtLeastOneGroup = ""; linkedGroup = ""; multipleSelectionAllowed = false; required = false; important = false; outputTypes = ""; }
-		CommandParameter(string n, string t, string o, string d, string only, string atLeast, string linked, string opt, bool m, bool r, bool i) : name(n), type(t), options(o), optionsDefault(d), 
-				chooseOnlyOneGroup(only), chooseAtLeastOneGroup(atLeast), linkedGroup(linked), outputTypes(opt),multipleSelectionAllowed(m), required(r), important(i) {}
-        CommandParameter(string n, string t, string o, string d, string only, string atLeast, string linked, string opt, bool m, bool r) : name(n), type(t), options(o), optionsDefault(d), 
-    chooseOnlyOneGroup(only), chooseAtLeastOneGroup(atLeast), linkedGroup(linked), outputTypes(opt), multipleSelectionAllowed(m), required(r)  { important = false; }
+    CommandParameter() : multipleSelectionAllowed(false), required(false), important(false) {}
+		CommandParameter(string name, string type, string options, string optionsDefault, string chooseOnlyOneGroup, string chooseAtLeastOneGroup, string linkedGroup, string outputTypes, bool multipleSelectionAllowed, bool required, bool important) :
+			name(name), type(type), options(options), optionsDefault(optionsDefault), chooseOnlyOneGroup(chooseOnlyOneGroup), chooseAtLeastOneGroup(chooseAtLeastOneGroup), linkedGroup(linkedGroup), outputTypes(outputTypes),multipleSelectionAllowed(multipleSelectionAllowed), required(required), important(important) {}
+		CommandParameter(string name, string type, string options, string optionsDefault, string chooseOnlyOneGroup, string chooseAtLeastOneGroup, string linkedGroup, string outputTypes, bool multipleSelectionAllowed, bool required) :
+			name(name), type(type), options(options), optionsDefault(optionsDefault), chooseOnlyOneGroup(chooseOnlyOneGroup), chooseAtLeastOneGroup(chooseAtLeastOneGroup), linkedGroup(linkedGroup), outputTypes(outputTypes), multipleSelectionAllowed(multipleSelectionAllowed), required(required), important(false) {}
 		~CommandParameter() {}
 	
 		string name;		//something like fasta, processors, method

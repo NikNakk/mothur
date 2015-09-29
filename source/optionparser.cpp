@@ -159,7 +159,8 @@ map<string, string> OptionParser::getParameters() {
 //this function will look at each one, if the rootnames match, mothur will warn 
 //the user that they may have neglected to provide a namefile.
 //stops when it finds a match.
-bool OptionParser::getNameFile(vector<string> files) {	
+bool OptionParser::getNameFile(vector<string> files) {
+	MothurOut* m = MothurOut::getInstance();
 	try {
 		string namefile = m->getNameFile();
 		bool match = false;

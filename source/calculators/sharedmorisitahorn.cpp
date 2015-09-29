@@ -31,8 +31,8 @@ EstOutput MorHorn::getValues(vector<SharedRAbundVector*> shared) {
 			//store in temps to avoid multiple repetitive function calls
 			tempA = shared[0]->getAbundance(j);
 			tempB = shared[1]->getAbundance(j);
-			float relA = tempA / Atotal;
-			float relB = tempB / Btotal;
+			double relA = tempA / Atotal;
+			double relB = tempB / Btotal;
 			
 			a += relA * relA;
 			b += relB * relB;

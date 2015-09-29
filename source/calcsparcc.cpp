@@ -189,7 +189,7 @@ void CalcSparcc::getT_Vector(){
 
 void CalcSparcc::getD_Matrix(){
     try {
-        float d = numOTUs - 1.0;
+        float d = numOTUs - 1.0f;
         
         dMatrix.resize(numOTUs);
         for(int i=0;i<numOTUs;i++){
@@ -214,7 +214,7 @@ vector<float> CalcSparcc::getBasisVariances(){
         
         for(int i=0;i<variances.size();i++){
             if (m->control_pressed) { return variances; }
-            if(variances[i] < 0){   variances[i] = 1e-4;    }
+            if(variances[i] < 0){   variances[i] = 1e-4f;    }
         }
         
         return variances;
@@ -242,9 +242,9 @@ vector<vector<float> > CalcSparcc::getBasisCorrelations(vector<float> basisVaria
                 if (m->control_pressed) { return rho; }
                 float var_j = basisVariance[j];
                 
-                rho[i][j] = (var_i + var_j - tMatrix[i * numOTUs + j]) / (2.0 * sqrt_var_i * sqrt(var_j));
-                if(rho[i][j] > 1.0)         {   rho[i][j] = 1.0;   }
-                else if(rho[i][j] < -1.0)   {   rho[i][j] = -1.0;  }
+                rho[i][j] = (var_i + var_j - tMatrix[i * numOTUs + j]) / (2.0f * sqrt_var_i * sqrt(var_j));
+                if(rho[i][j] > 1.0)         {   rho[i][j] = 1.0f;   }
+                else if(rho[i][j] < -1.0)   {   rho[i][j] = -1.0f;  }
                 
                 rho[j][i] = rho[i][j];
                 

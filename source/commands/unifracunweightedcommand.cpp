@@ -271,7 +271,7 @@ UnifracUnweightedCommand::UnifracUnweightedCommand(string option)  {
 			if (countfile=="") {
                 if (namefile == "") {
                     vector<string> files; files.push_back(treefile);
-                    parser.getNameFile(files);
+                    OptionParser::getNameFile(files);
                 } 
             }
 		}

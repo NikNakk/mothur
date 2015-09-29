@@ -11,19 +11,23 @@
 #include "engine.hpp"
 #include "mothurout.h"
 #include "referencedb.h"
+#include <g3log/g3log.hpp>
+#include "g3log/logworker.hpp"
+#include "g3log/logmessage.hpp"
+#include "logsinks.h"
 
 /**************************************************************************************************/
 
-CommandFactory* CommandFactory::_uniqueInstance = 0;
 MothurOut* MothurOut::_uniqueInstance = 0;
 /***********************************************************************/
 volatile int ctrlc_pressed = 0;
 void ctrlc_handler ( int sig ) {
 	MothurOut* m = MothurOut::getInstance();
+	Application* app = Application::getApplication();
     ctrlc_pressed = 1;
 	m->control_pressed = ctrlc_pressed;
 	
-	if (m->executing) { //if mid command quit execution, else quit mothur
+	if (app->isExecuting()) { //if mid command quit execution, else quit mothur
 		m->mothurOutEndLine(); m->mothurOut("quitting command...");  m->mothurOutEndLine();
 	}else{
 		m->mothurOut("quitting mothur");  m->mothurOutEndLine();
@@ -42,6 +46,11 @@ int main(int argc, char *argv[]){
 		string logFileName = "mothur." + toString(ltime) + ".logfile";
 		
 		m->setFileName(logFileName);
+
+		auto logWorker = g3::LogWorker::createLogWorker();
+		auto logFileHandle = logWorker->addSink(unique_ptr<LogMainLogFile>(new LogMainLogFile(logFileName)), &LogMainLogFile::fileWrite);
+		auto screenLogHandle = logWorker->addSink(unique_ptr<LogScreen>(new LogScreen()), &LogScreen::screenWrite);
+		g3::initializeLogging(logWorker.get());
 		
 		#if defined (UNIX)
 			system("clear");

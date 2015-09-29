@@ -37,7 +37,7 @@ public:
 	
 private:
 	bool abort;
-	CommandFactory* cFactory;
+	CommandFactory cFactory;
 	vector<string> outputNames;
 	vector<string> commands;
 	string outputDir, sffFile, alignFile, oligosFile, taxonomyFile, pipeFilename, classifyFile, chimeraFile;

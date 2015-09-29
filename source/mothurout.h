@@ -11,6 +11,7 @@
  */
 
 #include "mothur.h"
+#include "g3log/g3log.hpp"
 
 /***********************************************/
 struct logger {
@@ -59,12 +60,12 @@ class MothurOut {
 		void addGroup(string g) { Groups.push_back(g); }
 		void setGroups(vector<string>& g) { sort(g.begin(), g.end()); Groups = g; }
 		void clearGroups() { Groups.clear(); }
-	    int getNumGroups() { return Groups.size(); }
+	    int getNumGroups() { return static_cast<int>(Groups.size()); }
 		vector<string> getGroups() { sort(Groups.begin(), Groups.end()); return Groups; }
 		void addAllGroup(string g) { namesOfGroups.push_back(g); }
 		void setAllGroups(vector<string>& g) { sort(g.begin(), g.end()); namesOfGroups = g; }
 		void clearAllGroups() { namesOfGroups.clear(); }
-		int getNumAllGroups() { return namesOfGroups.size(); }
+		int getNumAllGroups() { return static_cast<int>(namesOfGroups.size()); }
 	
 		vector<string> getAllGroups() { sort(namesOfGroups.begin(), namesOfGroups.end()); return namesOfGroups; }
 		vector<string> Treenames;

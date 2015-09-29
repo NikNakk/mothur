@@ -359,7 +359,7 @@ TrimSeqsCommand::TrimSeqsCommand(string option)  {
             if (countfile == "") {
                 if (nameFile == "") {
                     vector<string> files; files.push_back(fastaFile);
-                    parser.getNameFile(files);
+                    OptionParser::getNameFile(files);
                 }
             }
 		}

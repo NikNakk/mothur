@@ -13,40 +13,37 @@
 //**********************************************************************************************************************
 vector<string> DeconvoluteCommand::setParameters(){	
 	try {
-		CommandParameter pfasta("fasta", "InputTypes", "", "", "none", "none", "none","fasta-name",false,true,true); parameters.push_back(pfasta);
-		CommandParameter pname("name", "InputTypes", "", "", "namecount", "none", "none","name",false,false,true); parameters.push_back(pname);
-        CommandParameter pcount("count", "InputTypes", "", "", "namecount", "none", "none","count",false,false,true); parameters.push_back(pcount);
-        CommandParameter pformat("format", "Multiple", "count-name", "name", "", "", "","",false,false, true); parameters.push_back(pformat);
-        CommandParameter pseed("seed", "Number", "", "0", "", "", "","",false,false); parameters.push_back(pseed);
-        CommandParameter pinputdir("inputdir", "String", "", "", "", "", "","",false,false); parameters.push_back(pinputdir);
-		CommandParameter poutputdir("outputdir", "String", "", "", "", "", "","",false,false); parameters.push_back(poutputdir);
-		
-		vector<string> myArray;
-		for (int i = 0; i < parameters.size(); i++) {	myArray.push_back(parameters[i].name);		}
-		return myArray;
+		nkParameters.add(new FastaFileParameter("fasta", true, true));
+		nkParameters.add(new NameFileParameter("name", false, true, "namecount"));
+		nkParameters.add(new CountFileParameter("count", false, true, "namecount"));
+		nkParameters.add(new MultipleParameter("format", vector<string> {"count", "name"}, "name"));
+		nkParameters.addStandardParameters();
+		return nkParameters.getNames();
 	}
 	catch(exception& e) {
 		m->errorOut(e, "DeconvoluteCommand", "setParameters");
 		exit(1);
 	}
 }
+
+void DeconvoluteCommand::setOutputTypes() {
+	outputTypes["fasta"] = vector<string>();
+	outputTypes["name"] = vector<string>();
+	outputTypes["count"] = vector<string>();
+	nkOutputTypes.add("fasta", "[filename],unique,[extension]");
+	nkOutputTypes.add("name", "[filename],names-[filename],[tag],names");
+	nkOutputTypes.add("count", "[filename],count_table-[filename],[tag],count_table");
+}
 //**********************************************************************************************************************
 string DeconvoluteCommand::getHelpString(){	
-	try {
-		string helpString = "";
-		helpString += "The unique.seqs command reads a fastafile and creates a name or count file.\n";
-		helpString += "The unique.seqs command parameters are fasta, name, count and format.  fasta is required, unless there is a valid current fasta file.\n";
-        helpString += "The name parameter is used to provide an existing name file associated with the fasta file. \n";
-        helpString += "The count parameter is used to provide an existing count file associated with the fasta file. \n";
-        helpString += "The format parameter is used to indicate what type of file you want outputted.  Choices are name and count, default=name unless count file used then default=count.\n";
-		helpString += "The unique.seqs command should be in the following format: \n";
-		helpString += "unique.seqs(fasta=yourFastaFile) \n";	
-		return helpString;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "DeconvoluteCommand", "getHelpString");
-		exit(1);
-	}
+	string helpString = "The unique.seqs command reads a fastafile and creates a name or count file.\n"
+	"The unique.seqs command parameters are fasta, name, count and format.  fasta is required, unless there is a valid current fasta file.\n"
+    "The name parameter is used to provide an existing name file associated with the fasta file. \n"
+    "The count parameter is used to provide an existing count file associated with the fasta file. \n"
+    "The format parameter is used to indicate what type of file you want outputted.  Choices are name and count, default=name unless count file used then default=count.\n"
+	"The unique.seqs command should be in the following format: \n"
+	"unique.seqs(fasta=yourFastaFile) \n";	
+	return helpString;
 }
 //**********************************************************************************************************************
 string DeconvoluteCommand::getOutputPattern(string type) {
@@ -67,128 +64,29 @@ string DeconvoluteCommand::getOutputPattern(string type) {
 }
 
 //**********************************************************************************************************************
-DeconvoluteCommand::DeconvoluteCommand(){	
-	try {
-		abort = true; calledHelp = true; 
-		setParameters();
-		vector<string> tempOutNames;
-		outputTypes["fasta"] = tempOutNames;
-		outputTypes["name"] = tempOutNames;
-        outputTypes["count"] = tempOutNames;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "DeconvoluteCommand", "DeconvoluteCommand");
-		exit(1);
-	}
+DeconvoluteCommand::DeconvoluteCommand() : Command() {	
 }
 /**************************************************************************************/
-DeconvoluteCommand::DeconvoluteCommand(string option)  {	
+DeconvoluteCommand::DeconvoluteCommand(string option) : Command(option)  {	
 	try {
-		abort = false; calledHelp = false;   
-		
-		//allow user to run help
-		if(option == "help") { help(); abort = true; calledHelp = true; }
-		else if(option == "citation") { citation(); abort = true; calledHelp = true;}
-		
-		else {
-			vector<string> myArray = setParameters();
-			
-			OptionParser parser(option);
-			map<string,string> parameters = parser.getParameters();
-			
-			ValidParameters validParameter;
-			map<string, string>::iterator it;
-		
-			//check to make sure all parameters are valid for command
-			for (it = parameters.begin(); it != parameters.end(); it++) { 
-				if (validParameter.isValidParameter(it->first, myArray, it->second) != true) {  abort = true;  }
+		if (!abort){
+			if (!(nkParameters["format"]->hasValue()) && nkParameters["count"]->hasValue()) {
+				nkParameters["format"]->validateAndSet("count");
 			}
-			
-			//initialize outputTypes
-			vector<string> tempOutNames;
-			outputTypes["fasta"] = tempOutNames;
-			outputTypes["name"] = tempOutNames;
-            outputTypes["count"] = tempOutNames;
-		
-			//if the user changes the input directory command factory will send this info to us in the output parameter 
-			string inputDir = validParameter.validFile(parameters, "inputdir", false);		
-			if (inputDir == "not found"){	inputDir = "";		}
-			else {
-				string path;
-				it = parameters.find("fasta");
-				//user has given a template file
-				if(it != parameters.end()){ 
-					path = m->hasPath(it->second);
-					//if the user has not given a path then, add inputdir. else leave path alone.
-					if (path == "") {	parameters["fasta"] = inputDir + it->second;		}
-				}
-				
-				it = parameters.find("name");
-				//user has given a template file
-				if(it != parameters.end()){ 
-					path = m->hasPath(it->second);
-					//if the user has not given a path then, add inputdir. else leave path alone.
-					if (path == "") {	parameters["name"] = inputDir + it->second;		}
-				}
-                
-                it = parameters.find("count");
-				//user has given a template file
-				if(it != parameters.end()){ 
-					path = m->hasPath(it->second);
-					//if the user has not given a path then, add inputdir. else leave path alone.
-					if (path == "") {	parameters["count"] = inputDir + it->second;		}
-				}
-			}
+			fastafile = nkParameters["fasta"]->getValue();
+			countfile = nkParameters["count"]->getValue();
+			namefile = nkParameters["name"]->getValue();
 
-			
-			//check for required parameters
-			fastafile = validParameter.validFile(parameters, "fasta", true);
-			if (fastafile == "not open") { abort = true; }
-			else if (fastafile == "not found") {
-				fastafile = m->getFastaFile();
-				if (fastafile != "") { m->mothurOut("Using " + fastafile + " as input file for the fasta parameter."); m->mothurOutEndLine(); }
-				else { 	m->mothurOut("You have no current fastafile and the fasta parameter is required."); m->mothurOutEndLine(); abort = true; }
-			}else { m->setFastaFile(fastafile); }
-			
-			//if the user changes the output directory command factory will send this info to us in the output parameter 
-			outputDir = validParameter.validFile(parameters, "outputdir", false);		if (outputDir == "not found"){	
-				outputDir = "";	
-				outputDir += m->hasPath(fastafile); //if user entered a file with a path then preserve it
-			}
-			
-			namefile = validParameter.validFile(parameters, "name", true);
-			if (namefile == "not open") { namefile = ""; abort = true; }
-			else if (namefile == "not found"){	namefile = "";	}
-			else { m->setNameFile(namefile); }
-            
-            countfile = validParameter.validFile(parameters, "count", true);
-			if (countfile == "not open") { abort = true; countfile = ""; }	
-			else if (countfile == "not found") { countfile = ""; }
-			else { m->setCountTableFile(countfile); }
-			
-            if ((countfile != "") && (namefile != "")) { m->mothurOut("When executing a unique.seqs command you must enter ONLY ONE of the following: count or name."); m->mothurOutEndLine(); abort = true; }
-			
-            format = validParameter.validFile(parameters, "format", false);
-            if(format == "not found"){
-                if (countfile != "") { format = "count";    }
-                else { format = "name";                     }
-            }
-            
-            if ((format != "name") && (format != "count")) {
-                m->mothurOut(format + " is not a valid format option. Options are count or name.");
-                if (countfile == "") { m->mothurOut("I will use name.\n"); format = "name"; }
-                else {  m->mothurOut("I will use count.\n"); format = "count"; }
-            }
-            
 			if (countfile == "") {
                 if (namefile == "") {
                     vector<string> files; files.push_back(fastafile);
-                    parser.getNameFile(files);
+					string warn;
+					if (NameFileParameter::getNameFile(files, warn)) {
+						m->mothurOut(warn);
+					}
                 }
             }
-			
 		}
-
 	}
 	catch(exception& e) {
 		m->errorOut(e, "DeconvoluteCommand", "DeconvoluteCommand");

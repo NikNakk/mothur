@@ -15,6 +15,7 @@
 #include "systemcommand.h"
 #include <thread>
 #include <iterator>
+#include "utility.h"
 
 //**********************************************************************************************************************
 vector<string> ChimeraUchimeCommand::setParameters(){	
@@ -1379,10 +1380,7 @@ int ChimeraUchimeCommand::driver(string outputFName, string filename, string acc
 			cPara.push_back(queryfract);
 		}
 		
-		ostringstream commandBuilder;
-		copy(cPara.begin(), cPara.end(), ostream_iterator<string>(commandBuilder, " "));
-		string commandString = commandBuilder.str();
-		commandString = commandString.substr(0, commandString.length() - 1); // remove trailing space
+		string commandString = Utility::join(cPara, " ");
 
 #if defined (WIN32)
 		commandString = "\"" + commandString + "\"";

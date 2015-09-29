@@ -17,6 +17,8 @@
 #include "command.hpp"
 #include "commandfactory.hpp"
 #include "mothurout.h"
+#include "application.h"
+#include "settings.h"
 
 class Engine {
 public:
@@ -24,15 +26,16 @@ public:
 	virtual ~Engine(){}
 	virtual bool getInput() = 0;
 	virtual string getCommand();
-	virtual string getOutputDir()			{	return cFactory->getOutputDir();	}
-	virtual string getLogFileName()			{	return cFactory->getLogfileName(); 	}
-	virtual bool getAppend()				{	return cFactory->getAppend();		}
+	virtual string getOutputDir()			{	return app->getSettings().getOutputDir();	}
+	virtual string getLogFileName()			{	return app->getSettings().getLogFileName(); 	}
+	virtual bool getAppend()				{	return app->getSettings().getAppend();		}
 
 	vector<string> getOptions()		{	return options;		}
 protected:
 	vector<string> options;
-	CommandFactory* cFactory;
+	CommandFactory cFactory;
 	MothurOut* mout;
+	Application* app;
 };
 
 

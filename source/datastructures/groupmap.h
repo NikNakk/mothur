@@ -36,7 +36,7 @@ public:
 	}
     vector<string> getNamesSeqs();
 	void setNamesOfGroups(vector<string> sn) { namesOfGroups = sn; }
-	int getNumSeqs()  {  return groupmap.size();  }
+	int getNumSeqs()  {  return static_cast<int>(groupmap.size());  }
 	vector<string> getNamesSeqs(vector<string>); //get names of seqs belonging to a group or set of groups
 	int getNumSeqs(string); //return the number of seqs in a given group
     int getCopy(GroupMap*);

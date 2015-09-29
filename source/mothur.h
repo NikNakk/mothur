@@ -1,8 +1,6 @@
 #ifndef MOTHUR_H
 #define MOTHUR_H
 
-
-
 /*
  *  mothur.h
  *  Mothur
@@ -16,12 +14,13 @@
 
 //#include <cstddef>
 
+#ifndef NOMINMAX
+#define NOMINMAX // Required on Windows because of macros for min and max
+#endif
+
+
 //config
 #include "mothurConfig.h"
-
-#ifndef NOMINMAX
-    #define NOMINMAX // Required on Windows because of macros for min and max
-#endif
 
 //boost libraries
 #ifdef USE_BOOST

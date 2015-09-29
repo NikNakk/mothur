@@ -188,7 +188,7 @@ ShhhSeqsCommand::ShhhSeqsCommand(string option) {
 			
 			if (namefile == "") {
 				vector<string> files; files.push_back(fastafile);
-				parser.getNameFile(files);
+				OptionParser::getNameFile(files);
 			}
 		}
 	}
