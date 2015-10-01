@@ -14,25 +14,25 @@
 
 class GetgroupCommand : public Command {
 public:
-	GetgroupCommand(string);
-	GetgroupCommand();
+	GetgroupCommand(Settings& settings, string option);
+	GetgroupCommand(Settings& settings);
 	~GetgroupCommand() {}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "get.group";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	string getHelpString();	
-    string getOutputPattern(string)	{ return "";  }
-	string getCitation() { return "http://www.mothur.org/wiki/Get.group"; }
-	string getDescription()		{ return "outputs group names"; }
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "get.group"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "http://www.mothur.org/wiki/Get.group"; }
+	string getDescription() { return "outputs group names"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
-	
+
 	string outputFile, sharedfile, outputDir;
 	vector<string> outputNames;
 	ofstream out;

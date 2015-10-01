@@ -32,26 +32,26 @@
 extern "C" {
 #endif
 
-struct option {
-    const char *name;
-    int has_arg;
+	struct option {
+		const char *name;
+		int has_arg;
 
-    /* values of has_arg */
+		/* values of has_arg */
 #define no_argument             0
 #define required_argument       1
 #define optional_argument       2
 
-    int *flag;
-    int val;
-};
+		int *flag;
+		int val;
+	};
 
-extern char *optarg;
-extern int optind;
+	extern char *optarg;
+	extern int optind;
 
-int getopt_long(int argc, char **argv,
-                const char *shortopts,
-                struct option *longopts,
-                int *indexptr);
+	int getopt_long(int argc, char **argv,
+		const char *shortopts,
+	struct option *longopts,
+		int *indexptr);
 
 #ifdef __cplusplus
 }

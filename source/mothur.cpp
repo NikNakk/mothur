@@ -1,217 +1,204 @@
 /*
  *  interface.cpp
- *  
+ *
  *
  *  Created by Pat Schloss on 8/14/08.
  *  Copyright 2008 Patrick D. Schloss. All rights reserved.
  *
  */
- 
+
 #include "mothur.h"
 #include "engine.hpp"
-#include "mothurout.h"
 #include "referencedb.h"
 #include <g3log/g3log.hpp>
 #include "g3log/logworker.hpp"
 #include "g3log/logmessage.hpp"
 #include "logsinks.h"
+#include <atomic>
 
-/**************************************************************************************************/
+ /**************************************************************************************************/
 
 MothurOut* MothurOut::_uniqueInstance = 0;
 /***********************************************************************/
-volatile int ctrlc_pressed = 0;
-void ctrlc_handler ( int sig ) {
-	MothurOut* m = MothurOut::getInstance();
-	Application* app = Application::getApplication();
-    ctrlc_pressed = 1;
-	m->control_pressed = ctrlc_pressed;
-	
-	if (app->isExecuting()) { //if mid command quit execution, else quit mothur
-		m->mothurOutEndLine(); m->mothurOut("quitting command...");  m->mothurOutEndLine();
-	}else{
-		m->mothurOut("quitting mothur");  m->mothurOutEndLine();
+
+void ctrlc_handler(int sig) {
+	ctrlc_pressed = true;
+
+	if (mothur_executing) { //if mid command quit execution, else quit mothur
+		LOG(INFO) << "quitting command...";
+	}
+	else {
+		LOG(INFO) << "quitting mothur";
 		exit(1);
 	}
 }
 /***********************************************************************/
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 	MothurOut* m = MothurOut::getInstance();
+	mothur_executing = false;
+	ctrlc_pressed = false;
 	try {
-        bool createLogFile = true;
-        
-		signal(SIGINT, ctrlc_handler );
-				
-		time_t ltime = time(NULL); /* calendar time */  
-		string logFileName = "mothur." + toString(ltime) + ".logfile";
-		
-		m->setFileName(logFileName);
+		bool createLogFile = true;
 
+		signal(SIGINT, ctrlc_handler);
+
+		time_t ltime = time(NULL); /* calendar time */
+		string logFileName = "mothur." + toString(ltime) + ".logfile";
+
+		Settings settings;
+
+		settings.setLogFileName(logFileName, false);
+		string input;
+		if (argc > 1) {
+			input = argv[1];
+		}
+		bool versionOnly = false, helpOnly = false;
 		auto logWorker = g3::LogWorker::createLogWorker();
-		auto logFileHandle = logWorker->addSink(unique_ptr<LogMainLogFile>(new LogMainLogFile(logFileName)), &LogMainLogFile::fileWrite);
 		auto screenLogHandle = logWorker->addSink(unique_ptr<LogScreen>(new LogScreen()), &LogScreen::screenWrite);
+		unique_ptr<g3::SinkHandle<LogMainLogFile>> logFileHandle;
+
+		if ((input == "--version") || (input == "-v")) {
+			versionOnly = true;
+		}
+		else if (input == "--help" || input == "-h") {
+			helpOnly = true;
+		}
+		else {
+			logFileHandle = move(logWorker->addSink(unique_ptr<LogMainLogFile>(new LogMainLogFile(logFileName)), &LogMainLogFile::fileWrite));
+		}
+
 		g3::initializeLogging(logWorker.get());
-		
-		#if defined (UNIX)
-			system("clear");
-		#else
-			system("CLS");
-		#endif
-		
-		#ifdef MOTHUR_FILES
-			string temp = MOTHUR_FILES; 
-		
-			//add / to name if needed
-			string lastChar = temp.substr(temp.length()-1);
-			#if defined (UNIX)
-				if (lastChar != "/") { temp += "/"; }
-			#else
-				if (lastChar != "\\") { temp += "\\"; }	
-			#endif
-		
-			temp = m->getFullPathName(temp);
-			m->setDefaultPath(temp);
-		#endif
-		
-		//get releaseDate from Make
-		string releaseDate = RELEASE_DATE; 
-		string mothurVersion = VERSION; 
-		m->setReleaseDate(releaseDate);
-		m->setVersion(mothurVersion);
-		
+
+#if defined (UNIX)
+		system("clear");
+#else
+		system("CLS");
+#endif
+
+#ifdef MOTHUR_FILES
+		string temp = MOTHUR_FILES;
+
+		//add / to name if needed
+		string lastChar = temp.substr(temp.length() - 1);
+		if (lastChar != path_delimiter) { temp += path_delimiter; }
+
+		temp = File::getFullPathName(temp);
+		m->setDefaultPath(temp);
+#endif
+
+		//get releaseDate from config
+		settings.setReleaseDate(RELEASE_DATE);
+		settings.setVersion(VERSION);
+
 		//will make the gui output "pretty"
 		bool outputHeader = true;
-		if (argc>1) {
+		if (argc > 1) {
 			string guiInput = argv[1];
 			if (guiInput[0] == '+') { outputHeader = false; }
 			if (guiInput[0] == '-') { outputHeader = false; }
-            
-            if (argc > 2) { //is one of these -q for quiet mode?
-                if (argc > 3) { m->mothurOut("[ERROR]: mothur only allows command inputs and the -q command line options.\n  i.e. ./mothur \"#summary.seqs(fasta=final.fasta);\" -q\n or ./mothur -q \"#summary.seqs(fasta=final.fasta);\"\n"); return 0; }
-                else {
-                    string argv1 = argv[1];
-                    string argv2 = argv[2];
-                    if ((argv1 == "--quiet") || (argv1 == "-q")) {
-                        m->quietMode = true;
-                        argv[1] = argv[2];
-                    }else if ((argv2 == "--quiet") || (argv2 == "-q")) {
-                         m->quietMode = true;
-                    }else {
-                        m->mothurOut("[ERROR]: mothur only allows command inputs and the -q command line options.\n");
-                        m->mothurOut("[ERROR]: Unrecognized options: " + argv1 + " " + argv2 + "\n");
-                        return 0;
-                    }
-                   
-                }
-            }
-		}
-		
-        
-		if (outputHeader)  {
-			//version
-			#if defined (UNIX)
-				#if defined (__APPLE__) || (__MACH__)
-					m->mothurOutJustToLog("Mac version");
-					m->mothurOutEndLine(); m->mothurOutEndLine();
-				#else
-					m->mothurOutJustToLog("Linux version");
-					m->mothurOutEndLine(); m->mothurOutEndLine();
-				#endif
 
-			#else
-				m->mothurOutJustToLog("Windows version");
-				m->mothurOutEndLine(); m->mothurOutEndLine();
-			#endif		
-			
-			#ifdef USE_READLINE
-				m->mothurOutJustToLog("Using ReadLine");
-				m->mothurOutEndLine(); m->mothurOutEndLine();
-			#endif
-			
-			#ifdef MOTHUR_FILES
-				m->mothurOutJustToLog("Using default file location " + temp);
-				m->mothurOutEndLine(); m->mothurOutEndLine();
-			#endif
-			
+			if (argc > 2) { //is one of these -q for quiet mode?
+				if (argc > 3) { LOG(LOGERROR) << "mothur only allows command inputs and the -q command line options.\n  i.e. ./mothur \"#summary.seqs(fasta=final.fasta);\" -q\n or ./mothur -q \"#summary.seqs(fasta=final.fasta);\"\n"; return 0; }
+				else {
+					string argv1 = argv[1];
+					string argv2 = argv[2];
+					if ((argv1 == "--quiet") || (argv1 == "-q")) {
+						m->quietMode = true;
+						argv[1] = argv[2];
+					}
+					else if ((argv2 == "--quiet") || (argv2 == "-q")) {
+						m->quietMode = true;
+					}
+					else {
+						LOG(LOGERROR) << "mothur only allows command inputs and the -q command line options.\n";
+						LOG(LOGERROR) << "Unrecognized options: " + argv1 + " " + argv2 + "\n";
+						return 0;
+					}
+				}
+			}
+		}
+
+		if (outputHeader) {
+			//version
+#if defined (UNIX)
+#if defined (__APPLE__) || (__MACH__)
+			LOG(FILEONLY) << "Mac version\n";
+#else
+			LOG(FILEONLY) << "Linux version\n";
+#endif
+#else
+			LOG(FILEONLY) << "Windows version\n";
+#endif		
+
+#if defined (USE_READLINE) || defined (USE_EDITLINE)
+			LOG(FILEONLY) << "Using ReadLine";
+#endif
+
+#ifdef MOTHUR_FILES
+			LOG(FILEONLY) << "Using default file location " + temp;
+#endif
+
 			if (sizeof(void*) == 8) {
-				m->mothurOutJustToLog("Running 64Bit Version");
+				LOG(FILEONLY) << "Running 64Bit Version";
 			}
 			else if (sizeof(void*) == 4) {
-				m->mothurOutJustToLog("Running 32Bit Version");
+				LOG(FILEONLY) << "Running 32Bit Version";
 			}
 			else {
-				m->mothurOutJustToLog("Running unknown Version");
+				LOG(FILEONLY) << "Running unknown Version";
 			}
 
 			//header
-			m->mothurOut("mothur v." + mothurVersion);
-			m->mothurOutEndLine();		
-			m->mothurOut("Last updated: " + releaseDate);
-			m->mothurOutEndLine();	
-			m->mothurOutEndLine();		
-			m->mothurOut("by");
-			m->mothurOutEndLine();		
-			m->mothurOut("Patrick D. Schloss");
-			m->mothurOutEndLine();
-			m->mothurOutEndLine();			
-			m->mothurOut("Department of Microbiology & Immunology");
-			m->mothurOutEndLine();	
-			m->mothurOut("University of Michigan");
-			m->mothurOutEndLine();			
-			m->mothurOut("pschloss@umich.edu");
-			m->mothurOutEndLine();		
-			m->mothurOut("http://www.mothur.org");
-			m->mothurOutEndLine();
-			m->mothurOutEndLine();
-			m->mothurOut("When using, please cite:");
-			m->mothurOutEndLine();
-			m->mothurOut("Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.");
-			m->mothurOutEndLine();	
-			m->mothurOutEndLine();		
-			m->mothurOut("Distributed under the GNU General Public License");
-			m->mothurOutEndLine();
-			m->mothurOutEndLine();			
-			m->mothurOut("Type 'help()' for information on the commands that are available");
-			m->mothurOutEndLine();
-			m->mothurOutEndLine();			
-			m->mothurOut("Type 'quit()' to exit program");
-			m->mothurOutEndLine();
+			LOG(INFO) << "mothur v." << VERSION;
+			LOG(INFO) << "Last updated: " << RELEASE_DATE;
+			LOG(INFO) << "\nby";
+			LOG(INFO) << "Patrick D. Schloss\n";
+			LOG(INFO) << "Department of Microbiology & Immunology";
+			LOG(INFO) << "University of Michigan";
+			LOG(INFO) << "pschloss@umich.edu";
+			LOG(INFO) << "http://www.mothur.org\n";
+			LOG(INFO) << "When using, please cite:";
+			LOG(INFO) << "Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.\n";
+			LOG(INFO) << "Distributed under the GNU General Public License\n";
+			LOG(SCREENONLY) << "Type 'help()' for information on the commands that are available\n";
+			LOG(SCREENONLY) << "Type 'quit()' to exit program";
+			LOG(INFO) << "";
 		}
-		
+
 		//srand(54321);
-		srand( (unsigned)time( NULL ) );
-		
-		Engine* mothur = NULL;
+		srand((unsigned)time(NULL));
+
+		unique_ptr<Engine> mothur;
 		bool bail = 0;
 		string input;
- 
-		if(argc>1){
+
+		if (argc > 1) {
 			input = argv[1];
-			//m->mothurOut("input = " + input); m->mothurOutEndLine();
+			//LOG(INFO) << "input = " + input << '\n';
 
 			if (input[0] == '#') {
-				m->mothurOutJustToLog("Script Mode");
-				m->mothurOutEndLine(); m->mothurOutEndLine();
+				LOG(FILEONLY) << "Script Mode\n";
 
-				mothur = new ScriptEngine(argv[0], argv[1]);
-			}else if (input[0] == '+') {
-					mothur = new ScriptEngine(argv[0], argv[1]);
-					m->gui = true;
-			}else if ((input == "--version") || (input == "-v")) {
-                createLogFile = false;
-                string OS = "";
-                //version
-                #if defined (UNIX)
-                #if defined (__APPLE__) || (__MACH__)
-                OS = "Mac ";
-                #else
-                OS = "Linux ";
-                #endif
-                
-                #else
-                OS = "Windows ";
-                #endif
-                
+				mothur = move(unique_ptr<Engine>(new ScriptEngine(settings, argv[0], input)));
+			}
+			else if (input[0] == '+') {
+				mothur = move(unique_ptr<Engine>(new ScriptEngine(settings, argv[0], input)));
+				m->gui = true;
+			}
+			else if (versionOnly) {
+				string OS = "";
+				//version
+#if defined (UNIX)
+#if defined (__APPLE__) || (__MACH__)
+				OS = "Mac ";
+#else
+				OS = "Linux ";
+#endif
+
+#else
+				OS = "Windows ";
+#endif
+
 				if (sizeof(void*) == 8) {
 					OS += "64Bit Version";
 				}
@@ -222,78 +209,68 @@ int main(int argc, char *argv[]){
 					OS += "unknown Version";
 				}
 
-				m->mothurOut(OS + "\nMothur version=" + mothurVersion + "\nRelease Date=" + releaseDate); m->mothurOutEndLine(); m->mothurOutEndLine(); m->closeLog();
-                m->mothurRemove(logFileName);
+				LOG(SCREENONLY) << OS + "\nMothur version=" << VERSION << "\nRelease Date=" << RELEASE_DATE << '\n' << '\n';
 				return 0;
-                
-            }else if ((input == "--help") || (input == "-h")) {
-                createLogFile = false;
-                m->mothurOutJustToLog("Script Mode");
-                m->mothurOutEndLine(); m->mothurOutEndLine();
 
-                char* temp = new char[16];
-                *temp = '\0'; strncat(temp, "#help();quit();", 15);
-                
-                argv[1] = temp;
-                mothur = new ScriptEngine(argv[0], argv[1]);
-			}else{
-				m->mothurOutJustToLog("Batch Mode");
-				m->mothurOutEndLine(); m->mothurOutEndLine();
-				
-				mothur = new BatchEngine(argv[0], argv[1]);
 			}
-		}else{
-			m->mothurOutJustToLog("Interactive Mode");
-			m->mothurOutEndLine(); m->mothurOutEndLine();
-			
-			mothur = new InteractEngine(argv[0]);	
+			else if (helpOnly) {
+
+				input = "#help();quit();";
+
+				mothur = move(unique_ptr<Engine>(new ScriptEngine(settings, argv[0], input)));
+			}
+			else {
+				LOG(FILEONLY) << "Batch Mode";
+				LOG(INFO) << "" << '\n';
+
+				mothur = move(unique_ptr<Engine>(new BatchEngine(settings, argv[0], input)));
+			}
 		}
-		
-		while(bail == 0)	{	bail = mothur->getInput();	}
-		
+		else {
+			LOG(FILEONLY) << "Interactive Mode";
+			LOG(INFO) << "" << '\n';
+
+			mothur = move(unique_ptr<Engine>(new InteractEngine(settings, argv[0], *screenLogHandle.get())));
+		}
+
+		while (bail == 0) { bail = mothur->getInput(); }
+
 		//closes logfile so we can rename
-		m->closeLog();
-		
-		string outputDir = mothur->getOutputDir();
-		string tempLog = mothur->getLogFileName();
-		bool append = mothur->getAppend();
-		
-		string newlogFileName;
-		if (tempLog != "") {
-			newlogFileName = outputDir + tempLog;
-			
-			if (!append) {	
-				//need this because m->mothurOut makes the logfile, but doesn't know where to put it
-				rename(logFileName.c_str(), newlogFileName.c_str()); //logfile with timestamp
+		if (createLogFile) {
+			logFileHandle->call(&LogMainLogFile::stopAndClose);
+			string outputDir = settings.getOutputDir();
+			string tempLog = settings.getLogFileName();
+			bool append = settings.getAppend();
 
-			}else {
-				ofstream outNewLog;
-				m->openOutputFileAppend(newlogFileName, outNewLog);
-				
-				if (!m->gui) {
-					outNewLog << endl << endl << "*********************************************************************************" << endl << endl;
-				}else {
-					outNewLog << endl;
+			string newlogFileName;
+			if (tempLog != "") {
+				newlogFileName = outputDir + tempLog;
+
+				if (!append) {
+					//need this because the logfile is started before the name is set
+					rename(logFileName.c_str(), newlogFileName.c_str()); //logfile with timestamp
 				}
-				outNewLog.close();
-				
-				m->appendFiles(logFileName, newlogFileName);
-				m->mothurRemove(logFileName);
-			}
-		}else{  
-			newlogFileName = outputDir + logFileName;
-			//need this because m->mothurOut makes the logfile, but doesn't know where to put it
-			rename(logFileName.c_str(), newlogFileName.c_str()); //logfile with timestamp
-		}
-        
-        if (!createLogFile) { m->mothurRemove(newlogFileName); }
-				
-		if (mothur != NULL) { delete mothur; }
+				else {
+					ofstream outNewLog;
+					File::openOutputFileAppend(newlogFileName, outNewLog);
 
+					if (!m->gui) {
+						outNewLog << endl << endl << "*********************************************************************************" << endl << endl;
+					}
+					else {
+						outNewLog << endl;
+					}
+					outNewLog.close();
+
+					File::appendFiles(logFileName, newlogFileName);
+					File::remove(logFileName);
+				}
+			}
+		}
 		return 0;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "mothur", "main");
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in mothur, main";
 		exit(1);
 	}
 }

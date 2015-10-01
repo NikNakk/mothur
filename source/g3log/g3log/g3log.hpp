@@ -34,8 +34,8 @@
 #define __PRETTY_FUNCTION__   __FUNCTION__
 #endif
 
-// thread_local doesn't exist on VS2013 but it might soon? (who knows)
-// to work after Microsoft has updated to be C++11 compliant
+ // thread_local doesn't exist on VS2013 but it might soon? (who knows)
+ // to work after Microsoft has updated to be C++11 compliant
 #if !(defined(thread_local)) && (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
 #define thread_local __declspec(thread)
 #endif
@@ -53,80 +53,80 @@
  * --- Thanks for a great 2011 and good luck with 'g3' --- KjellKod
  */
 namespace g3 {
-   class LogWorker;
-   struct LogMessage;
-   struct FatalMessage;
+	class LogWorker;
+	struct LogMessage;
+	struct FatalMessage;
 
-   /** Should be called at very first startup of the software with \ref g3LogWorker
-    *  pointer. Ownership of the \ref g3LogWorker is the responsibilkity of the caller */
-   void initializeLogging(LogWorker *logger);
-
-
-   /** setFatalPreLoggingHook() provides an optional extra step before the fatalExitHandler is called
-    *
-    * Set a function-hook before a fatal message will be sent to the logger
-    * i.e. this is a great place to put a break point, either in your debugger
-    * or programatically to catch LOG(FATAL), CHECK(...) or an OS fatal event (exception or signal)
-    * This will be reset to default (does nothing) at initializeLogging(...);
-    *
-    * Example usage:
-    * Windows: g3::setFatalPreLoggingHook([]{__debugbreak();}); // remember #include <intrin.h>
-    *         WARNING: '__debugbreak()' when not running in Debug in your Visual Studio IDE will likely
-    *                   trigger a recursive crash if used here. It should only be used when debugging
-    *                   in your Visual Studio IDE. Recursive crashes are handled but are unnecessary.
-    *
-    * Linux:   g3::setFatalPreLoggingHook([]{ raise(SIGTRAP); });
-    */
-   void setFatalPreLoggingHook(std::function<void(void)>  pre_fatal_hook);
-
-   /** If the @ref setFatalPreLoggingHook is not enough and full fatal exit handling is needed then
-    * use "setFatalExithandler".  Please see g3log.cpp and crashhandler_windows.cpp or crashhandler_unix for
-    * example of restoring signal and exception handlers, flushing the log and shutting down.
-    */
-   void setFatalExitHandler(std::function<void(FatalMessagePtr)> fatal_call);
+	/** Should be called at very first startup of the software with \ref g3LogWorker
+	 *  pointer. Ownership of the \ref g3LogWorker is the responsibilkity of the caller */
+	void initializeLogging(LogWorker *logger);
 
 
+	/** setFatalPreLoggingHook() provides an optional extra step before the fatalExitHandler is called
+	 *
+	 * Set a function-hook before a fatal message will be sent to the logger
+	 * i.e. this is a great place to put a break point, either in your debugger
+	 * or programatically to catch LOG(FATAL), CHECK(...) or an OS fatal event (exception or signal)
+	 * This will be reset to default (does nothing) at initializeLogging(...);
+	 *
+	 * Example usage:
+	 * Windows: g3::setFatalPreLoggingHook([]{__debugbreak();}); // remember #include <intrin.h>
+	 *         WARNING: '__debugbreak()' when not running in Debug in your Visual Studio IDE will likely
+	 *                   trigger a recursive crash if used here. It should only be used when debugging
+	 *                   in your Visual Studio IDE. Recursive crashes are handled but are unnecessary.
+	 *
+	 * Linux:   g3::setFatalPreLoggingHook([]{ raise(SIGTRAP); });
+	 */
+	void setFatalPreLoggingHook(std::function<void(void)>  pre_fatal_hook);
+
+	/** If the @ref setFatalPreLoggingHook is not enough and full fatal exit handling is needed then
+	 * use "setFatalExithandler".  Please see g3log.cpp and crashhandler_windows.cpp or crashhandler_unix for
+	 * example of restoring signal and exception handlers, flushing the log and shutting down.
+	 */
+	void setFatalExitHandler(std::function<void(FatalMessagePtr)> fatal_call);
 
 
-   // internal namespace is for completely internal or semi-hidden from the g3 namespace due to that it is unlikely
-   // that you will use these
-   namespace internal {
-      /// @returns true if logger is initialized
-      bool isLoggingInitialized();
-
-      // Save the created LogMessage to any existing sinks
-      void saveMessage(const char *message, const char *file, int line, const char *function, const LEVELS &level,
-                       const char *boolean_expression, int fatal_signal, const char *stack_trace);
-
-      // forwards the message to all sinks
-      void pushMessageToLogger(LogMessagePtr log_entry);
 
 
-      // forwards a FATAL message to all sinks,. after which the g3logworker
-      // will trigger crashhandler / g3::internal::exitWithDefaultSignalHandler
-      //
-      // By default the "fatalCall" will forward a Fatalessageptr to this function
-      // this behaviour can be changed if you set a different fatal handler through
-      // "setFatalExitHandler"
-      void pushFatalMessageToLogger(FatalMessagePtr message);
+	// internal namespace is for completely internal or semi-hidden from the g3 namespace due to that it is unlikely
+	// that you will use these
+	namespace internal {
+		/// @returns true if logger is initialized
+		bool isLoggingInitialized();
+
+		// Save the created LogMessage to any existing sinks
+		void saveMessage(const char *message, const char *file, int line, const char *function, const LEVELS &level,
+			const char *boolean_expression, int fatal_signal, const char *stack_trace);
+
+		// forwards the message to all sinks
+		void pushMessageToLogger(LogMessagePtr log_entry);
 
 
-      // Save the created FatalMessage to any existing sinks and exit with
-      // the originating fatal signal,. or SIGABRT if it originated from a broken contract
-      // By default forwards to: pushFatalMessageToLogger, see "setFatalExitHandler" to override
-      //
-      // If you override it then you probably want to call "pushFatalMessageToLogger" after your
-      // custom fatal handler is done. This will make sure that the fatal message the pushed
-      // to sinks as well as shutting down the process
-      void fatalCall(FatalMessagePtr message);
+		// forwards a FATAL message to all sinks,. after which the g3logworker
+		// will trigger crashhandler / g3::internal::exitWithDefaultSignalHandler
+		//
+		// By default the "fatalCall" will forward a Fatalessageptr to this function
+		// this behaviour can be changed if you set a different fatal handler through
+		// "setFatalExitHandler"
+		void pushFatalMessageToLogger(FatalMessagePtr message);
 
-      // Shuts down logging. No object cleanup but further LOG(...) calls will be ignored.
-      void shutDownLogging();
 
-      // Shutdown logging, but ONLY if the active logger corresponds to the one currently initialized
-      bool shutDownLoggingForActiveOnly(LogWorker *active);
+		// Save the created FatalMessage to any existing sinks and exit with
+		// the originating fatal signal,. or SIGABRT if it originated from a broken contract
+		// By default forwards to: pushFatalMessageToLogger, see "setFatalExitHandler" to override
+		//
+		// If you override it then you probably want to call "pushFatalMessageToLogger" after your
+		// custom fatal handler is done. This will make sure that the fatal message the pushed
+		// to sinks as well as shutting down the process
+		void fatalCall(FatalMessagePtr message);
 
-   } // internal
+		// Shuts down logging. No object cleanup but further LOG(...) calls will be ignored.
+		void shutDownLogging();
+
+		// Shutdown logging, but ONLY if the active logger corresponds to the one currently initialized
+		bool shutDownLoggingForActiveOnly(LogWorker *active);
+
+	} // internal
 } // g3
 
 #define INTERNAL_LOG_MESSAGE(level) LogCapture(__FILE__, __LINE__, __PRETTY_FUNCTION__, level)
@@ -142,7 +142,7 @@ namespace g3 {
 // 'Conditional' stream log
 #define LOG_IF(level, boolean_expression)  \
    if(true == boolean_expression)  \
-      if(g3::logLevel(level))  INTERNAL_LOG_MESSAGE(level).stream()
+	  if(g3::logLevel(level))  INTERNAL_LOG_MESSAGE(level).stream()
 
 // 'Design By Contract' stream API. For Broken Contracts:
 //         unit testing: it will throw std::runtime_error when a contract breaks
@@ -156,9 +156,9 @@ namespace g3 {
  * \verbatim
  *
   There are different %-codes for different variable types, as well as options to
-    limit the length of the variables and whatnot.
-    Code Format
-    %[flags][width][.precision][length]specifier
+	limit the length of the variables and whatnot.
+	Code Format
+	%[flags][width][.precision][length]specifier
  SPECIFIERS
  ----------
  %c character
@@ -205,7 +205,7 @@ And here is possible output
 // Conditional log printf syntax
 #define LOGF_IF(level,boolean_expression, printf_like_message, ...) \
    if(true == boolean_expression)                                     \
-      if(g3::logLevel(level))  INTERNAL_LOG_MESSAGE(level).capturef(printf_like_message, ##__VA_ARGS__)
+	  if(g3::logLevel(level))  INTERNAL_LOG_MESSAGE(level).capturef(printf_like_message, ##__VA_ARGS__)
 
 // Design By Contract, printf-like API syntax with variadic input parameters.
 // Throws std::runtime_eror if contract breaks

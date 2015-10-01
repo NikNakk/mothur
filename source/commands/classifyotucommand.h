@@ -9,7 +9,7 @@
  *  Copyright 2010 Schloss Lab. All rights reserved.
  *
  */
- 
+
 #include "command.hpp"
 #include "listvector.hpp"
 #include "inputdata.h"
@@ -19,25 +19,25 @@
 class ClassifyOtuCommand : public Command {
 
 public:
-	ClassifyOtuCommand(string);
-	ClassifyOtuCommand();
+	ClassifyOtuCommand(Settings& settings, string option);
+	ClassifyOtuCommand(Settings& settings);
 	~ClassifyOtuCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "classify.otu";		}
-	string getCommandCategory()		{ return "Phylotype Analysis";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "classify.otu"; }
+	string getCommandCategory() { return "Phylotype Analysis"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "Schloss PD, Westcott SL (2011). Assessing and improving methods used in OTU-based approaches for 16S rRNA gene sequence analysis. Appl Environ Microbiol 77:3219.\nhttp://www.mothur.org/wiki/Classify.otu"; }
-	string getDescription()		{ return "find the concensus taxonomy for each OTU"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
+	string getDescription() { return "find the concensus taxonomy for each OTU"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
 
 private:
-    GroupMap* groupMap;
-    CountTable* ct;
+	GroupMap* groupMap;
+	CountTable* ct;
 	ListVector* list;
 	InputData* input;
 	string listfile, namefile, taxfile, label, outputDir, refTaxonomy, groupfile, basis, countfile;
@@ -49,11 +49,11 @@ private:
 	map<string, string> taxMap;
 
 	int process(ListVector*);
-    int processTaxMap();
+	int processTaxMap();
 	string addUnclassifieds(string, int);
 	vector<string> findConsensusTaxonomy(vector<string>, int&, string&); 	// returns the name of the "representative" taxonomy of given bin
-	
-												
+
+
 };
 
 #endif

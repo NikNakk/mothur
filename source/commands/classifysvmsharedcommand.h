@@ -18,83 +18,83 @@
 
 class ClassifySvmSharedCommand : public Command {
 public:
-  ClassifySvmSharedCommand();
-  ClassifySvmSharedCommand(string);
-  //~ClassifySvmSharedCommand() throw() {};
-  ~ClassifySvmSharedCommand() {};
-  
-  vector<string> setParameters();
-  string getCommandName()			{ return "classifysvm.shared";     }
-  string getCommandCategory()		{ return "OTU-Based Approaches";		}  
-  string getHelpString();	
-  string getOutputPattern(string);
-  string getCitation()              { return "http://www.mothur.org/wiki/ClassifySvm.shared\n"; }
-  string getDescription()		    { return "implements the support vector machine machine learning algorithm to identify OTUs that can be used to differentiate between various groups of samples"; }
-  int execute();
-  
-  void help() { m->mothurOut(getHelpString()); }
+	ClassifySvmSharedCommand(Settings& settings);
+	ClassifySvmSharedCommand(Settings& settings, string option);
+	//~ClassifySvmSharedCommand() throw() {};
+	~ClassifySvmSharedCommand() {};
 
-  void readSharedAndDesignFiles(const string&, const string&, LabeledObservationVector&, FeatureVector&);
-  void readSharedRAbundVectors(vector<SharedRAbundVector*>&, DesignMap&, LabeledObservationVector&, FeatureVector&);
+	vector<string> setParameters();
+	string getCommandName() { return "classifysvm.shared"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/ClassifySvm.shared\n"; }
+	string getDescription() { return "implements the support vector machine machine learning algorithm to identify OTUs that can be used to differentiate between various groups of samples"; }
+	int execute();
 
-  //bool interruptTraining() { return m->control_pressed; }
+	void help() { LOG(INFO) << getHelpString(); }
 
-  vector<double>& getSmocList() { return smocList; }
-  const KernelParameterRangeMap& getKernelParameterRangeMap() { return kernelParameterRangeMap; }
+	void readSharedAndDesignFiles(const string&, const string&, LabeledObservationVector&, FeatureVector&);
+	void readSharedRAbundVectors(vector<SharedRAbundVector*>&, DesignMap&, LabeledObservationVector&, FeatureVector&);
 
-  //bool interruptTraining() { return m->control_pressed; }
+	//bool interruptTraining() { return ctrlc_pressed; }
 
-  //std::vector<double>& getSmocList() { return smocList; }
-  //const KernelParameterRangeMap& getKernelParameterRangeMap() { return kernelParameterRangeMap; }
+	vector<double>& getSmocList() { return smocList; }
+	const KernelParameterRangeMap& getKernelParameterRangeMap() { return kernelParameterRangeMap; }
+
+	//bool interruptTraining() { return ctrlc_pressed; }
+
+	//std::vector<double>& getSmocList() { return smocList; }
+	//const KernelParameterRangeMap& getKernelParameterRangeMap() { return kernelParameterRangeMap; }
 
 
 private:
-    bool abort;
-    string outputDir;
-    vector<string> outputNames, Groups;
+	bool abort;
+	string outputDir;
+	vector<string> outputNames, Groups;
 
-    string sharedfile, designfile;
-    set<string> labels;
-    bool allLines;
+	string sharedfile, designfile;
+	set<string> labels;
+	bool allLines;
 
-    int processors;
-    bool useTiming;
+	int processors;
+	bool useTiming;
 
-    DesignMap designMap;
-    
-    //void readSharedAndDesignFiles(const std::string&, const std::string&, LabeledObservationVector&, FeatureVector&);
-    //void readSharedRAbundVectors(vector<SharedRAbundVector*>&, GroupMap&, LabeledObservationVector&, FeatureVector&);
+	DesignMap designMap;
 
-    // mode is either "rfe" or "classify"
-    string mode;
+	//void readSharedAndDesignFiles(const std::string&, const std::string&, LabeledObservationVector&, FeatureVector&);
+	//void readSharedRAbundVectors(vector<SharedRAbundVector*>&, GroupMap&, LabeledObservationVector&, FeatureVector&);
 
-    int evaluationFoldCount;
-    int trainingFoldCount;
-    vector<double> smocList;
-    KernelParameterRangeMap kernelParameterRangeMap;
+	// mode is either "rfe" or "classify"
+	string mode;
 
-    string transformName;
+	int evaluationFoldCount;
+	int trainingFoldCount;
+	vector<double> smocList;
+	KernelParameterRangeMap kernelParameterRangeMap;
 
-    int verbosity;
+	string transformName;
 
-    double stdthreshold;
+	int verbosity;
 
-    //int numDecisionTrees;
-    //string treeSplitCriterion, optimumFeatureSubsetSelectionCriteria;
-    //bool doPruning, discardHighErrorTrees;
-    //double pruneAggressiveness, highErrorTreeDiscardThreshold, featureStandardDeviationThreshold;
+	double stdthreshold;
 
-    void processSharedAndDesignData(vector<SharedRAbundVector*> lookup);
-    void trainSharedAndDesignData(vector<SharedRAbundVector*> lookup);
+	//int numDecisionTrees;
+	//string treeSplitCriterion, optimumFeatureSubsetSelectionCriteria;
+	//bool doPruning, discardHighErrorTrees;
+	//double pruneAggressiveness, highErrorTreeDiscardThreshold, featureStandardDeviationThreshold;
 
-    void getParameterValue(int& target, string pstring, int defaultvalue) {
-        if (pstring == "not found" || pstring == "") {
-            target = defaultvalue;
-        }
-        else {
-            m->mothurConvert(pstring, target);
-        }
-    }
+	void processSharedAndDesignData(vector<SharedRAbundVector*> lookup);
+	void trainSharedAndDesignData(vector<SharedRAbundVector*> lookup);
+
+	void getParameterValue(int& target, string pstring, int defaultvalue) {
+		if (pstring == "not found" || pstring == "") {
+			target = defaultvalue;
+		}
+		else {
+			Utility::mothurConvert(pstring, target);
+		}
+	}
 
 
 };

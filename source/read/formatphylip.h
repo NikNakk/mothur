@@ -12,16 +12,16 @@
 
 #include "formatmatrix.h"
 
-/******************************************************/
+ /******************************************************/
 
 class FormatPhylipMatrix : public FormatMatrix {
-	
+
 public:
 	FormatPhylipMatrix(string);
 	~FormatPhylipMatrix();
 	int read(NameAssignment*);
-    int read(CountTable*);
-    
+	int read(CountTable*);
+
 private:
 	ifstream fileHandle;
 	string filename;

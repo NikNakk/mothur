@@ -18,26 +18,26 @@
 
 class GetRAbundCommand : public Command {
 public:
-	GetRAbundCommand(string);
-	GetRAbundCommand();
-	~GetRAbundCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "get.rabund";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Get.rabund"; }
-	string getDescription()		{ return "creates a rabund file"; }
+	GetRAbundCommand(Settings& settings, string option);
+	GetRAbundCommand(Settings& settings);
+	~GetRAbundCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "get.rabund"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Get.rabund"; }
+	string getDescription() { return "creates a rabund file"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
-	
+
 	string filename, listfile, sabundfile, inputfile, format, outputDir, countfile;
 	ofstream out;
 	vector<string> outputNames;
@@ -47,7 +47,7 @@ private:
 	string label;
 
 	int processList(ofstream& out);
-    int createRabund(CountTable& ct, ListVector*& list, RAbundVector*& rabund);
+	int createRabund(CountTable& ct, ListVector*& list, RAbundVector*& rabund);
 };
 
 #endif

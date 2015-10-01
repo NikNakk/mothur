@@ -12,38 +12,38 @@
 #include "command.hpp"
 #include "listvector.hpp"
 
-//**********************************************************************************************************************
+ //**********************************************************************************************************************
 
 class OtuHierarchyCommand : public Command {
 
 public:
-	OtuHierarchyCommand(string);
-	OtuHierarchyCommand();
-	~OtuHierarchyCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "otu.hierarchy";			}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Otu.hierarchy"; }
-	string getDescription()		{ return "relates OTUs at different distances"; }
+	OtuHierarchyCommand(Settings& settings, string option);
+	OtuHierarchyCommand(Settings& settings);
+	~OtuHierarchyCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "otu.hierarchy"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Otu.hierarchy"; }
+	string getDescription() { return "relates OTUs at different distances"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	bool abort;
 	set<string> mylabels; //holds labels to be used
 	string label, listFile, outputDir, output, list1Label, list2Label;
 	vector<string> outputNames;
-	
+
 	vector< vector<string> > getListVectors();
-    vector< vector<string> > getListVector(string, string&);
-		
+	vector< vector<string> > getListVector(string, string&);
+
 };
 
 //**********************************************************************************************************************

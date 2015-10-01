@@ -9,7 +9,7 @@
  *
  */
 
-/* The bin.seqs command outputs a .fasta file for each distance you specify appending the OTU number to each name. */
+ /* The bin.seqs command outputs a .fasta file for each distance you specify appending the OTU number to each name. */
 
 #include "command.hpp"
 #include "inputdata.h"
@@ -19,24 +19,24 @@
 #include "counttable.h"
 
 class BinSeqCommand : public Command {
-	
+
 public:
-	BinSeqCommand(string);	
-	BinSeqCommand();
+	BinSeqCommand(Settings& settings, string option);
+	BinSeqCommand(Settings& settings);
 	~BinSeqCommand();
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "bin.seqs";			}
-	string getCommandCategory()		{ return "Sequence Processing"; }
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "bin.seqs"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Bin.seqs"; }
-	string getDescription()		{ return "maps sequences to otus"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }		
-	
+	string getDescription() { return "maps sequences to otus"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	CountTable ct;
 	ListVector* list;
@@ -49,7 +49,7 @@ private:
 	ofstream out;
 	ifstream in, inNames;
 	vector<string> outputNames;
-	
+
 	void readNamesFile();
 	int process(ListVector*);
 };

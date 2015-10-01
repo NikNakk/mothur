@@ -18,30 +18,30 @@ class Sequence;
 class FilterSeqsCommand : public Command {
 
 public:
-	FilterSeqsCommand(string);
-	FilterSeqsCommand();
+	FilterSeqsCommand(Settings& settings, string option);
+	FilterSeqsCommand(Settings& settings);
 	~FilterSeqsCommand() {};
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "filter.seqs";			}
-	string getCommandCategory()		{ return "Sequence Processing";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "filter.seqs"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Filter.seqs"; }
-	string getDescription()		{ return "removes columns from alignments based on a criteria defined by the user"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	string getDescription() { return "removes columns from alignments based on a criteria defined by the user"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 
 	vector<linePair> lines;
 	vector<int> processIDS;
-    map<int, vector<unsigned long long> > savedPositions;
+	map<int, vector<unsigned long long> > savedPositions;
 
 	string vertical, filter, fasta, hard, outputDir, filterFileName;
-	vector<string> fastafileNames;	
+	vector<string> fastafileNames;
 	int alignmentLength, processors;
 	vector<int> bufferSizes;
 	vector<string> outputNames;
@@ -50,7 +50,7 @@ private:
 	bool abort, recalced;
 	float soft;
 	int numSeqs;
-	
+
 	string createFilter();
 	int filterSequences();
 	int createProcessesCreateFilter(Filters&, string);
@@ -58,6 +58,6 @@ private:
 	int driverRunFilter(string, string, string, linePair);
 	void driverRunFilterWithCount(string F, string outputFilename, string inputFilename, linePair filePos, int & count);
 	int driverCreateFilter(Filters& F, string filename, linePair line);
-	
+
 };
 #endif

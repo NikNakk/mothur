@@ -19,16 +19,16 @@ class ListVector;
 
 /***********************************************************************/
 class HCluster {
-	
+
 public:
 	HCluster(RAbundVector*, ListVector*, string, string, NameAssignment*, float);
-	~HCluster(){};
-    double update(int, int, float);
-	void setMapWanted(bool m); 
-	map<string, int> getSeqtoBin()  {  return seq2Bin;	}
+	~HCluster() {};
+	double update(int, int, float);
+	void setMapWanted(bool m);
+	map<string, int> getSeqtoBin() { return seq2Bin; }
 	vector<seqDist> getSeqs();
 
-protected:	
+protected:
 	void clusterBins();
 	void clusterNames();
 	int getUpmostParent(int);
@@ -41,13 +41,13 @@ protected:
 	int combineFile();
 	int processFile();
 	//seqDist getNextDist(char*, int&, int);
-		
+
 	RAbundVector* rabund;
 	ListVector* list;
 	NameAssignment* nameMap;
-	
+
 	vector<clusterNode> clusterArray;
-	
+
 	//note: the nearest and average neighbor method do not use the link table or active links
 	vector< map<int, int> > linkTable;  // vector of maps - linkTable[1][6] = 2  would mean sequence in spot 1 has 2 links with sequence in 6
 	map<int, int> activeLinks;  //maps sequence to index in linkTable
@@ -55,7 +55,7 @@ protected:
 	map<int, int>::iterator itActive;
 	map<int, int>::iterator it2Active;
 	map<int, int>::iterator it2;
-	
+
 	int numSeqs;
 	int smallRow;
 	int smallCol;
@@ -65,12 +65,12 @@ protected:
 	seqDist next;
 	string method, distfile;
 	ifstream filehandle;
-	
+
 	vector<seqDist> mergedMin;
 	string partialDist;
 	MothurOut* m;
-	
-	
+
+
 };
 
 /***********************************************************************/

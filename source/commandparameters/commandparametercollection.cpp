@@ -28,8 +28,8 @@ void CommandParameterCollection::add(CommandParameterBase * newParameter)
 void CommandParameterCollection::addStandardParameters()
 {
 	this->add(new SeedParameter());
-	this->add(new OutputDirectoryParameter());
-	this->add(new InputDirectoryParameter());
+	Y	this->add(new OutputDirectoryParameter(settings));
+	this->add(new InputDirectoryParameter(settings));
 }
 
 vector<string> CommandParameterCollection::getNames()

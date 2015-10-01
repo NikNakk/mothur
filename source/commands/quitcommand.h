@@ -11,30 +11,30 @@
 
 #include "command.hpp"
 
-/* The quit() command:
-	The quit command terminates the mothur program. 
-	The quit command should be in the following format: quit ().   */
+ /* The quit() command:
+	 The quit command terminates the mothur program.
+	 The quit command should be in the following format: quit ().   */
 
 
 class QuitCommand : public Command {
-	
-public:
-	QuitCommand(string);
-	QuitCommand() {}
-	~QuitCommand();
-	
-	vector<string> setParameters()	{ return outputNames;	} //dummy, doesn't really do anything	
-	string getCommandName()			{ return "quit";		}
-	string getCommandCategory()		{ return "Hidden";		}
-	string getHelpString() { return "The quit command will terminate mothur and should be in the following format: quit() or quit. \n"; }	
-    string getOutputPattern(string) { return "";                }
-	string getCitation() { return "no citation"; }
-	string getDescription()		{ return "quit"; }
 
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+public:
+	QuitCommand(Settings& settings, string option);
+	QuitCommand(Settings& settings) : Command(settings) {}
+	~QuitCommand();
+
+	vector<string> setParameters() { return outputNames; } //dummy, doesn't really do anything	
+	string getCommandName() { return "quit"; }
+	string getCommandCategory() { return "Hidden"; }
+	string getHelpString() { return "The quit command will terminate mothur and should be in the following format: quit() or quit. \n"; }
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "no citation"; }
+	string getDescription() { return "quit"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	bool abort;
 	vector<string> outputNames;

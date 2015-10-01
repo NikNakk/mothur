@@ -13,43 +13,43 @@
 
 #include "dist.h"
 
-/**************************************************************************************************/
+ /**************************************************************************************************/
 
 class eachGapDistIgnoreNs : public Dist {
-	
+
 public:
-	void calcDist(Sequence A, Sequence B){		
+	void calcDist(Sequence A, Sequence B) {
 		int diff = 0;
 		int length = 0;
 		int start = 0;
-		
+
 		string seqA = A.getAligned();
 		string seqB = B.getAligned();
-		
+
 		int alignLength = seqA.length();
-		
-		for(int i=0; i<alignLength; i++){
-			if(seqA[i] != '.' || seqB[i] != '.'){
+
+		for (int i = 0; i < alignLength; i++) {
+			if (seqA[i] != '.' || seqB[i] != '.') {
 				start = i;
 				break;
 			}
 		}
-		
-		for(int i=start;i<alignLength;i++){
-			if(seqA[i] == '.' && seqB[i] == '.'){
-				break;	
+
+		for (int i = start;i < alignLength;i++) {
+			if (seqA[i] == '.' && seqB[i] == '.') {
+				break;
 			}
-			else if((seqA[i] == '-' && seqB[i] == '-') || (seqA[i] == '-' && seqB[i] == '.') || (seqA[i] == '.' && seqB[i] == '-') || seqA[i] == 'N' || seqB[i] == 'N'){;}
-			else{
-				if(seqA[i] != seqB[i]){
+			else if ((seqA[i] == '-' && seqB[i] == '-') || (seqA[i] == '-' && seqB[i] == '.') || (seqA[i] == '.' && seqB[i] == '-') || seqA[i] == 'N' || seqB[i] == 'N') { ; }
+			else {
+				if (seqA[i] != seqB[i]) {
 					diff++;
 				}
 				length++;
 			}
 		}
-		
-		if(length == 0)	{	dist = 1.0000;								}
-		else			{	dist = ((double)diff  / (double)length);	}
+
+		if (length == 0) { dist = 1.0000; }
+		else { dist = ((double)diff / (double)length); }
 	}
 };
 

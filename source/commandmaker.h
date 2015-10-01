@@ -13,8 +13,8 @@ class CommandMakerBase {
 public:
 	CommandMakerBase() {}
 	virtual ~CommandMakerBase() {}
-	virtual unique_ptr<Command> Create(string optionString) = 0;
-	virtual unique_ptr<Command> Create() = 0;
+	virtual unique_ptr<Command> Create(Settings& settings, string optionString) = 0;
+	virtual unique_ptr<Command> Create(Settings& settings) = 0;
 };
 
 template<class T>
@@ -22,7 +22,7 @@ class CommandMaker : public CommandMakerBase {
 public:
 	CommandMaker() {}
 	virtual ~CommandMaker() {}
-	virtual unique_ptr<Command> Create(string optionString) { return unique_ptr<Command>(new T(optionString)); }
-	virtual unique_ptr<Command> Create() { return unique_ptr<Command>(new T()); }
+	virtual unique_ptr<Command> Create(Settings& settings, string optionString) { return unique_ptr<Command>(new T(Settings& settings, optionString)); }
+	virtual unique_ptr<Command> Create(Settings& settings) { return unique_ptr<Command>(new T(settings)); }
 };
 #endif

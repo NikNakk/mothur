@@ -5,14 +5,14 @@
 
 class NameFileParameter : public InputTypeParameter {
 public:
-	NameFileParameter(string name, bool required, bool important = false,
+	NameFileParameter(Settings& settings, string name, bool required, bool important = false,
 		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		InputTypeParameter(name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
+		InputTypeParameter(settings, Yname, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
 	virtual string getValue() {
 		return value;
 	}
 	virtual void validateAndSet(string newValue);
-	static bool getNameFile(vector<string> files, string output);
+	static bool getNameFile(Settings & settings, vector<string> files, string output);
 private:
 	string value;
 };

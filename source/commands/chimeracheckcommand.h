@@ -16,31 +16,31 @@
 #include "chimeracheckrdp.h"
 
 
-/***********************************************************/
+ /***********************************************************/
 
 class ChimeraCheckCommand : public Command {
 public:
-	ChimeraCheckCommand(string);
-	ChimeraCheckCommand();
-	~ChimeraCheckCommand(){}
-	
+	ChimeraCheckCommand(Settings& settings, string option);
+	ChimeraCheckCommand(Settings& settings);
+	~ChimeraCheckCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "chimera.check";		}
-	string getCommandCategory()		{ return "Sequence Processing"; }
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "chimera.check"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "CHIMERA_CHECK version 2.7 written by Niels Larsen (http://wdcm.nig.ac.jp/RDP/docs/chimera_doc.html) \nhttp://www.mothur.org/wiki/Chimera.check"; }
-	string getDescription()		{ return "detect chimeric sequences"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	string getDescription() { return "detect chimeric sequences"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	vector<int> processIDS;   //processid
 	vector<linePair*> lines;
-	
+
 	int driver(linePair*, string, string);
 	int createProcesses(string, string);
 

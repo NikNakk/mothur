@@ -14,33 +14,33 @@
 #include "mothur.h"
 #include "sequence.hpp"
 
-/***********************************************/
+ /***********************************************/
 
 class ReferenceDB {
-	
-	public:
-	
-		static ReferenceDB& getInstance();
-		void clearMemory();
-	
-		bool save;
-		vector<Sequence> referenceSeqs;
-		vector< vector<float> > wordGenusProb;
-		vector<diffPair> WordPairDiffArr;
-	
-		string getSavedReference()			{ return referencefile;		}
-		void setSavedReference(string p)	{ referencefile = p;		}
-		string getSavedTaxonomy()			{ return taxonomyfile;		}
-		void setSavedTaxonomy(string p)		{ taxonomyfile = p;			}
-	
-	private:
-	
-		ReferenceDB() { referencefile = ""; taxonomyfile = ""; save = false; }
-		ReferenceDB(const ReferenceDB&){}// Disable copy constructor
-		void operator=(const ReferenceDB&){} // Disable assignment operator
-		~ReferenceDB(){}
-	
-		string referencefile, taxonomyfile;	
+
+public:
+
+	static ReferenceDB& getInstance();
+	void clearMemory();
+
+	bool save;
+	vector<Sequence> referenceSeqs;
+	vector< vector<float> > wordGenusProb;
+	vector<diffPair> WordPairDiffArr;
+
+	string getSavedReference() { return referencefile; }
+	void setSavedReference(string p) { referencefile = p; }
+	string getSavedTaxonomy() { return taxonomyfile; }
+	void setSavedTaxonomy(string p) { taxonomyfile = p; }
+
+private:
+
+	ReferenceDB() { referencefile = ""; taxonomyfile = ""; save = false; }
+	ReferenceDB(const ReferenceDB&) {}// Disable copy constructor
+	void operator=(const ReferenceDB&) {} // Disable assignment operator
+	~ReferenceDB() {}
+
+	string referencefile, taxonomyfile;
 };
 /***********************************************/
 

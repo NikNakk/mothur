@@ -17,36 +17,36 @@
 #include "listvector.hpp"
 
 class GetOtusCommand : public Command {
-	
-public:
-	
-	GetOtusCommand(string);	
-	GetOtusCommand();
-	~GetOtusCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "get.otus";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Get.otus"; }
-	string getDescription()		{ return "outputs a new list file containing the otus containing sequences from the groups specified"; }
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+public:
+
+	GetOtusCommand(Settings& settings, string option);
+	GetOtusCommand(Settings& settings);
+	~GetOtusCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "get.otus"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Get.otus"; }
+	string getDescription() { return "outputs a new list file containing the otus containing sequences from the groups specified"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	string accnosfile, groupfile, listfile, outputDir, groups, label;
 	bool abort;
 	vector<string> outputNames, Groups;
 	GroupMap* groupMap;
-	
+
 	int readListGroup();
 	int processList(ListVector*&, GroupMap*&, ofstream&, ofstream&, bool&);
-	
+
 };
 
 #endif

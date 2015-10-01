@@ -14,10 +14,10 @@
 /**************************************************************************************************/
 
 class KMeans : public CommunityTypeFinder {
-    
+
 public:
-    KMeans(vector<vector<int> >, int);
-    
+	KMeans(vector<vector<int> >, int);
+
 private:
 
 

@@ -13,15 +13,14 @@
 
 
 #include "mothur.h"
-#include "mothurout.h"
 #include "command.hpp"
 
-/***********************************************************************/
+ /***********************************************************************/
 
 class OptionParser {
 public:
 	OptionParser(string);
-    OptionParser(string, map<string, string>&);
+	OptionParser(string, map<string, string>&);
 	~OptionParser() {}
 	map<string, string> getParameters();
 	static bool getNameFile(vector<string>);

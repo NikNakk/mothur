@@ -9,32 +9,26 @@
 
 #include "bootstrap.h"
 
-/***********************************************************************/
+ /***********************************************************************/
 
-EstOutput Bootstrap::getValues(SAbundVector* rank){
-	try {
-		//vector<double> bootData(3,0);
-		data.resize(1,0);
-		double maxRank = (double)rank->getMaxRank();
-		double sampled = rank->getNumSeqs();
-		double sobs = rank->getNumBins();
+EstOutput Bootstrap::getValues(SAbundVector* rank) {
+	//vector<double> bootData(3,0);
+	data.resize(1, 0);
+	double maxRank = (double)rank->getMaxRank();
+	double sampled = rank->getNumSeqs();
+	double sobs = rank->getNumBins();
 
-		double boot = (double)sobs;
+	double boot = (double)sobs;
 
-		for(int i=1;i<=maxRank;i++){
-			boot += (double)rank->get(i)*pow((1.0-(double)i/(double)sampled),sampled);
-		}
-		
-		data[0] = boot;
-		
-		if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
-	
-		return data;
+	for (int i = 1;i <= maxRank;i++) {
+		boot += (double)rank->get(i)*pow((1.0 - (double)i / (double)sampled), sampled);
 	}
-	catch(exception& e) {
-		m->errorOut(e, "Bootstrap", "getValues");
-		exit(1);
-	}
+
+	data[0] = boot;
+
+	if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
+
+	return data;
 }
 
 /***********************************************************************/

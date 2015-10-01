@@ -9,7 +9,7 @@
  *
  */
 
-/* This command is run if the user enters an invalid command. */
+ /* This command is run if the user enters an invalid command. */
 
 #include "command.hpp"
 #include "commandfactory.hpp"
@@ -17,26 +17,26 @@
 class NoCommand : public Command {
 
 public:
-	NoCommand(string);
-	NoCommand() {}
-	~NoCommand(){}
-	
-	vector<string> setParameters()      { return outputNames;       } //dummy, doesn't really do anything	
-	string getCommandName()             { return "NoCommand";       }
-	string getCommandCategory()         { return "Hidden";          }
-	string getHelpString()              { return "No Command";      }	
-    string getOutputPattern(string) { return "";                }
-	string getCitation()                { return "no citation";     }
-	string getDescription()             { return "no description";  }
+	NoCommand(Settings& settings, string option) : Command(settings, option) {};
+	NoCommand(Settings& settings) : Command(settings) {}
+	~NoCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters() { return vector<string>(); } //dummy, doesn't really do anything	
+	string getCommandName() { return "NoCommand"; }
+	string getCommandCategory() { return "Hidden"; }
+	string getHelpString() { return "No Command"; }
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "no citation"; }
+	string getDescription() { return "no description"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	vector<string> outputNames;
-		
+
 };
 
 #endif

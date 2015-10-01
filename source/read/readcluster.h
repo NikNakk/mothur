@@ -16,19 +16,19 @@
 #include "counttable.h"
 
 
-/******************************************************/
+ /******************************************************/
 
 class ReadCluster {
-	
+
 public:
 	ReadCluster(string, float, string, bool);
 	~ReadCluster();
 	int read(NameAssignment*&);
-    int read(CountTable*&);
+	int read(CountTable*&);
 	string getOutputFile() { return OutPutFile; }
-	void setFormat(string f) { format = f;	}
-	ListVector* getListVector()		{	return list;	}
-	
+	void setFormat(string f) { format = f; }
+	ListVector* getListVector() { return list; }
+
 private:
 	string distFile, outputDir;
 	string OutPutFile, format;
@@ -36,9 +36,9 @@ private:
 	float cutoff;
 	MothurOut* m;
 	bool sortWanted;
-	
+
 	int convertPhylip2Column(NameAssignment*&);
-    int convertPhylip2Column(CountTable*&);
+	int convertPhylip2Column(CountTable*&);
 };
 
 /******************************************************/

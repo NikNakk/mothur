@@ -26,55 +26,69 @@
 template<typename T>
 class shared_queue
 {
-   std::queue<T> queue_;
-   mutable std::mutex m_;
-   std::condition_variable data_cond_;
+	std::queue<T> queue_;
+	mutable std::mutex m_;
+	std::condition_variable data_cond_;
+	std::condition_variable data_cond_empty_;
 
-   shared_queue &operator=(const shared_queue &) = delete;
-   shared_queue(const shared_queue &other) = delete;
+	shared_queue &operator=(const shared_queue &) = delete;
+	shared_queue(const shared_queue &other) = delete;
 
 public:
-   shared_queue() {}
+	shared_queue() {}
 
-   void push(T item) {
-      {
-         std::lock_guard<std::mutex> lock(m_);
-         queue_.push(std::move(item));
-      }
-      data_cond_.notify_one();
-   }
+	void push(T item) {
+		{
+			std::lock_guard<std::mutex> lock(m_);
+			queue_.push(std::move(item));
+		}
+		data_cond_.notify_one();
+	}
 
-   /// \return immediately, with true if successful retrieval
-   bool try_and_pop(T &popped_item) {
-      std::lock_guard<std::mutex> lock(m_);
-      if (queue_.empty()) {
-         return false;
-      }
-      popped_item = std::move(queue_.front());
-      queue_.pop();
-      return true;
-   }
+	/// \return immediately, with true if successful retrieval
+	bool try_and_pop(T &popped_item) {
+		std::lock_guard<std::mutex> lock(m_);
+		if (queue_.empty()) {
+			return false;
+		}
+		popped_item = std::move(queue_.front());
+		queue_.pop();
+		if (queue_.empty()) {
+			data_cond_empty_.notify_one();
+		}
+		return true;
+	}
 
-   /// Try to retrieve, if no items, wait till an item is available and try again
-   void wait_and_pop(T &popped_item) {
-      std::unique_lock<std::mutex> lock(m_);
-      while (queue_.empty())
-      {
-         data_cond_.wait(lock);
-         //  This 'while' loop is equal to
-         //  data_cond_.wait(lock, [](bool result){return !queue_.empty();});
-      }
-      popped_item = std::move(queue_.front());
-      queue_.pop();
-   }
+	/// Try to retrieve, if no items, wait till an item is available and try again
+	void wait_and_pop(T &popped_item) {
+		std::unique_lock<std::mutex> lock(m_);
+		while (queue_.empty())
+		{
+			data_cond_.wait(lock);
+			//  This 'while' loop is equal to
+			//  data_cond_.wait(lock, [](bool result){return !queue_.empty();});
+		}
+		popped_item = std::move(queue_.front());
+		queue_.pop();
+		if (queue_.empty()) {
+			data_cond_empty_.notify_one();
+		}
+	}
 
-   bool empty() const {
-      std::lock_guard<std::mutex> lock(m_);
-      return queue_.empty();
-   }
+	void wait_until_clear() {
+		std::unique_lock<std::mutex> lock(m_);
+		while (!queue_.empty()) {
+			data_cond_empty_.wait(lock);
+		}
+	}
 
-   unsigned size() const {
-      std::lock_guard<std::mutex> lock(m_);
-      return queue_.size();
-   }
+	bool empty() const {
+		std::lock_guard<std::mutex> lock(m_);
+		return queue_.empty();
+	}
+
+	unsigned size() const {
+		std::lock_guard<std::mutex> lock(m_);
+		return queue_.size();
+	}
 };

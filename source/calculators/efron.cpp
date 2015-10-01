@@ -27,7 +27,7 @@ EstOutput Efron::getValues(SAbundVector* rank){
 		return data;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "Efron", "getValues");
+		LOG(FATAL) << e.what() << " in Efron, getValues";
 		exit(1);
 	}
 }

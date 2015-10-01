@@ -80,7 +80,7 @@ EstOutput UVEst::getUVest(vector<SharedRAbundVector*> shared) {
 		return results;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "UVEst", "getUVest");
+		LOG(FATAL) << e.what() << " in UVEst, getUVest";
 		exit(1);
 	}
 }

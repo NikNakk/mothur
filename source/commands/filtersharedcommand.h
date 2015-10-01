@@ -15,34 +15,34 @@
 
 
 class FilterSharedCommand : public Command {
-    
+
 public:
-	FilterSharedCommand(string);
-	FilterSharedCommand();
+	FilterSharedCommand(Settings& settings, string option);
+	FilterSharedCommand(Settings& settings);
 	~FilterSharedCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "filter.shared";	}
-	string getCommandCategory()		{ return "OTU-Based Approaches";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "filter.shared"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Filter.shared"; }
-	string getDescription()		{ return "remove OTUs based on various criteria"; }
-    
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-private:	
+	string getDescription() { return "remove OTUs based on various criteria"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+private:
 	bool abort, pickedGroups, allLines, makeRare, keepties;
 	set<string> labels; //holds labels to be used
 	string groups, label, outputDir, sharedfile;
 	vector<string> Groups, outputNames;
 	int minAbund, minTotal, minSamples;
-    float minPercent, minPercentSamples, rarePercent;
-    
-    int processShared(vector<SharedRAbundVector*>&);
-	
+	float minPercent, minPercentSamples, rarePercent;
+
+	int processShared(vector<SharedRAbundVector*>&);
+
 };
 
 

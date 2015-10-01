@@ -17,6 +17,6 @@ void SeedParameter::validateAndSet(string newValue)
 
 	if (seed) {
 		srand(random);
-		// TODO m->mothurOut("Setting random seed to " + toString(random) + ".\n\n");
+		// TODO LOG(INFO) << "Setting random seed to " + toString(random) + ".\n\n";
 	}
 }

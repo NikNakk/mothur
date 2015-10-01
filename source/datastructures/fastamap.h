@@ -9,22 +9,21 @@
  *  Copyright 2009 Schloss Lab UMASS AMherst. All rights reserved.
  *
  */
- 
+
 #include "mothur.h"
-#include "mothurout.h"
 
 
-/* This class represents the fasta file.  It reads a fasta file a populates the internal data structure "data".
-Data is a map where the key is the sequence and the value is a struct containing the sequences groupname, 
-a list of the sequences names who have the same sequence and a number of how many sequence names there are. */
+ /* This class represents the fasta file.  It reads a fasta file a populates the internal data structure "data".
+ Data is a map where the key is the sequence and the value is a struct containing the sequences groupname,
+ a list of the sequences names who have the same sequence and a number of how many sequence names there are. */
 
 
-class FastaMap  {
+class FastaMap {
 
 public:
 	FastaMap() { m = MothurOut::getInstance(); }
 	~FastaMap() {};
-	
+
 	string getGroupName(string);  //pass a sequence name get its group
 	string getNames(string);	//pass a sequence get the string of names in the group separated by ','s.
 	void push_back(string, string); //sequencename, sequence

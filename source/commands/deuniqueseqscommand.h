@@ -11,36 +11,36 @@
 
 #include "command.hpp"
 
-/* This command is the reverse of unique.seqs */ 
+ /* This command is the reverse of unique.seqs */
 
 class DeUniqueSeqsCommand : public Command {
 
 public:
-	DeUniqueSeqsCommand(string);
-	DeUniqueSeqsCommand();
+	DeUniqueSeqsCommand(Settings& settings, string option);
+	DeUniqueSeqsCommand(Settings& settings);
 	~DeUniqueSeqsCommand() {}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "deunique.seqs";		}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Deunique.seqs"; }
-	string getDescription()		{ return "reverse of the unique.seqs command, and creates a fasta file from a fasta and name file"; }
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "deunique.seqs"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Deunique.seqs"; }
+	string getDescription() { return "reverse of the unique.seqs command, and creates a fasta file from a fasta and name file"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 
 	string fastaFile, nameFile, outputDir, countfile;
 	vector<string> outputNames;
 	bool abort;
 
-	
+
 };
 
 #endif

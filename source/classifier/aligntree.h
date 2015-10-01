@@ -19,9 +19,9 @@ public:
 	AlignTree(string, string, int);
 	~AlignTree();
 	string getTaxonomy(Sequence*);
-	
+
 private:
-    int addTaxonomyToTree(string, string&, string&);
+	int addTaxonomyToTree(string, string&, string&);
 	double getOutlierLogProbability(string&);
 	int getMinRiskIndexAlign(string&, vector<int>&, vector<double>&);
 	int aggregateThetas();

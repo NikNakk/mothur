@@ -18,25 +18,25 @@
 class SummaryCommand : public Command {
 
 public:
-	SummaryCommand(string);
-	SummaryCommand();
-	~SummaryCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "summary.single";			}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Summary.single"; }
-	string getDescription()		{ return "generate summary file that has the calculator value for each line in the OTU data"; }
+	SummaryCommand(Settings& settings, string option);
+	SummaryCommand(Settings& settings);
+	~SummaryCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "summary.single"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Summary.single"; }
+	string getDescription() { return "generate summary file that has the calculator value for each line in the OTU data"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-	vector<Calculator*> sumCalculators;	
+	vector<Calculator*> sumCalculators;
 	InputData* input;
 	SAbundVector* sabund;
 	int abund, size, iters, subsampleSize, alpha;
@@ -47,10 +47,10 @@ private:
 	vector<string>  Estimators;
 	vector<string> inputFileNames, outputNames;
 	vector<string> groups;
-	
+
 	vector<string> parseSharedFile(string);
 	vector<string> createGroupSummaryFile(int, int, vector<string>&, map<string, string>);
-    int process(SAbundVector*&, ofstream&, ofstream&);
+	int process(SAbundVector*&, ofstream&, ofstream&);
 
 
 };

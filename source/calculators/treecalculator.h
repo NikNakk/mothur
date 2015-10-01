@@ -12,9 +12,8 @@
 
 #include "mothur.h"
 #include "tree.h"
-#include "mothurout.h"
 
-/* The tree calculator class is the parent class for tree calculators in mothur. */ 
+ /* The tree calculator class is the parent class for tree calculators in mothur. */
 
 typedef vector<double> EstOutput;
 
@@ -23,21 +22,20 @@ typedef vector<double> EstOutput;
 class TreeCalculator {
 
 public:
-	TreeCalculator(){ m = MothurOut::getInstance(); }
+	TreeCalculator() {}
 	TreeCalculator(string n) : name(n) {};
-	
-	virtual ~TreeCalculator(){};
-	virtual EstOutput getValues(Tree*) { return data; }	
-	virtual EstOutput getValues(Tree*, int, string) { return data; }	
+
+	virtual ~TreeCalculator() {};
+	virtual EstOutput getValues(Tree*) { return data; }
+	virtual EstOutput getValues(Tree*, int, string) { return data; }
 	virtual EstOutput getValues(Tree*, string, string) { return data; }
 	virtual EstOutput getValues(Tree*, string, string, vector<double>&) { return data; }
-	
-	virtual string getName()		{	return name;	}
-		
+
+	virtual string getName() { return name; }
+
 protected:
 	EstOutput data;
 	string name;
-	MothurOut* m;
 
 };
 

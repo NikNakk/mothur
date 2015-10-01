@@ -10,24 +10,18 @@
 #include "simpsoneven.h"
 #include "invsimpson.h"
 
-/***********************************************************************/
+ /***********************************************************************/
 
-EstOutput SimpsonEven::getValues(SAbundVector* rank){
-	try {
-		data.resize(1,0);
+EstOutput SimpsonEven::getValues(SAbundVector* rank) {
+	data.resize(1, 0);
 
-		InvSimpson* simp = new InvSimpson();
-		vector<double> invSimpData = simp->getValues(rank);
-		
-		data[0] = invSimpData[0] / double(rank->getNumBins());
-		
-		
-		return data;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "SimpsonEven", "getValues");
-		exit(1);
-	}
+	InvSimpson* simp = new InvSimpson();
+	vector<double> invSimpData = simp->getValues(rank);
+
+	data[0] = invSimpData[0] / double(rank->getNumBins());
+
+
+	return data;
 }
 
 /***********************************************************************/

@@ -11,7 +11,6 @@
  */
 
 #include "mothur.h"
-#include "mothurout.h"
 #include "sequence.hpp"
 
 class FlowData {
@@ -24,7 +23,7 @@ public:
 	string getName();
 	void capFlows(int);
 	bool hasMinFlows(int);
-    bool hasGoodHomoP();
+	bool hasGoodHomoP();
 
 	Sequence getSequence();
 
@@ -32,7 +31,7 @@ public:
 	void printFlows(ofstream&, string);
 private:
 	MothurOut* m;
-	
+
 	void updateEndFlow();
 	void translateFlow();
 	float signalIntensity, noiseIntensity;
@@ -40,7 +39,7 @@ private:
 	string seqName, locationString, sequence, baseFlow;
 	int numFlows, maxFlows, endFlow;
 	vector<float> flowData;
-    string getSequenceName(ifstream&);
+	string getSequenceName(ifstream&);
 };
 
 #endif

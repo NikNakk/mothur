@@ -3,7 +3,7 @@
 
 /*
  *  nast.hpp
- *  
+ *
  *
  *  Created by Pat Schloss on 12/17/08.
  *  Copyright 2008 Patrick D. Schloss. All rights reserved.
@@ -19,7 +19,6 @@
  */
 
 #include "mothur.h"
-#include "mothurout.h"
 #include <memory>
 
 class Alignment;
@@ -28,22 +27,22 @@ class Sequence;
 /**************************************************************************************************/
 
 class Nast {
-	
+
 public:
 	Nast(shared_ptr<Alignment>, shared_ptr<Sequence>, shared_ptr<Sequence>);
-	~Nast(){};
+	~Nast() {};
 	float getSimilarityScore();
 	int getMaxInsertLength();
-	
+
 private:
 	void pairwiseAlignSeqs();
 	void regapSequences();
 	void removeExtraGaps(string&, string, string);
-	
+
 	shared_ptr<Alignment> alignment;
 	shared_ptr<Sequence> candidateSeq;
 	shared_ptr<Sequence> templateSeq;
-	
+
 	int maxInsertLength;
 	MothurOut* m;
 };

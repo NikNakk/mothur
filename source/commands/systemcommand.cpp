@@ -9,118 +9,65 @@
 
 #include "systemcommand.h"
 
-//**********************************************************************************************************************
-vector<string> SystemCommand::setParameters(){	
+ //**********************************************************************************************************************
+vector<string> SystemCommand::setParameters() {
 	try {
-		CommandParameter pcommand("command", "String", "", "", "", "", "","",false,false); parameters.push_back(pcommand);
-				
-		vector<string> myArray;
-		for (int i = 0; i < parameters.size(); i++) {	myArray.push_back(parameters[i].name);		}
-		return myArray;
+		nkParameters.add(new StringParameter("command", true, true));
+		return nkParameters.getNames();
 	}
-	catch(exception& e) {
-		m->errorOut(e, "SystemCommand", "setParameters");
-		exit(1);
-	}
-}
-//**********************************************************************************************************************
-SystemCommand::SystemCommand(string option)  {
-	try {
-		abort = false; calledHelp = false;   
-		
-		//allow user to run help
-		if(option == "help") { help(); abort = true; calledHelp = true; }
-		else if(option == "citation") { citation(); abort = true; calledHelp = true;}
-		
-		else {
-			vector<string> myArray = setParameters();
-			
-			OptionParser parser(option);
-			map<string, string> parameters = parser.getParameters();
-			map<string, string>::iterator it;
-			
-			ValidParameters validParameter;
-			
-			//check for optional parameter and set defaults
-			// ...at some point should added some additional type checking...
-			string commandOption = validParameter.validFile(parameters, "command", false);			
-			if (commandOption == "not found") { commandOption = ""; }
-			else { command = commandOption; }
-			
-			if ((option == "") && (commandOption == "")) { m->mothurOut("You must enter a command to run."); m->mothurOutEndLine(); abort = true; }
-			else if (commandOption == "") { 
-				//check for outputdir and inputdir parameters
-				int commaPos = option.find_first_of(',');
-				
-				//if there is a comma then grab string up to that pos
-				if (commaPos != option.npos) {
-					option = option.substr(0, commaPos);
-				}
-			
-				command = option;
-			}
-		}	
-
-	}
-	catch(exception& e) {
-		m->errorOut(e, "SystemCommand", "SystemCommand");
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in SystemCommand, setParameters";
 		exit(1);
 	}
 }
 //**********************************************************************************************************************
 
-string SystemCommand::getHelpString(){
-	try {
-		string helpString = "";
-		helpString += "The system command allows you to execute a system command from within mothur.\n";
-		helpString += "The system has no parameters.\n";
-		helpString += "The system command should be in the following format: system(yourCommand).\n";
-		helpString += "Example system(clear).\n";
-		return helpString;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "SystemCommand", "help");
-		exit(1);
-	}
+string SystemCommand::getHelpString() {
+	string helpString = "The system command allows you to execute a system command from within mothur.\n"
+		"The system has no parameters.\n"
+		"The system command should be in the following format: system(yourCommand).\n"
+		"Example system(clear).\n";
+	return helpString;
 }
 
 //**********************************************************************************************************************
 
-int SystemCommand::execute(){
+int SystemCommand::execute() {
 	try {
-		
-		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
-		
+
+		if (abort == true) { if (calledHelp) { return 0; }  return 2; }
+
 		//if command contains a redirect don't add the redirect
+		string command = nkParameters["command"]->getValue();
 		bool usedRedirect = false;
 		if ((command.find('>')) == string::npos) {
 			command += " > ./commandScreen.output 2>&1";
 			usedRedirect = true;
 		}
-		
+
 		system(command.c_str());
-		
+
 		if (usedRedirect) {
 			ifstream in;
 			string filename = "./commandScreen.output";
-			m->openInputFile(filename, in, "no error");
-			
+			File::openInputFile(filename, in, "no error");
+
 			string output = "";
-			while(char c = in.get()){
-				if(in.eof())		{	break;			}
-				else				{	output += c;	}
+			while (char c = in.get()) {
+				if (in.eof()) { break; }
+				else { output += c; }
 			}
 			in.close();
-			
-			m->mothurOut(output); m->mothurOutEndLine();
-			m->mothurRemove(filename);
+
+			LOG(INFO) << output << '\n';
+			File::remove(filename);
 		}
-		
-		return 0;		
+
+		return 0;
 	}
 
-	catch(exception& e) {
-		m->errorOut(e, "SystemCommand", "execute");
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in SystemCommand, execute";
 		exit(1);
 	}
 }

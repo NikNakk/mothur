@@ -25,44 +25,52 @@
 #include "g3log/shared_queue.hpp"
 
 namespace kjellkod {
-   typedef std::function<void() > Callback;
+	typedef std::function<void() > Callback;
 
-   class Active {
-   private:
-      Active() : done_(false) {} // Construction ONLY through factory createActive();
-      Active(const Active &) = delete;
-      Active &operator=(const Active &) = delete;
+	class Active {
+	private:
+		Active() : done_(false) {} // Construction ONLY through factory createActive();
+		Active(const Active &) = delete;
+		Active &operator=(const Active &) = delete;
 
-      void run() {
-         while (!done_) {
-            Callback func;
-            mq_.wait_and_pop(func);
-            func();
-         }
-      }
+		void run() {
+			while (!done_) {
+				Callback func;
+				mq_.wait_and_pop(func);
+				func();
+			}
+		}
 
-      shared_queue<Callback> mq_;
-      std::thread thd_;
-      bool done_;
+		shared_queue<Callback> mq_;
+		std::thread thd_;
+		bool done_;
 
 
-   public:
-      virtual ~Active() {
-         send([this] { done_ = true;});
-         thd_.join();
-      }
+	public:
+		virtual ~Active() {
+			send([this] { done_ = true;});
+			thd_.join();
+		}
 
-      void send(Callback msg_) {
-         mq_.push(msg_);
-      }
+		void send(Callback msg_) {
+			mq_.push(msg_);
+		}
 
-      /// Factory: safe construction of object before thread start
-      static std::unique_ptr<Active> createActive() {
-         std::unique_ptr<Active> aPtr(new Active());
-         aPtr->thd_ = std::thread(&Active::run, aPtr.get());
-         return aPtr;
-      }
-   };
+		bool isClear() {
+			return mq_.empty();
+		}
+
+		void waitUntilClear() {
+			mq_.wait_until_clear();
+		}
+
+		/// Factory: safe construction of object before thread start
+		static std::unique_ptr<Active> createActive() {
+			std::unique_ptr<Active> aPtr(new Active());
+			aPtr->thd_ = std::thread(&Active::run, aPtr.get());
+			return aPtr;
+		}
+	};
 
 
 

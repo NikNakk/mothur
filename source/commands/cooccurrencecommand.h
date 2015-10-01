@@ -18,36 +18,36 @@
 
 
 class CooccurrenceCommand : public Command {
-	
+
 public:
-	
-	CooccurrenceCommand(string);	
-	CooccurrenceCommand();
-	~CooccurrenceCommand(){}
-	
+
+	CooccurrenceCommand(Settings& settings, string option);
+	CooccurrenceCommand(Settings& settings);
+	~CooccurrenceCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "cooccurrence";			}
-	string getCommandCategory()		{ return "Hypothesis Testing";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "cooccurrence"; }
+	string getCommandCategory() { return "Hypothesis Testing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "Ulrich W & Gotelli NJ (2010).  Null model analysis of species associations using abundance data.  Ecology  91:3384.\nhttp://www.mothur.org/wiki/Cooccurrence"; }
-	string getDescription()		{ return "calculates four metrics and tests their significance to assess whether presence-absence patterns are different than what one would expect by chance."; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	string getDescription() { return "calculates four metrics and tests their significance to assess whether presence-absence patterns are different than what one would expect by chance."; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
-    string metric, matrix, outputDir;
-    string label, sharedfile, groups;
-    bool abort, allLines;
-    set<string> labels;
-    vector<string> outputNames, Groups;
-    int runs;
-    
-    int getCooccurrence(vector<SharedRAbundVector*>&, ofstream&);
-	
+	string metric, matrix, outputDir;
+	string label, sharedfile, groups;
+	bool abort, allLines;
+	set<string> labels;
+	vector<string> outputNames, Groups;
+	int runs;
+
+	int getCooccurrence(vector<SharedRAbundVector*>&, ofstream&);
+
 };
 
 #endif

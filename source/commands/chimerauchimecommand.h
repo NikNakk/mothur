@@ -18,42 +18,42 @@
 #include "sequencecountparser.h"
 #include <memory>
 
-/***********************************************************/
+ /***********************************************************/
 
 class ChimeraUchimeCommand : public Command {
 public:
-	ChimeraUchimeCommand(string);
-	ChimeraUchimeCommand();
+	ChimeraUchimeCommand(Settings& settings, string option);
+	ChimeraUchimeCommand(Settings& settings);
 	~ChimeraUchimeCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "chimera.uchime";		}
-	string getCommandCategory()		{ return "Sequence Processing"; }
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "chimera.uchime"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "uchime by Robert C. Edgar\nhttp://drive5.com/usearch/manual/uchime_algo.html\nThis code was donated to the public domain.\nEdgar,R.C., Haas,B.J., Clemente,J.C., Quince,C. and Knight,R. (2011), UCHIME improves sensitivity and speed of chimera detection.  Bioinformatics 27:2194.\nhttp://www.mothur.org/wiki/Chimera.uchime\n"; }
-	string getDescription()		{ return "detect chimeric sequences"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }		
-	
+	string getDescription() { return "detect chimeric sequences"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	vector<int> processIDS;   //processid
 	int driver(string, string, string, string, int&);
 	void driverWithCount(string outputFName, string filename, string accnos, string alns, int & numChimeras, int & numSeqs);
 	int createProcesses(string, string, string, string, int&);
-		
+
 	bool abort, useAbskew, chimealns, useMinH, useMindiv, useXn, useDn, useXa, useChunks, useMinchunk, useIdsmoothwindow, useMinsmoothid, useMaxp, skipgaps, skipgaps2, useMinlen, useMaxlen, ucl, useQueryfract, hasCount, hasName, dups;
 	string fastafile, groupfile, templatefile, outputDir, namefile, countfile, abskew, minh, mindiv, xn, dn, xa, chunks, minchunk, idsmoothwindow, minsmoothid, maxp, minlen, maxlen, queryfract, uchimeLocation, strand;
 	int processors;
-	
+
 	shared_ptr<ISequenceParser> sparser;
 	vector<string> outputNames;
 	vector<string> fastaFileNames;
 	vector<string> nameFileNames;
 	vector<string> groupFileNames;
-	
+
 	string getNamesFile(string&);
 	int readFasta(string, map<string, string>&);
 	int printFile(vector<seqPriorityNode>&, string);
@@ -61,7 +61,7 @@ private:
 	int driverGroups(string outputFName, string filename, string accnos, string alns, string countlist, unsigned long long start, unsigned long long end, vector<string> groups);
 	void driverGroupsWithCount(string outputFName, string filename, string accnos, string alns, string countlist, unsigned long long start, unsigned long long end, vector<string> groups, int & numSeqs);
 	int createProcessesGroups(string, string, string, string, string, vector<string>, string, string, string);
-    int prepFile(string filename, string);
+	int prepFile(string filename, string);
 
 
 };
@@ -72,8 +72,8 @@ private:
 // This is passed by void pointer so it can be any data type
 // that can be passed using a single void pointer (LPVOID).
 struct uchimeData {
-	string fastafile; 
-	string namefile; 
+	string fastafile;
+	string namefile;
 	string groupfile;
 	string outputFName;
 	string accnos, alns, filename, templatefile, uchimeLocation, countlist;
@@ -84,9 +84,9 @@ struct uchimeData {
 	vector<string> groups;
 	bool dups, useAbskew, chimealns, useMinH, useMindiv, useXn, useDn, useXa, useChunks, useMinchunk, useIdsmoothwindow, useMinsmoothid, useMaxp, skipgaps, skipgaps2, useMinlen, useMaxlen, ucl, useQueryfract, hasCount;
 	string abskew, minh, mindiv, xn, dn, xa, chunks, minchunk, idsmoothwindow, minsmoothid, maxp, minlen, maxlen, queryfract, strand;
-	
-	uchimeData(){}
-	uchimeData(string o, string uloc, string t, string file, string f, string n, string g, string ac,  string al, string nc, vector<string> gr, MothurOut* mout, int st, int en, int tid) {
+
+	uchimeData() {}
+	uchimeData(string o, string uloc, string t, string file, string f, string n, string g, string ac, string al, string nc, vector<string> gr, MothurOut* mout, int st, int en, int tid) {
 		fastafile = f;
 		namefile = n;
 		groupfile = g;
@@ -102,8 +102,8 @@ struct uchimeData {
 		groups = gr;
 		count = 0;
 		numChimeras = 0;
-        uchimeLocation = uloc;
-        countlist = nc;
+		uchimeLocation = uloc;
+		countlist = nc;
 	}
 	void setBooleans(bool dps, bool Abskew, bool calns, bool MinH, bool Mindiv, bool Xn, bool Dn, bool Xa, bool Chunks, bool Minchunk, bool Idsmoothwindow, bool Minsmoothid, bool Maxp, bool skipgap, bool skipgap2, bool Minlen, bool Maxlen, bool uc, bool Queryfract, bool hc) {
 		useAbskew = Abskew;
@@ -124,15 +124,15 @@ struct uchimeData {
 		useMaxlen = Maxlen;
 		ucl = uc;
 		useQueryfract = Queryfract;
-        hasCount = hc;
-        dups = dps;
+		hasCount = hc;
+		dups = dps;
 	}
-	
+
 	void setVariables(string abske, string min, string mindi, string x, string d, string xa2, string chunk, string minchun, string idsmoothwindo, string minsmoothi, string max, string minle, string maxle, string queryfrac, string stra) {
 		abskew = abske;
 		minh = min;
 		mindiv = mindi;
-        strand = stra;
+		strand = stra;
 		xn = x;
 		dn = d;
 		xa = xa2;

@@ -14,25 +14,25 @@
 #include "datavector.hpp"
 #include "calculator.h"
 
-/***********************************************************************/
+ /***********************************************************************/
 
 class HeatMapSim {
-	
-	public:
-		HeatMapSim(string, string, int);
-		~HeatMapSim(){};
-	
-		vector<string> getPic(vector<SharedRAbundVector*>, vector<Calculator*>);
-		string getPic(vector< vector<double> >, vector<string>);
 
-	private:
-		void printLegend(int, float);
+public:
+	HeatMapSim(string, string, int);
+	~HeatMapSim() {};
 
-		string format, groupComb, outputDir, inputfile;
-		int fontSize;
-		ofstream outsvg;
-		MothurOut* m;
-			
+	vector<string> getPic(vector<SharedRAbundVector*>, vector<Calculator*>);
+	string getPic(vector< vector<double> >, vector<string>);
+
+private:
+	void printLegend(int, float);
+
+	string format, groupComb, outputDir, inputfile;
+	int fontSize;
+	ofstream outsvg;
+	MothurOut* m;
+
 };
 
 /***********************************************************************/

@@ -9,45 +9,39 @@
 
 #include "rarecalc.h"
 
-/***********************************************************************/
+ /***********************************************************************/
 
-EstOutput RareCalc::getValues(int n){
-	try {
-		EstOutput output(3,0);
+EstOutput RareCalc::getValues(int n) {
+	EstOutput output(3, 0);
 
-		double richness = (double)numBins;
-		double varS = 0.0000;
-	
-		double varTerm1 = 0.0000;
-		double varTerm2 = 0.0000;
-	
-		double rSummation = 0;
-		for(int i=0;i<numBins;i++){
-			int N_ni = numSeqs - bins->get(i);
-			rSummation += (bMatrix[N_ni][n]);
-		
-			varTerm1 += (bMatrix[N_ni][n] * (1.0 - bMatrix[N_ni][n] / bMatrix[numSeqs][n]));
+	double richness = (double)numBins;
+	double varS = 0.0000;
 
-			for(int j=i+1;j<numBins;j++){
-				varTerm2 += ( bMatrix[N_ni-bins->get(j)][n] - bMatrix[N_ni][n] * bMatrix[numSeqs-bins->get(j)][n] / bMatrix[numSeqs][n]);
-			}
-		
+	double varTerm1 = 0.0000;
+	double varTerm2 = 0.0000;
+
+	double rSummation = 0;
+	for (int i = 0;i < numBins;i++) {
+		int N_ni = numSeqs - bins->get(i);
+		rSummation += (bMatrix[N_ni][n]);
+
+		varTerm1 += (bMatrix[N_ni][n] * (1.0 - bMatrix[N_ni][n] / bMatrix[numSeqs][n]));
+
+		for (int j = i + 1;j < numBins;j++) {
+			varTerm2 += (bMatrix[N_ni - bins->get(j)][n] - bMatrix[N_ni][n] * bMatrix[numSeqs - bins->get(j)][n] / bMatrix[numSeqs][n]);
 		}
-		richness -= (rSummation / bMatrix[numSeqs][n]);
-		varS = (varTerm1 + 2 * varTerm2) / bMatrix[numSeqs][n];
-		float sd = pow(varS, 0.5);
-	
 
-		output[0] = richness;
-		output[1] = richness - 1.96 * sd;	
-		output[2] = richness + 1.96 * sd;
-	
-		return output;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "RareCalc", "getValues");
-		exit(1);
-	}
+	richness -= (rSummation / bMatrix[numSeqs][n]);
+	varS = (varTerm1 + 2 * varTerm2) / bMatrix[numSeqs][n];
+	float sd = pow(varS, 0.5);
+
+
+	output[0] = richness;
+	output[1] = richness - 1.96 * sd;
+	output[2] = richness + 1.96 * sd;
+
+	return output;
 }
 
 /***********************************************************************/

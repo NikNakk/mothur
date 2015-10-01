@@ -10,25 +10,19 @@
 #include "goodscoverage.h"
 #include "calculator.h"
 
-/**********************************************************/
+ /**********************************************************/
 
-EstOutput GoodsCoverage::getValues(SAbundVector* rank){
-	try {
-		data.resize(1,0);
-		
-		double numSingletons = rank->get(1);
-		double totalIndividuals = rank->getNumSeqs();
-		
-		data[0] = 1 - numSingletons/totalIndividuals;
-		
-		if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
+EstOutput GoodsCoverage::getValues(SAbundVector* rank) {
+	data.resize(1, 0);
 
-		return data;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "GoodsCoverage", "getValues");
-		exit(1);
-	}
+	double numSingletons = rank->get(1);
+	double totalIndividuals = rank->getNumSeqs();
+
+	data[0] = 1 - numSingletons / totalIndividuals;
+
+	if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
+
+	return data;
 }
 
 /***********************************************************************/

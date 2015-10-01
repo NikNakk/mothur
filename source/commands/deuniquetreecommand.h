@@ -16,28 +16,28 @@
 #include "readtree.h"
 
 class DeuniqueTreeCommand : public Command {
-	
+
 public:
-	DeuniqueTreeCommand(string);	
-	DeuniqueTreeCommand();
+	DeuniqueTreeCommand(Settings& settings, string option);
+	DeuniqueTreeCommand(Settings& settings);
 	~DeuniqueTreeCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "deunique.tree";		}
-	string getCommandCategory()		{ return "Hypothesis Testing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "deunique.tree"; }
+	string getCommandCategory() { return "Hypothesis Testing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Deunique.tree"; }
-	string getDescription()		{ return "add the redundant sequence names back into a tree of unique sequences"; }
-	
+	string getDescription() { return "add the redundant sequence names back into a tree of unique sequences"; }
+
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }
-	
-	
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	int numUniquesInName;
-	
+
 	bool abort;
 	string outputDir, treefile, namefile;
 	vector<string> outputNames;

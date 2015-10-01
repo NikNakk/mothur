@@ -21,20 +21,20 @@
 #        define PHREDCLAMP(x) ((x) > PHREDMAX ? PHREDMAX : ((x) < 0 ? 0 : (x)))
 
 
-/**************************************************************************************************/
+ /**************************************************************************************************/
 
 class KmerAlign : public Alignment {
-	
+
 public:
 	KmerAlign(int);
 	~KmerAlign();
-    void align(string, string);
-	
+	void align(string, string);
+
 private:
-    int kmerSize;
-    int maxKmer;
-    Kmer kmerLibrary;
-    double calcProb(string A, string B, int overlap);
+	int kmerSize;
+	int maxKmer;
+	Kmer kmerLibrary;
+	double calcProb(string A, string B, int overlap);
 };
 
 /**************************************************************************************************/

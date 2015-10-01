@@ -14,30 +14,22 @@
 
 
 class SystemCommand : public Command {
-	
-	public:
-	
-		SystemCommand(string);	
-		SystemCommand() { setParameters(); abort = true; calledHelp = true; }
-		~SystemCommand(){}
-	
-		vector<string> setParameters();
-		string getCommandName()			{ return "system";		}
-		string getCommandCategory()		{ return "General";		}
-        string getHelpString();	
-        string getOutputPattern(string){ return ""; }	
-		string getCitation() { return "http://www.mothur.org/wiki/System"; }
-		string getDescription()		{ return "execute system commands from within mothur"; }
 
-		int execute(); 
-		void help() { m->mothurOut(getHelpString()); }	
-	
-	private:
-		string command;
-		bool abort;
-		vector<string> outputNames;
-		
-		
+public:
+
+	SystemCommand(Settings& settings, string option) : Command(settings, option) {}
+	SystemCommand(Settings& settings) : Command(settings) {}
+	~SystemCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "system"; }
+	string getCommandCategory() { return "General"; }
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "http://www.mothur.org/wiki/System"; }
+	string getDescription() { return "execute system commands from within mothur"; }
+
+	int execute();
 };
 
 #endif

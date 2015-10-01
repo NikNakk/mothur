@@ -17,23 +17,23 @@
 
 class GetlabelCommand : public Command {
 public:
-	GetlabelCommand(string);
-	GetlabelCommand();
-	~GetlabelCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "get.label";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	string getHelpString();	
-    string getOutputPattern(string) { return ""; }	
-	string getCitation() { return "http://www.mothur.org/wiki/Get.label"; }
-	string getDescription()		{ return "outputs labels"; }
+	GetlabelCommand(Settings& settings, string option);
+	GetlabelCommand(Settings& settings);
+	~GetlabelCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "get.label"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "http://www.mothur.org/wiki/Get.label"; }
+	string getDescription() { return "outputs labels"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	string inputfile, listfile, rabundfile, sabundfile, format;
 	bool abort;

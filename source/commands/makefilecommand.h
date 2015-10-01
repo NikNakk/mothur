@@ -12,30 +12,30 @@
 #include "command.hpp"
 
 class MakeFileCommand : public Command {
-    
+
 public:
-    MakeFileCommand(string);
-    MakeFileCommand();
-    ~MakeFileCommand(){}
-    
-    vector<string> setParameters();
-    string getCommandName()			{ return "make.file";	}
-    string getCommandCategory()		{ return "General";		}
-    
-    string getHelpString();
-    string getOutputPattern(string);
-    string getCitation() { return "http://www.mothur.org/wiki/Make.file"; }
-    string getDescription()		{ return "creates a file file containing fastq filenames"; }
-    
-    int execute();
-    void help() { m->mothurOut(getHelpString()); }
+	MakeFileCommand(Settings& settings, string option);
+	MakeFileCommand(Settings& settings);
+	~MakeFileCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "make.file"; }
+	string getCommandCategory() { return "General"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Make.file"; }
+	string getDescription() { return "creates a file file containing fastq filenames"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
 
 private:
-    
-    string inputDir, outputDir, typeFile;
-    vector<string> outputNames;
-    int numCols;
-    bool abort;
+
+	string inputDir, outputDir, typeFile;
+	vector<string> outputNames;
+	int numCols;
+	bool abort;
 };
 
 

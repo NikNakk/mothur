@@ -21,24 +21,24 @@
 class HeatMapCommand : public Command {
 
 public:
-	HeatMapCommand(string);
-	HeatMapCommand();
-	~HeatMapCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "heatmap.bin";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Heatmap.bin"; }
-	string getDescription()		{ return "generate a heatmap where the color represents the relative abundanceof an OTU"; }
+	HeatMapCommand(Settings& settings, string option);
+	HeatMapCommand(Settings& settings);
+	~HeatMapCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "heatmap.bin"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Heatmap.bin"; }
+	string getDescription() { return "generate a heatmap where the color represents the relative abundanceof an OTU"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	InputData* input;
 	RAbundVector* rabund;

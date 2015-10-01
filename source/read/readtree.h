@@ -21,36 +21,36 @@ class Tree;
 /****************************************************************************/
 
 class ReadTree {
-	public:
-		ReadTree(); 
-		virtual ~ReadTree() {};
-		
-		virtual int read(CountTable*) = 0;
-		int readSpecialChar(istream&, char, string);
-		int readNodeChar(istream& f);
-		float readBranchLength(istream& f);
-	
-		vector<Tree*> getTrees() { return Trees; }
-		int AssembleTrees();
-		
-	protected:
-		vector<Tree*> Trees;
-		CountTable* ct;
-		int numNodes, numLeaves;
-		MothurOut* m;
-		
-		
+public:
+	ReadTree();
+	virtual ~ReadTree() {};
+
+	virtual int read(CountTable*) = 0;
+	int readSpecialChar(istream&, char, string);
+	int readNodeChar(istream& f);
+	float readBranchLength(istream& f);
+
+	vector<Tree*> getTrees() { return Trees; }
+	int AssembleTrees();
+
+protected:
+	vector<Tree*> Trees;
+	CountTable* ct;
+	int numNodes, numLeaves;
+	MothurOut* m;
+
+
 };
 
 /****************************************************************************/
 
 class ReadNewickTree : public ReadTree {
-	
+
 public:
-	ReadNewickTree(string file) : treeFile(file) { m->openInputFile(file, filehandle); readOk = 0; } 
+	ReadNewickTree(string file) : treeFile(file) { File::openInputFile(file, filehandle); readOk = 0; }
 	~ReadNewickTree() {};
 	int read(CountTable*);
-	
+
 private:
 	Tree* T;
 	int readNewickInt(istream&, int&, Tree*, CountTable*);
@@ -60,7 +60,7 @@ private:
 	string treeFile;
 	string holder;
 	int readOk;  // readOk = 0 means success, readOk = 1 means errors.
-	
+
 };
 
 /****************************************************************************/

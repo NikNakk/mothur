@@ -1,11 +1,12 @@
 #include "command.hpp"
+#include "utility.h"
 #include <iterator>
 
-Command::Command() : m(MothurOut::getInstance()), abort(true), calledHelp(true) {
+Command::Command(Settings& settings) : settings(settings), abort(true), calledHelp(true), nkParameters(settings) {
 	this->setParameters();
 }
 
-Command::Command(string option) : m(MothurOut::getInstance()), abort(false), calledHelp(false) {
+Command::Command(Settings& settings, string option) : settings(settings), abort(false), calledHelp(false), nkParameters(settings) {
 	if (option == "help") { help(); abort = true; calledHelp = true; }
 	else if (option == "citation") { citation(); abort = true; calledHelp = true; }
 	else {
@@ -15,8 +16,8 @@ Command::Command(string option) : m(MothurOut::getInstance()), abort(false), cal
 			nkParameters.parseOptionString(option);
 		}
 		catch (exception& e) {
-			m->mothurOut(string("[ERROR] setting up command: ") + e.what());
-			m->control_pressed = true;
+			LOG(WARNING) << string("setting up command: ") + e.what();
+			abort = true;
 		}
 	}
 }
@@ -31,12 +32,12 @@ string Command::getOutputFileName(string type, map<string, string> variableParts
 
 		//is this a type this command creates
 		it = outputTypes.find(type);
-		if (it == outputTypes.end()) { m->mothurOut("[ERROR]: this command doesn't create a " + type + " output file.\n"); }
+		if (it == outputTypes.end()) { LOG(LOGERROR) << "this command doesn't create a " + type + " output file.\n"; }
 		else {
 
 			string patternTemp = getOutputPattern(type);
 			vector<string> patterns;
-			m->splitAtDash(patternTemp, patterns);
+			Utility::split(patternTemp, '-', patterns);
 
 			//find pattern to use based on number of variables passed in
 			string pattern = "";
@@ -55,7 +56,7 @@ string Command::getOutputFileName(string type, map<string, string> variableParts
 				for (int i = 0; i < numVariablesPerPattern.size(); i++) {
 					if (numVariablesPerPattern[i] < variableParts.size()) { pattern = patterns[i]; foundPattern = true; break; }
 				}
-				if (!foundPattern) { m->mothurOut("[ERROR]: Not enough variable pieces for " + type + ".\n"); m->control_pressed = true; }
+				if (!foundPattern) { LOG(LOGERROR) << "Not enough variable pieces for " + type + ".\n"; abort = true; }
 			}
 
 			if (pattern != "") {
@@ -63,14 +64,14 @@ string Command::getOutputFileName(string type, map<string, string> variableParts
 				for (int i = 0; i < pattern.length(); i++) { if (pattern[i] == '[') { numVariables++; } }
 
 				vector<string> pieces;
-				m->splitAtComma(pattern, pieces);
+				Utility::split(pattern, ',', pieces);
 
 
 				for (int i = 0; i < pieces.size(); i++) {
 					if (pieces[i][0] == '[') {
 						map<string, string>::iterator it = variableParts.find(pieces[i]);
 						if (it == variableParts.end()) {
-							m->mothurOut("[ERROR]: Did not provide variable for " + pieces[i] + ".\n"); m->control_pressed = true;
+							LOG(LOGERROR) << "Did not provide variable for " + pieces[i] + ".\n"; abort = true;
 						}
 						else {
 							if (it->second != "") {
@@ -97,15 +98,15 @@ string Command::getOutputFileName(string type, map<string, string> variableParts
 		return filename;
 	}
 	catch (exception& e) {
-		m->errorOut(e, "command", "getOutputFileName");
+		LOG(FATAL) << e.what() << " in command, getOutputFileName";
 		exit(1);
 	}
 }
 
 void Command::help() {
-	m->mothurOut(getHelpString());
+	LOG(INFO) << getHelpString();
 }
 
 void Command::citation() {
-	m->mothurOutEndLine(); m->mothurOut(getCitation()); m->mothurOutEndLine();
+	LOG(INFO) << getCitation();
 }

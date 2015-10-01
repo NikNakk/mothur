@@ -20,7 +20,7 @@ EstOutput Coverage::getValues(SAbundVector* rank){
 		return data;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "Coverage", "getValues");
+		LOG(FATAL) << e.what() << " in Coverage, getValues";
 		exit(1);
 	}
 }

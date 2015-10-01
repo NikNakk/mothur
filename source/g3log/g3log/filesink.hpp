@@ -13,30 +13,30 @@
 #include "g3log/logmessage.hpp"
 namespace g3 {
 
-   class FileSink {
-   public:
-      FileSink(const std::string &log_prefix, const std::string &log_directory);
-      virtual ~FileSink();
+	class FileSink {
+	public:
+		FileSink(const std::string &log_prefix, const std::string &log_directory);
+		virtual ~FileSink();
 
-      void fileWrite(LogMessageMover message);
-      std::string changeLogFile(const std::string &directory);
-      std::string fileName();
-
-
-   private:
-      std::string _log_file_with_path;
-      std::string _log_prefix_backup; // needed in case of future log file changes of directory
-      std::unique_ptr<std::ofstream> _outptr;
-
-      void addLogFileHeader();
-      std::ofstream &filestream() {
-         return *(_outptr.get());
-      }
+		void fileWrite(LogMessageMover message);
+		std::string changeLogFile(const std::string &directory);
+		std::string fileName();
 
 
-      FileSink &operator=(const FileSink &) = delete;
-      FileSink(const FileSink &other) = delete;
+	private:
+		std::string _log_file_with_path;
+		std::string _log_prefix_backup; // needed in case of future log file changes of directory
+		std::unique_ptr<std::ofstream> _outptr;
 
-   };
+		void addLogFileHeader();
+		std::ofstream &filestream() {
+			return *(_outptr.get());
+		}
+
+
+		FileSink &operator=(const FileSink &) = delete;
+		FileSink(const FileSink &other) = delete;
+
+	};
 } // g3
 

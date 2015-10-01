@@ -14,35 +14,35 @@
 #include "command.hpp"
 
 class MakeFastQCommand : public Command {
-	
-public:
-	
-	MakeFastQCommand(string);	
-	MakeFastQCommand();
-	~MakeFastQCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "make.fastq";				}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Make.fastq"; }
-	string getDescription()		{ return "creates a fastq file from a fasta and quality file"; }
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+public:
+
+	MakeFastQCommand(Settings& settings, string option);
+	MakeFastQCommand(Settings& settings);
+	~MakeFastQCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "make.fastq"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Make.fastq"; }
+	string getDescription() { return "creates a fastq file from a fasta and quality file"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
-	
+
 	string fastafile, qualfile, outputDir, format;
 	bool abort;
 	vector<string> outputNames;
-	
+
 	string convertQual(vector<int>);
-	
+
 };
 
 #endif

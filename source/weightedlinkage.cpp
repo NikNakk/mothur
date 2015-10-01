@@ -28,23 +28,17 @@ string WeightedLinkage::getTag() {
 /***********************************************************************/
 //This function updates the distance based on the average linkage method.
 bool WeightedLinkage::updateDistance(PDistCell& colCell, PDistCell& rowCell) {
-	try {
-		if ((saveRow != smallRow) || (saveCol != smallCol)) {
-//			rowBin = rabund->get(smallRow);
-//			colBin = rabund->get(smallCol);
-//			totalBin = rowBin + colBin;
-			saveRow = smallRow;
-			saveCol = smallCol;
-		}
-		
-		colCell.dist = (colCell.dist + rowCell.dist) / 2.0;
-		
-		return(true);
+	if ((saveRow != smallRow) || (saveCol != smallCol)) {
+		//			rowBin = rabund->get(smallRow);
+		//			colBin = rabund->get(smallCol);
+		//			totalBin = rowBin + colBin;
+		saveRow = smallRow;
+		saveCol = smallCol;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "WeightedLinkage", "updateDistance");
-		exit(1);
-	}
+
+	colCell.dist = (colCell.dist + rowCell.dist) / 2.0;
+
+	return(true);
 }
 
 /***********************************************************************/

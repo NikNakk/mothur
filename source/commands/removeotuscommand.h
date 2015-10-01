@@ -15,34 +15,34 @@
 #include "listvector.hpp"
 
 class RemoveOtusCommand : public Command {
-	
-public:
-	
-	RemoveOtusCommand(string);	
-	RemoveOtusCommand();
-	~RemoveOtusCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "remove.otus";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Remove.otus"; }
-	string getDescription()		{ return "outputs a new list file containing the otus NOT containing sequences from the groups specified"; }
 
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+public:
+
+	RemoveOtusCommand(Settings& settings, string option);
+	RemoveOtusCommand(Settings& settings);
+	~RemoveOtusCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "remove.otus"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Remove.otus"; }
+	string getDescription() { return "outputs a new list file containing the otus NOT containing sequences from the groups specified"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	string accnosfile, groupfile, listfile, outputDir, groups, label;
 	bool abort;
 	vector<string> outputNames, Groups;
 	GroupMap* groupMap;
-	
+
 	int readListGroup();
 	int processList(ListVector*&, GroupMap*&, ofstream&, ofstream&, bool&);
-	
+
 };
 
 #endif

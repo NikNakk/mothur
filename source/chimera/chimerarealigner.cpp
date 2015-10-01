@@ -102,7 +102,7 @@ void ChimeraReAligner::reAlign(Sequence* query, vector<string> parents) {
 		
 	}
 	catch(exception& e) {
-		m->errorOut(e, "ChimeraReAligner", "reAlign");
+		LOG(FATAL) << e.what() << " in ChimeraReAligner, reAlign";
 		exit(1);
 	}
 }
@@ -138,7 +138,7 @@ void ChimeraReAligner::buildTemplateProfile(vector<string> parents) {
 		
 	}
 	catch(exception& e) {
-		m->errorOut(e, "ChimeraReAligner", "buildTemplateProfile");
+		LOG(FATAL) << e.what() << " in ChimeraReAligner, buildTemplateProfile";
 		exit(1);
 	}
 }
@@ -158,7 +158,7 @@ void ChimeraReAligner::createAlignMatrix(int queryUnalignedLength, int alignment
 		for(int j=1;j<=queryUnalignedLength;j++){	alignMatrix[0][j].direction = 'u';	}
 	}
 	catch(exception& e) {
-		m->errorOut(e, "ChimeraReAligner", "createAlignMatrix");
+		LOG(FATAL) << e.what() << " in ChimeraReAligner, createAlignMatrix";
 		exit(1);
 	}
 }
@@ -199,7 +199,7 @@ void ChimeraReAligner::fillAlignMatrix(string query){
 		}
 	}
 	catch(exception& e) {
-		m->errorOut(e, "ChimeraReAligner", "fillAlignMatrix");
+		LOG(FATAL) << e.what() << " in ChimeraReAligner, fillAlignMatrix";
 		exit(1);
 	}
 }
@@ -223,7 +223,7 @@ int ChimeraReAligner::calcMatchScore(bases p, char q){
 		return score;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "ChimeraReAligner", "calcMatchScore");
+		LOG(FATAL) << e.what() << " in ChimeraReAligner, calcMatchScore";
 		exit(1);
 	}
 }
@@ -313,7 +313,7 @@ string ChimeraReAligner::getNewAlignment(string query){
 		return flipSeq;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "ChimeraReAligner", "getNewAlignment");
+		LOG(FATAL) << e.what() << " in ChimeraReAligner, getNewAlignment";
 		exit(1);
 	}
 }
@@ -333,14 +333,14 @@ string ChimeraReAligner::getNewAlignment(string query){
 //			}
 //		}
 //		
-//		if(spot == -1) { m->mothurOut("Error: Could not find sequence."); m->mothurOutEndLine(); return NULL; }
+//		if(spot == -1) { LOG(INFO) << "Error: Could not find sequence." << '\n'; return NULL; }
 //		
 //		temp = new Sequence(templateSeqs[spot]->getName(), templateSeqs[spot]->getAligned());
 //		
 //		return temp;
 //	}
 //	catch(exception& e) {
-//		m->errorOut(e, "ChimeraReAligner", "getSequence");
+//		LOG(FATAL) << e.what() << " in ChimeraReAligner, getSequence";
 //		exit(1);
 //	}
 //}

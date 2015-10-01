@@ -19,21 +19,21 @@
 class SensSpecCommand : public Command {
 
 public:
-	SensSpecCommand(string);
-	SensSpecCommand();
-	~SensSpecCommand(){}
+	SensSpecCommand(Settings& settings, string option);
+	SensSpecCommand(Settings& settings);
+	~SensSpecCommand() {}
 
 	vector<string> setParameters();
-	string getCommandName()			{ return "sens.spec";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
+	string getCommandName() { return "sens.spec"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
 
 	string getHelpString();
-    string getOutputPattern(string);
+	string getOutputPattern(string);
 	string getCitation() { return "Schloss PD, Westcott SL (2011). Assessing and improving methods used in OTU-based approaches for 16S rRNA gene sequence analysis. Appl Environ Microbiol 77:3219.\nhttp://www.mothur.org/wiki/Sens.spec"; }
-	string getDescription()		{ return "sens.spec"; }
+	string getDescription() { return "sens.spec"; }
 
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }
+	void help() { LOG(INFO) << getHelpString(); }
 
 private:
 	string preProcessList();

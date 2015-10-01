@@ -13,37 +13,30 @@
 #include "command.hpp"
 #include "commandfactory.hpp"
 
-/**********************************************************/
+ /**********************************************************/
 
 class SetLogFileCommand : public Command {
-	
-public:
-	SetLogFileCommand(string);
-	SetLogFileCommand() { setParameters(); abort = true; calledHelp = true; }
-	~SetLogFileCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "set.logfile";		}
-	string getCommandCategory()		{ return "General";			}
-	
-	string getHelpString();	
-    string getOutputPattern(string){ return ""; }	
-	string getCitation() { return "http://www.mothur.org/wiki/Set.logfile"; }
-	string getDescription()		{ return "set logfile name"; }
 
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-private:
-	CommandFactory* commandFactory;
-	string name;
-	bool abort, append;
-	vector<string> outputNames;
-		
+public:
+	SetLogFileCommand(Settings& settings) : Command(settings) {}
+	SetLogFileCommand(Settings& settings, string option) : Command(settings, option) {}
+	~SetLogFileCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "set.logfile"; }
+	string getCommandCategory() { return "General"; }
+
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "http://www.mothur.org/wiki/Set.logfile"; }
+	string getDescription() { return "set logfile name"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
 };
 
 /**********************************************************/
- 
+
 #endif
 
 

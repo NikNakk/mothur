@@ -5,9 +5,9 @@
 
 class CountFileParameter : public InputTypeParameter {
 public:
-	CountFileParameter(string name, bool required, bool important = false,
+	CountFileParameter(Settings& settings, string name, bool required, bool important = false,
 		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		InputTypeParameter(name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
+		InputTypeParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
 	virtual string getValue() {
 		return value;
 	}

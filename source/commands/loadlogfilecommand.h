@@ -16,27 +16,27 @@
 
 class LoadLogfileCommand : public Command {
 public:
-    LoadLogfileCommand(string);
-    LoadLogfileCommand();
-    ~LoadLogfileCommand(){}
-    
-    vector<string> setParameters();
-    string getCommandName()			{ return "load.logfile";		}
-    string getCommandCategory()		{ return "General";             } 
-	string getHelpString();	
-    string getOutputPattern(string) { return ""; }	
-    string getCitation() { return "http://www.mothur.org/wiki/Load.logfile"; }
-    string getDescription()		{ return "extracts current files from a logfile"; }
-    
-    int execute(); 
-    void help() { m->mothurOut(getHelpString()); }	
-    
+	LoadLogfileCommand(Settings& settings, string option);
+	LoadLogfileCommand(Settings& settings);
+	~LoadLogfileCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "load.logfile"; }
+	string getCommandCategory() { return "General"; }
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "http://www.mothur.org/wiki/Load.logfile"; }
+	string getDescription() { return "extracts current files from a logfile"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-    bool abort;
-    string outputDir, logfile;
-    vector<string> outputNames;
-    
-    int updateCurrent(string pattern, string type, string, vector<string> outputNames, map<string, string>& currentFiles);
+	bool abort;
+	string outputDir, logfile;
+	vector<string> outputNames;
+
+	int updateCurrent(string pattern, string type, string, vector<string> outputNames, map<string, string>& currentFiles);
 };
 
 /**************************************************************************************************/

@@ -11,16 +11,11 @@
 
 //**********************************************************************************************************************
 
-NoCommand::NoCommand(string option)  {}
-
-//**********************************************************************************************************************
-
 int NoCommand::execute(){
 	//Could choose to give more help here?fdsah
-	cout << "Invalid command.\n";
+	LOG(LOGERROR) << "Invalid command.";
    
-	CommandFactory valid;
-	valid.printCommands(cout);
+	LOG(INFO) << (CommandFactory(settings)).getCommands();
 	
 	return 0;
 }

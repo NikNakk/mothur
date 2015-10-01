@@ -1,6 +1,6 @@
 /*
  *  order.cpp
- *  
+ *
  *
  *  Created by Pat Schloss on 8/8/08.
  *  Copyright 2008 Patrick D. Schloss. All rights reserved.
@@ -10,7 +10,7 @@
 #include "ordervector.hpp"
 
 
-/***********************************************************************/
+ /***********************************************************************/
 
 OrderVector::OrderVector() : DataVector() {}
 
@@ -20,62 +20,56 @@ OrderVector::OrderVector() : DataVector() {}
 
 /***********************************************************************/
 
-OrderVector::OrderVector(string id, vector<int> ov) : 
-											DataVector(id), data(ov)
+OrderVector::OrderVector(string id, vector<int> ov) :
+	DataVector(id), data(ov)
 {
-	updateStats();	
+	updateStats();
 }
 
 /***********************************************************************/
 
 OrderVector::OrderVector(ifstream& f) : DataVector() {
-	try {
-		int hold;
-	
-		f >> label;
-		f >> hold;
-	
-		data.assign(hold, -1);
-	
-		int inputData;
-	
-		for(int i=0;i<hold;i++){
-			f >> inputData;
-			set(i, inputData);
-		}
-	
-		updateStats();
+	int hold;
+
+	f >> label;
+	f >> hold;
+
+	data.assign(hold, -1);
+
+	int inputData;
+
+	for (int i = 0;i < hold;i++) {
+		f >> inputData;
+		set(i, inputData);
 	}
-	catch(exception& e) {
-		m->errorOut(e, "OrderVector", "OrderVector");
-		exit(1);
-	}
+
+	updateStats();
 }
 
 /***********************************************************************/
 
 
-int OrderVector::getNumBins(){
-	if(needToUpdate == 1){	updateStats();	}
+int OrderVector::getNumBins() {
+	if (needToUpdate == 1) { updateStats(); }
 	return numBins;
 }
 
 /***********************************************************************/
 
-int OrderVector::getNumSeqs(){
-	if(needToUpdate == 1){	updateStats();	}
+int OrderVector::getNumSeqs() {
+	if (needToUpdate == 1) { updateStats(); }
 	return numSeqs;
 }
 
 /***********************************************************************/
 
-int OrderVector::getMaxRank(){
-	if(needToUpdate == 1){	updateStats();	}
+int OrderVector::getMaxRank() {
+	if (needToUpdate == 1) { updateStats(); }
 	return maxRank;
 }
 /***********************************************************************/
 
-void OrderVector::clear(){
+void OrderVector::clear() {
 	numBins = 0;
 	maxRank = 0;
 	numSeqs = 0;
@@ -85,116 +79,98 @@ void OrderVector::clear(){
 
 
 
-void OrderVector::set(int index, int binNumber){
-	
+void OrderVector::set(int index, int binNumber) {
+
 	data[index] = binNumber;
 	needToUpdate = 1;
-	
+
 }
 
 /***********************************************************************/
 
-int OrderVector::get(int index){
-	return data[index];			
+int OrderVector::get(int index) {
+	return data[index];
 }
 
 /***********************************************************************/
 
-void OrderVector::push_back(int index){
+void OrderVector::push_back(int index) {
 
 	data.push_back(index);
 	needToUpdate = 1;
-	
+
 }
 
 /***********************************************************************/
 
-void OrderVector::print(ostream& output){
-	try {
-		output << label << '\t' << numSeqs;
-	
-		for(int i=0;i<data.size();i++){
-			output  << '\t' << data[i];
+void OrderVector::print(ostream& output) {
+	output << label << '\t' << numSeqs;
+
+	for (int i = 0;i < data.size();i++) {
+		output << '\t' << data[i];
+	}
+	output << endl;
+}
+
+/***********************************************************************/
+
+void OrderVector::print(string prefix, ostream& output) {
+	output << prefix << '\t' << numSeqs;
+
+	for (int i = 0;i < numSeqs;i++) {
+		output << '\t' << data[i];
+	}
+	output << endl;
+}
+
+/***********************************************************************/
+
+void OrderVector::resize(int) {
+	LOG(INFO) << "resize() did nothing in class OrderVector";
+}
+
+/***********************************************************************/
+
+int OrderVector::size() {
+	return data.size();
+}
+
+/***********************************************************************/
+
+vector<int>::iterator OrderVector::begin() {
+	return data.begin();
+}
+
+/***********************************************************************/
+
+vector<int>::iterator OrderVector::end() {
+	return data.end();
+}
+
+/***********************************************************************/
+
+RAbundVector OrderVector::getRAbundVector() {
+	RAbundVector rav(data.size());
+
+	for (int i = 0;i < numSeqs;i++) {
+		rav.set(data[i], rav.get(data[i]) + 1);
+	}
+	sort(rav.rbegin(), rav.rend());
+	for (int i = numSeqs - 1;i >= 0;i--) {
+		if (rav.get(i) == 0) { rav.pop_back(); }
+		else {
+			break;
 		}
-		output << endl;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "OrderVector", "print");
-		exit(1);
-	}
+	rav.setLabel(label);
+
+	return rav;
 }
 
 /***********************************************************************/
 
-void OrderVector::print(string prefix, ostream& output){
-	try {
-		output << prefix << '\t' << numSeqs;
-	
-		for(int i=0;i<numSeqs;i++){
-			output  << '\t' << data[i];
-		}
-		output << endl;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "OrderVector", "print");
-		exit(1);
-	}
-}
+SAbundVector OrderVector::getSAbundVector() {
 
-/***********************************************************************/
-
-void OrderVector::resize(int){
-	m->mothurOut("resize() did nothing in class OrderVector");
-}
-
-/***********************************************************************/
-
-int OrderVector::size(){
-	return data.size();					
-}
-
-/***********************************************************************/
-
-vector<int>::iterator OrderVector::begin(){
-	return data.begin();	
-}
-
-/***********************************************************************/
-
-vector<int>::iterator OrderVector::end(){
-	return data.end();		
-}
-
-/***********************************************************************/
-
-RAbundVector OrderVector::getRAbundVector(){
-	try {
-		RAbundVector rav(data.size());
-	
-		for(int i=0;i<numSeqs;i++){
-			rav.set(data[i], rav.get(data[i]) + 1);
-		}	
-		sort(rav.rbegin(), rav.rend());
-		for(int i=numSeqs-1;i>=0;i--){
-			if(rav.get(i) == 0){	rav.pop_back();	}
-			else{
-				break;
-			}
-		}
-		rav.setLabel(label);
-
-		return rav;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "OrderVector", "getRAbundVector");
-		exit(1);
-	}
-}
-
-/***********************************************************************/
-
-SAbundVector OrderVector::getSAbundVector(){
-	
 	RAbundVector rav(this->getRAbundVector());
 	return rav.getSAbundVector();
 
@@ -202,41 +178,35 @@ SAbundVector OrderVector::getSAbundVector(){
 
 /***********************************************************************/
 
-OrderVector OrderVector::getOrderVector(map<string,int>* hold = 0){
-	return *this;			
+OrderVector OrderVector::getOrderVector(map<string, int>* hold = 0) {
+	return *this;
 }
 
 /***********************************************************************/
 
-void OrderVector::updateStats(){
-	try {
-		needToUpdate = 0;
+void OrderVector::updateStats() {
+	needToUpdate = 0;
 	//	int maxBinVectorLength = 0;
-		numSeqs = 0;
-		numBins = 0;
-		maxRank = 0;
-	
-		for(int i=0;i<data.size();i++){
-			if(data[i] != -1){
-				numSeqs++;
-			}
-		}
-	
-		vector<int> hold(numSeqs);
-	
-		for(int i=0;i<numSeqs;i++){
-			if(data[i] != -1){
-				hold[data[i]] = hold[data[i]]+1;
-			}
-		}	
-		for(int i=0;i<numSeqs;i++){
-			if(hold[i] > 0)			{	numBins++;			}
-			if(hold[i] > maxRank)	{	maxRank = hold[i];	}
+	numSeqs = 0;
+	numBins = 0;
+	maxRank = 0;
+
+	for (int i = 0;i < data.size();i++) {
+		if (data[i] != -1) {
+			numSeqs++;
 		}
 	}
-	catch(exception& e) {
-		m->errorOut(e, "OrderVector", "updateStats");
-		exit(1);
+
+	vector<int> hold(numSeqs);
+
+	for (int i = 0;i < numSeqs;i++) {
+		if (data[i] != -1) {
+			hold[data[i]] = hold[data[i]] + 1;
+		}
+	}
+	for (int i = 0;i < numSeqs;i++) {
+		if (hold[i] > 0) { numBins++; }
+		if (hold[i] > maxRank) { maxRank = hold[i]; }
 	}
 }
 

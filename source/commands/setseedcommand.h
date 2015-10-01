@@ -15,30 +15,30 @@
 /**********************************************************/
 
 class SetSeedCommand : public Command {
-    
+
 public:
-    SetSeedCommand(string);
-    SetSeedCommand() { abort = true; calledHelp = true; setParameters(); }
-    ~SetSeedCommand(){}
-    
-    vector<string> setParameters();
-    string getCommandName()			{ return "set.seed";		}
-    string getCommandCategory()		{ return "General";		}
-    
-    string getHelpString();
-    string getOutputPattern(string){ return ""; }
-    string getCitation() { return "http://www.mothur.org/wiki/Set.seed"; }
-    string getDescription()		{ return "set random seed"; }
-    
-    int execute();
-    void help() { m->mothurOut(getHelpString()); }
-    
+	SetSeedCommand(Settings& settings, string option);
+	SetSeedCommand(Settings& settings) : Command(settings) { abort = true; calledHelp = true; setParameters(); }
+	~SetSeedCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "set.seed"; }
+	string getCommandCategory() { return "General"; }
+
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "http://www.mothur.org/wiki/Set.seed"; }
+	string getDescription() { return "set random seed"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-    bool abort;
-    int random;
-    vector<string> outputNames;
-    
-    
+	bool abort;
+	int random;
+	vector<string> outputNames;
+
+
 };
 
 /**********************************************************/

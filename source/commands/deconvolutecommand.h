@@ -13,32 +13,32 @@
 #include "fastamap.h"
 #include "counttable.h"
 
-/* The unique.seqs command reads a fasta file, finds the duplicate sequences and outputs a names file
-	containing 2 columns.  The first being the groupname and the second the list of identical sequence names. */ 
+ /* The unique.seqs command reads a fasta file, finds the duplicate sequences and outputs a names file
+	 containing 2 columns.  The first being the groupname and the second the list of identical sequence names. */
 
 
 class DeconvoluteCommand : public Command {
 
 public:
-	DeconvoluteCommand(string);
-	DeconvoluteCommand();
+	DeconvoluteCommand(Settings& settings, string option);
+	DeconvoluteCommand(Settings& settings);
 	~DeconvoluteCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "unique.seqs";		}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-    
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "unique.seqs"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Unique.seqs"; }
-	string getDescription()		{ return "creates a fasta containing the unique sequences as well as a namesfile with the names each sequence represents"; }
+	string getDescription() { return "creates a fasta containing the unique sequences as well as a namesfile with the names each sequence represents"; }
 
 	virtual void setOutputTypes();
 
-	
-	int execute(); 
-	
-	
+
+	int execute();
+
+
 private:
 	string fastafile, namefile, outputDir, countfile, format;
 	vector<string> outputNames;

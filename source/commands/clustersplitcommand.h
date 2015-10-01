@@ -9,7 +9,7 @@
  *  Copyright 2010 Schloss Lab. All rights reserved.
  *
  */
- 
+
 #include "command.hpp"
 #include "rabundvector.hpp"
 #include "sabundvector.hpp"
@@ -26,47 +26,47 @@
 #include "clusterclassic.h"
 
 class ClusterSplitCommand : public Command {
-	
+
 public:
-	ClusterSplitCommand(string);
-	ClusterSplitCommand();
+	ClusterSplitCommand(Settings& settings, string option);
+	ClusterSplitCommand(Settings& settings);
 	~ClusterSplitCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "cluster.split";		}
-	string getCommandCategory()		{ return "Clustering";			}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "cluster.split"; }
+	string getCommandCategory() { return "Clustering"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "Schloss PD, Westcott SL (2011). Assessing and improving methods used in OTU-based approaches for 16S rRNA gene sequence analysis. Appl Environ Microbiol 77:3219. \nhttp://www.mothur.org/wiki/Cluster.split"; }
-	string getDescription()		{ return "splits your sequences by distance or taxonomy then clusters into OTUs"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
+	string getDescription() { return "splits your sequences by distance or taxonomy then clusters into OTUs"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
 
 private:
 	vector<int> processIDS;   //processid
 	vector<string> outputNames;
-	
+
 	string file, method, fileroot, tag, outputDir, phylipfile, columnfile, namefile, countfile, distfile, format, showabund, timing, splitmethod, taxFile, fastafile, inputDir;
 	double cutoff, splitcutoff;
 	int precision, length, processors, taxLevelCutoff;
 	bool print_start, abort, hard, large, classic, runCluster, deleteFiles, isList;
 	time_t start;
 	ofstream outList, outRabund, outSabund;
-	
+
 	void printData(ListVector*);
 	vector<string> createProcesses(vector< map<string, string> >, set<string>&);
 	vector<string> cluster(vector< map<string, string> >, set<string>&);
-    string clusterFile(string, string, set<string>&, double&);
-    string clusterClassicFile(string, string, set<string>&, double&);
+	string clusterFile(string, string, set<string>&, double&);
+	string clusterClassicFile(string, string, set<string>&, double&);
 	int mergeLists(vector<string>, map<float, int>, ListVector*);
 	map<float, int> completeListFile(vector<string>, string, set<string>&, ListVector*&);
 	int createMergedDistanceFile(vector< map<string, string> >);
-    int createRabund(CountTable*& ct, ListVector*& list, RAbundVector*& rabund);
-    string readFile(vector< map<string, string> >&);
-    string printFile(string, vector< map<string, string> >&);
-    int getLabels(string, set<string>& listLabels);
+	int createRabund(CountTable*& ct, ListVector*& list, RAbundVector*& rabund);
+	string readFile(vector< map<string, string> >&);
+	string printFile(string, vector< map<string, string> >&);
+	int getLabels(string, set<string>& listLabels);
 };
 
 /////////////////not working for Windows////////////////////////////////////////////////////////////
@@ -86,120 +86,120 @@ private:
 // that can be passed using a single void pointer (LPVOID).
 struct clusterData {
 	set<string> labels;
-	vector < map<string, string> > distNames; 
-	string method; 
-    MothurOut* m;
+	vector < map<string, string> > distNames;
+	string method;
+	MothurOut* m;
 	double cutoff, precision;
-    string tag, outputDir;
-    vector<string> listFiles;
-    bool hard;
-    int length, threadID;
-	
-	
+	string tag, outputDir;
+	vector<string> listFiles;
+	bool hard;
+	int length, threadID;
+
+
 	clusterData(){}
 	clusterData(vector < map<string, string> > dv, MothurOut* mout, double cu, string me, string ou, bool hd, double pre, int len, int th) {
 		distNames = dv;
 		m = mout;
 		cutoff = cu;
-        method = me;
+		method = me;
 		outputDir = ou;
-        hard = hd;
-        precision = pre;
-        length = len;
-        threadID = th;
+		hard = hd;
+		precision = pre;
+		length = len;
+		threadID = th;
 	}
 };
 
 /**************************************************************************************************
 #if defined (UNIX)
 #else
-static DWORD WINAPI MyClusterThreadFunction(LPVOID lpParam){ 
+static DWORD WINAPI MyClusterThreadFunction(LPVOID lpParam){
 	clusterData* pDataArray;
 	pDataArray = (clusterData*)lpParam;
-	
+
 	try {
-		cout << "starting " << endl;		
-		
+		cout << "starting " << endl;
+
 		double smallestCutoff = pDataArray->cutoff;
-		
+
 		//cluster each distance file
 		for (int i = 0; i < pDataArray->distNames.size(); i++) {
-            
-            Cluster* mycluster = NULL;
-            SparseMatrix* mymatrix = NULL;
-            ListVector* mylist = NULL;
-            ListVector myoldList;
-            RAbundVector* myrabund = NULL;
-                        
-			if (pDataArray->m->control_pressed) { break; }
-			
+
+			Cluster* mycluster = NULL;
+			SparseMatrix* mymatrix = NULL;
+			ListVector* mylist = NULL;
+			ListVector myoldList;
+			RAbundVector* myrabund = NULL;
+
+			if (ctrlc_pressed) { break; }
+
 			string thisNamefile = pDataArray->distNames[i].begin()->second;
 			string thisDistFile = pDataArray->distNames[i].begin()->first;
-            cout << thisNamefile << '\t' << thisDistFile << endl;	
-			pDataArray->m->mothurOutEndLine(); pDataArray->m->mothurOut("Reading " + thisDistFile); pDataArray->m->mothurOutEndLine();
-			
-			ReadMatrix* myread = new ReadColumnMatrix(thisDistFile); 	
+			cout << thisNamefile << '\t' << thisDistFile << endl;
+			LOG(INFO) << '\n' << "Reading " + thisDistFile << '\n';
+
+			ReadMatrix* myread = new ReadColumnMatrix(thisDistFile);
 			myread->setCutoff(pDataArray->cutoff);
 			NameAssignment* mynameMap = new NameAssignment(thisNamefile);
 			mynameMap->readMap();
-            cout << "done reading " << thisNamefile << endl;  
+			cout << "done reading " << thisNamefile << endl;
 			myread->read(mynameMap);
-			cout << "done reading " << thisDistFile << endl;  
-			if (pDataArray->m->control_pressed) {  delete myread; delete mynameMap; break; }
-            
+			cout << "done reading " << thisDistFile << endl;
+			if (ctrlc_pressed) {  delete myread; delete mynameMap; break; }
+
 			mylist = myread->getListVector();
 			myoldList = *mylist;
 			mymatrix = myread->getMatrix();
-            cout << "here" << endl;	
+			cout << "here" << endl;
 			delete myread; myread = NULL;
 			delete mynameMap; mynameMap = NULL;
-			
-            pDataArray->m->mothurOutEndLine(); pDataArray->m->mothurOut("Clustering " + thisDistFile); pDataArray->m->mothurOutEndLine();
-            
+
+			LOG(INFO) << '\n' << "Clustering " + thisDistFile + '\n';
+
 			myrabund = new RAbundVector(mylist->getRAbundVector());
-			 cout << "here" << endl;	
+			 cout << "here" << endl;
 			//create cluster
 			if (pDataArray->method == "furthest")	{	mycluster = new CompleteLinkage(myrabund, mylist, mymatrix, pDataArray->cutoff, pDataArray->method); }
 			else if(pDataArray->method == "nearest"){	mycluster = new SingleLinkage(myrabund, mylist, mymatrix, pDataArray->cutoff, pDataArray->method); }
 			else if(pDataArray->method == "average"){	mycluster = new AverageLinkage(myrabund, mylist, mymatrix, pDataArray->cutoff, pDataArray->method);	}
 			pDataArray->tag = mycluster->getTag();
-             cout << "here" << endl;	
-			if (pDataArray->outputDir == "") { pDataArray->outputDir += pDataArray->m->hasPath(thisDistFile); }
-			string fileroot = pDataArray->outputDir + pDataArray->m->getRootName(pDataArray->m->getSimpleName(thisDistFile));
-			 cout << "here" << endl;	
+			 cout << "here" << endl;
+			if (pDataArray->outputDir == "") { pDataArray->outputDir += File::getPath(thisDistFile); }
+			string fileroot = pDataArray->outputDir + pDataArray->File::getRootName(File::getSimpleName(thisDistFile));
+			 cout << "here" << endl;
 			ofstream listFile;
-			pDataArray->m->openOutputFile(fileroot+ pDataArray->tag + ".list",	listFile);
-             cout << "here" << endl;	
+			File::openOutputFile(fileroot+ pDataArray->tag + ".list",	listFile);
+			 cout << "here" << endl;
 			pDataArray->listFiles.push_back(fileroot+ pDataArray->tag + ".list");
-            
+
 			float previousDist = 0.00000;
 			float rndPreviousDist = 0.00000;
-			
+
 			myoldList = *mylist;
-        
+
 			bool print_start = true;
 			int start = time(NULL);
 			double saveCutoff = pDataArray->cutoff;
-            
+
 			while (mymatrix->getSmallDist() < pDataArray->cutoff && mymatrix->getNNodes() > 0){
-                
-				if (pDataArray->m->control_pressed) { //clean up
+
+				if (ctrlc_pressed) { //clean up
 					delete mymatrix; delete mylist;	delete mycluster; delete myrabund;
 					listFile.close();
-					for (int i = 0; i < pDataArray->listFiles.size(); i++) {	pDataArray->m->mothurRemove(pDataArray->listFiles[i]); 	}
+					for (int i = 0; i < pDataArray->listFiles.size(); i++) {	pDataArray->File::remove(pDataArray->listFiles[i]); 	}
 					pDataArray->listFiles.clear(); break;
 				}
-                
+
 				mycluster->update(saveCutoff);
-                
+
 				float dist = mymatrix->getSmallDist();
 				float rndDist;
 				if (pDataArray->hard) {
-					rndDist = pDataArray->m->ceilDist(dist, pDataArray->precision); 
+					rndDist = pDataArray->m->ceilDist(dist, pDataArray->precision);
 				}else{
-					rndDist = pDataArray->m->roundDist(dist, pDataArray->precision); 
+					rndDist = pDataArray->m->roundDist(dist, pDataArray->precision);
 				}
-                
+
 				if(previousDist <= 0.0000 && dist != previousDist){
 					myoldList.setLabel("unique");
 					myoldList.print(listFile);
@@ -210,13 +210,13 @@ static DWORD WINAPI MyClusterThreadFunction(LPVOID lpParam){
 					myoldList.print(listFile);
 					if (pDataArray->labels.count(toString(rndPreviousDist,  pDataArray->length-1)) == 0) { pDataArray->labels.insert(toString(rndPreviousDist,  pDataArray->length-1)); }
 				}
-               	
+
 				previousDist = dist;
 				rndPreviousDist = rndDist;
 				myoldList = *mylist;
 			}
-            
-             cout << "here2" << endl;	
+
+			 cout << "here2" << endl;
 			if(previousDist <= 0.0000){
 				myoldList.setLabel("unique");
 				myoldList.print(listFile);
@@ -227,39 +227,39 @@ static DWORD WINAPI MyClusterThreadFunction(LPVOID lpParam){
 				myoldList.print(listFile);
 				if (pDataArray->labels.count(toString(rndPreviousDist,  pDataArray->length-1)) == 0) { pDataArray->labels.insert(toString(rndPreviousDist,  pDataArray->length-1)); }
 			}
-            
-			delete mymatrix; delete mylist;	delete mycluster; delete myrabund; 
-            mymatrix = NULL; mylist = NULL; mycluster = NULL; myrabund = NULL;
+
+			delete mymatrix; delete mylist;	delete mycluster; delete myrabund;
+			mymatrix = NULL; mylist = NULL; mycluster = NULL; myrabund = NULL;
 			listFile.close();
-			
-			if (pDataArray->m->control_pressed) { //clean up
-				for (int i = 0; i < pDataArray->listFiles.size(); i++) {	pDataArray->m->mothurRemove(pDataArray->listFiles[i]); 	}
+
+			if (ctrlc_pressed) { //clean up
+				for (int i = 0; i < pDataArray->listFiles.size(); i++) {	pDataArray->File::remove(pDataArray->listFiles[i]); 	}
 				pDataArray->listFiles.clear(); break;
 			}
-			 cout << "here3" << endl;	
-			pDataArray->m->mothurRemove(thisDistFile);
-			pDataArray->m->mothurRemove(thisNamefile);
-			 cout << "here4" << endl;	
-			if (saveCutoff != pDataArray->cutoff) { 
+			 cout << "here3" << endl;
+			pDataArray->File::remove(thisDistFile);
+			pDataArray->File::remove(thisNamefile);
+			 cout << "here4" << endl;
+			if (saveCutoff != pDataArray->cutoff) {
 				if (pDataArray->hard)	{  saveCutoff = pDataArray->m->ceilDist(saveCutoff, pDataArray->precision);	}
 				else		{	saveCutoff = pDataArray->m->roundDist(saveCutoff, pDataArray->precision);  }
-                
-				pDataArray->m->mothurOut("Cutoff was " + toString(pDataArray->cutoff) + " changed cutoff to " + toString(saveCutoff)); pDataArray->m->mothurOutEndLine();  
+
+				LOG(INFO) << "Cutoff was " + toString(pDataArray->cutoff) + " changed cutoff to " + toString(saveCutoff) << '\n';
 			}
-			 cout << "here5" << endl;	
+			 cout << "here5" << endl;
 			if (saveCutoff < smallestCutoff) { smallestCutoff = saveCutoff;  }
 		}
-		
+
 		pDataArray->cutoff = smallestCutoff;
-		
+
 		return 0;
-		
+
 	}
 	catch(exception& e) {
-		pDataArray->m->errorOut(e, "ClusterSplitCommand", "MyClusterThreadFunction");
+		LOG(FATAL) << e.what() << " in ClusterSplitCommand, MyClusterThreadFunction";
 		exit(1);
 	}
-} 
+}
 #endif
 
 */

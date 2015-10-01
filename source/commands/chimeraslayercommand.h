@@ -18,43 +18,43 @@
 #include "sequencecountparser.h"
 
 
-/***********************************************************/
+ /***********************************************************/
 
 class ChimeraSlayerCommand : public Command {
 public:
-	ChimeraSlayerCommand(string);
-	ChimeraSlayerCommand();
+	ChimeraSlayerCommand(Settings& settings, string option);
+	ChimeraSlayerCommand(Settings& settings);
 	~ChimeraSlayerCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "chimera.slayer";		}
-	string getCommandCategory()		{ return "Sequence Processing"; }
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "chimera.slayer"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "Haas BJ, Gevers D, Earl A, Feldgarden M, Ward DV, Giannokous G, Ciulla D, Tabbaa D, Highlander SK, Sodergren E, Methe B, Desantis TZ, Petrosino JF, Knight R, Birren BW (2011). Chimeric 16S rRNA sequence formation and detection in Sanger and 454-pyrosequenced PCR amplicons. Genome Res  21:494.\nhttp://www.mothur.org/wiki/Chimera.slayer"; }
-	string getDescription()		{ return "detect chimeric sequences"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }		
-	
+	string getDescription() { return "detect chimeric sequences"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 
 	vector<int> processIDS;   //processid
 	vector<linePair> lines;
-	
+
 	int driver(linePair, string, string, string, string, map<string, int>&);
 	int createProcesses(string, string, string, string, map<string, int>&);
 	int divideInHalf(Sequence, string&, string&);
 	map<string, int> sortFastaFile(string, string);
 	map<string, int> sortFastaFile(vector<Sequence>&, map<string, string>&, string newFile);
-    int sortFastaFile(vector<Sequence>&, map<string, int>&, string newFile);
+	int sortFastaFile(vector<Sequence>&, map<string, int>&, string newFile);
 	string getNamesFile(string&);
 	//int setupChimera(string,);
-    int deconvoluteResults(map<string, string>&, string, string, string);
+	int deconvoluteResults(map<string, string>&, string, string, string);
 	map<string, int> priority;
 	int setUpForSelfReference(SequenceParser*&, map<string, string>&, map<string, map<string, int> >&, int);
-    int setUpForSelfReference(SequenceCountParser*&, map<string, string>&, map<string, map<string, int> >&, int);
+	int setUpForSelfReference(SequenceCountParser*&, map<string, string>&, map<string, map<string, int> >&, int);
 	int driverGroups(string, string, string, map<string, map<string, int> >&, map<string, string>&, string);
 	int createProcessesGroups(string, string, string, map<string, map<string, int> >&, map<string, string>&, string, string);
 
@@ -62,13 +62,13 @@ private:
 	string fastafile, groupfile, templatefile, outputDir, search, namefile, countfile, blastlocation;
 	int processors, window, iters, increment, numwanted, ksize, match, mismatch, parents, minSimilarity, minCoverage, minBS, minSNP, numSeqs, templateSeqsLength;
 	float divR;
-	
-    map<string, map<string, string> > group2NameMap;
+
+	map<string, map<string, string> > group2NameMap;
 	vector<string> outputNames;
 	vector<string> fastaFileNames;
 	vector<string> nameFileNames;
 	vector<string> groupFileNames;
-	
+
 };
 
 /***********************************************************/
@@ -77,8 +77,8 @@ private:
 // This is passed by void pointer so it can be any data type
 // that can be passed using a single void pointer (LPVOID).
 struct slayerData {
-	string outputFName; 
-	string fasta; 
+	string outputFName;
+	string fasta;
 	string accnos;
 	string filename, countlist;
 	string templatefile;
@@ -97,9 +97,9 @@ struct slayerData {
 	int threadId;
 	map<string, map<string, int> > fileToPriority;
 	map<string, string> fileGroup;
-    map<string, map<string, string> > group2NameMap;
-	
-	slayerData(){}
+	map<string, map<string, string> > group2NameMap;
+
+	slayerData() {}
 	slayerData(string o, string fa, string ac, string f, string te, string se, string bl, bool tri, bool trm, bool re, MothurOut* mout, unsigned long long st, unsigned long long en, int ks, int ma, int mis, int win, int minS, int minC, int miBS, int minSN, int par, int it, int inc, int numw, float div, map<string, int> prior, int tid) {
 		outputFName = o;
 		fasta = fa;
@@ -115,7 +115,7 @@ struct slayerData {
 		start = st;
 		end = en;
 		ksize = ks;
-		match = ma; 
+		match = ma;
 		mismatch = mis;
 		window = win;
 		minSimilarity = minS;
@@ -139,10 +139,10 @@ struct slayerData {
 		templatefile = te;
 		search = se;
 		blastlocation = bl;
-        countlist = cl;
-        dups = dps;
-        hasCount = hc;
-        group2NameMap = g2n;
+		countlist = cl;
+		dups = dps;
+		hasCount = hc;
+		group2NameMap = g2n;
 		trimera = tri;
 		trim = trm;
 		realign = re;
@@ -150,7 +150,7 @@ struct slayerData {
 		fileGroup = fileG;
 		fileToPriority = fPriority;
 		ksize = ks;
-		match = ma; 
+		match = ma;
 		mismatch = mis;
 		window = win;
 		minSimilarity = minS;
@@ -167,414 +167,427 @@ struct slayerData {
 		count = 0;
 		numNoParents = 0;
 	}
-	
+
 };
 
 /**************************************************************************************************/
 #if defined (UNIX)
 #else
-static DWORD WINAPI MySlayerThreadFunction(LPVOID lpParam){ 
+static DWORD WINAPI MySlayerThreadFunction(LPVOID lpParam) {
 	slayerData* pDataArray;
 	pDataArray = (slayerData*)lpParam;
-	
+
 	try {
 		ofstream out;
-		pDataArray->m->openOutputFile(pDataArray->outputFName, out);
-		
+		File::openOutputFile(pDataArray->outputFName, out);
+
 		ofstream out2;
-		pDataArray->m->openOutputFile(pDataArray->accnos, out2);
-		
+		File::openOutputFile(pDataArray->accnos, out2);
+
 		ofstream out3;
-		if (pDataArray->trim) {  pDataArray->m->openOutputFile(pDataArray->fasta, out3); }
-		
+		if (pDataArray->trim) { File::openOutputFile(pDataArray->fasta, out3); }
+
 		ifstream inFASTA;
-		pDataArray->m->openInputFile(pDataArray->filename, inFASTA);
-		
-		
-		
+		File::openInputFile(pDataArray->filename, inFASTA);
+
+
+
 		Chimera* chimera;
 		if (pDataArray->templatefile != "self") { //you want to run slayer with a reference template
-			chimera = new ChimeraSlayer(pDataArray->filename, pDataArray->templatefile, pDataArray->trim, pDataArray->search, pDataArray->ksize, pDataArray->match, pDataArray->mismatch, pDataArray->window, pDataArray->divR, pDataArray->minSimilarity, pDataArray->minCoverage, pDataArray->minBS, pDataArray->minSNP, pDataArray->parents, pDataArray->iters, pDataArray->increment, pDataArray->numwanted, pDataArray->realign, pDataArray->blastlocation, pDataArray->threadId);	
-		}else {
-			chimera = new ChimeraSlayer(pDataArray->filename, pDataArray->templatefile, pDataArray->trim, pDataArray->priority, pDataArray->search, pDataArray->ksize, pDataArray->match, pDataArray->mismatch, pDataArray->window, pDataArray->divR, pDataArray->minSimilarity, pDataArray->minCoverage, pDataArray->minBS, pDataArray->minSNP, pDataArray->parents, pDataArray->iters, pDataArray->increment, pDataArray->numwanted, pDataArray->realign, pDataArray->blastlocation, pDataArray->threadId);	
+			chimera = new ChimeraSlayer(pDataArray->filename, pDataArray->templatefile, pDataArray->trim, pDataArray->search, pDataArray->ksize, pDataArray->match, pDataArray->mismatch, pDataArray->window, pDataArray->divR, pDataArray->minSimilarity, pDataArray->minCoverage, pDataArray->minBS, pDataArray->minSNP, pDataArray->parents, pDataArray->iters, pDataArray->increment, pDataArray->numwanted, pDataArray->realign, pDataArray->blastlocation, pDataArray->threadId);
 		}
-		
+		else {
+			chimera = new ChimeraSlayer(pDataArray->filename, pDataArray->templatefile, pDataArray->trim, pDataArray->priority, pDataArray->search, pDataArray->ksize, pDataArray->match, pDataArray->mismatch, pDataArray->window, pDataArray->divR, pDataArray->minSimilarity, pDataArray->minCoverage, pDataArray->minBS, pDataArray->minSNP, pDataArray->parents, pDataArray->iters, pDataArray->increment, pDataArray->numwanted, pDataArray->realign, pDataArray->blastlocation, pDataArray->threadId);
+		}
+
 		//print header if you are process 0
 		if ((pDataArray->start == 0) || (pDataArray->start == 1)) {
-			chimera->printHeader(out); 
+			chimera->printHeader(out);
 			inFASTA.seekg(0);
-            pDataArray->m->zapGremlins(inFASTA);
-		}else { //this accounts for the difference in line endings. 
-			inFASTA.seekg(pDataArray->start-1); pDataArray->m->gobble(inFASTA); 
+			pDataArray->m->zapGremlins(inFASTA);
 		}
-		
-		if (pDataArray->m->control_pressed) { out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera;  return 0;	}
-		
-		if (chimera->getUnaligned()) { 
-			pDataArray->m->mothurOut("Your template sequences are different lengths, please correct."); pDataArray->m->mothurOutEndLine(); 
+		else { //this accounts for the difference in line endings. 
+			inFASTA.seekg(pDataArray->start - 1); pDataArray->File::gobble(inFASTA);
+		}
+
+		if (ctrlc_pressed) { out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera;  return 0; }
+
+		if (chimera->getUnaligned()) {
+			LOG(INFO) << "Your template sequences are different lengths, please correct." << '\n';
 			out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close();
 			delete chimera;
-			return 0; 
+			return 0;
 		}
 		int templateSeqsLength = chimera->getLength();
-		
+
 		if (pDataArray->start == 0) { chimera->printHeader(out); }
-		
+
 		pDataArray->count = 0;
-		for(int i = 0; i < pDataArray->end; i++){
-			
-			if (pDataArray->m->control_pressed) {	out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera; return 1;	}
-			
-			Sequence* candidateSeq = new Sequence(inFASTA);  pDataArray->m->gobble(inFASTA);
+		for (int i = 0; i < pDataArray->end; i++) {
+
+			if (ctrlc_pressed) { out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera; return 1; }
+
+			Sequence* candidateSeq = new Sequence(inFASTA);  pDataArray->File::gobble(inFASTA);
 			string candidateAligned = candidateSeq->getAligned();
-			
+
 			if (candidateSeq->getName() != "") { //incase there is a commented sequence at the end of a file
-				if (candidateSeq->getAligned().length() != templateSeqsLength) {  
-					pDataArray->m->mothurOut(candidateSeq->getName() + " is not the same length as the template sequences. Skipping."); pDataArray->m->mothurOutEndLine();
-				}else{
+				if (candidateSeq->getAligned().length() != templateSeqsLength) {
+					LOG(INFO) << candidateSeq->getName() + " is not the same length as the template sequences. Skipping." << '\n';
+				}
+				else {
 					//find chimeras
 					chimera->getChimeras(candidateSeq);
-					
-					if (pDataArray->m->control_pressed) {	delete candidateSeq; delete chimera; return 1;	}
-					
+
+					if (ctrlc_pressed) { delete candidateSeq; delete chimera; return 1; }
+
 					//if you are not chimeric, then check each half
 					data_results wholeResults = chimera->getResults();
-					
+
 					//determine if we need to split
 					bool isChimeric = false;
-					
+
 					if (wholeResults.flag == "yes") {
 						string chimeraFlag = "no";
-						if(  (wholeResults.results[0].bsa >= pDataArray->minBS && wholeResults.results[0].divr_qla_qrb >= pDataArray->divR)
-						   ||
-						   (wholeResults.results[0].bsb >= pDataArray->minBS && wholeResults.results[0].divr_qlb_qra >= pDataArray->divR) ) { chimeraFlag = "yes"; }
-						
-						
-						if (chimeraFlag == "yes") {	
+						if ((wholeResults.results[0].bsa >= pDataArray->minBS && wholeResults.results[0].divr_qla_qrb >= pDataArray->divR)
+							||
+							(wholeResults.results[0].bsb >= pDataArray->minBS && wholeResults.results[0].divr_qlb_qra >= pDataArray->divR)) {
+							chimeraFlag = "yes";
+						}
+
+
+						if (chimeraFlag == "yes") {
 							if ((wholeResults.results[0].bsa >= pDataArray->minBS) || (wholeResults.results[0].bsb >= pDataArray->minBS)) { isChimeric = true; }
 						}
 					}
-					
+
 					if ((!isChimeric) && pDataArray->trimera) {
-						
+
 						//split sequence in half by bases
 						string leftQuery, rightQuery;
 						Sequence tempSeq(candidateSeq->getName(), candidateAligned);
 						//divideInHalf(tempSeq, leftQuery, rightQuery);
 						string queryUnAligned = tempSeq.getUnaligned();
 						int numBases = int(queryUnAligned.length() * 0.5);
-						
+
 						string queryAligned = tempSeq.getAligned();
 						leftQuery = tempSeq.getAligned();
 						rightQuery = tempSeq.getAligned();
-						
+
 						int baseCount = 0;
 						int leftSpot = 0;
 						for (int i = 0; i < queryAligned.length(); i++) {
 							//if you are a base
-							if (isalpha(queryAligned[i])) {		
-								baseCount++; 
+							if (isalpha(queryAligned[i])) {
+								baseCount++;
 							}
-							
+
 							//if you have half
-							if (baseCount >= numBases) {  leftSpot = i; break; } //first half
+							if (baseCount >= numBases) { leftSpot = i; break; } //first half
 						}
-						
+
 						//blank out right side
 						for (int i = leftSpot; i < leftQuery.length(); i++) { leftQuery[i] = '.'; }
-						
+
 						//blank out left side
 						for (int i = 0; i < leftSpot; i++) { rightQuery[i] = '.'; }
-						
+
 						//run chimeraSlayer on each piece
 						Sequence* left = new Sequence(candidateSeq->getName(), leftQuery);
 						Sequence* right = new Sequence(candidateSeq->getName(), rightQuery);
-						
+
 						//find chimeras
 						chimera->getChimeras(left);
 						data_results leftResults = chimera->getResults();
-						
+
 						chimera->getChimeras(right);
 						data_results rightResults = chimera->getResults();
-						
+
 						//if either piece is chimeric then report
 						Sequence trimmed = chimera->print(out, out2, leftResults, rightResults);
-						if (pDataArray->trim) { trimmed.printSequence(out3);  }
-						
+						if (pDataArray->trim) { trimmed.printSequence(out3); }
+
 						delete left; delete right;
-						
-					}else { //already chimeric
-						//print results
-						Sequence trimmed = chimera->print(out, out2);
-						if (pDataArray->trim) { trimmed.printSequence(out3);  }
+
 					}
-					
-					
+					else { //already chimeric
+					   //print results
+						Sequence trimmed = chimera->print(out, out2);
+						if (pDataArray->trim) { trimmed.printSequence(out3); }
+					}
+
+
 				}
 				pDataArray->count++;
 			}
-			
+
 			delete candidateSeq;
 			//report progress
-			if((pDataArray->count) % 100 == 0){	pDataArray->m->mothurOutJustToScreen("Processing sequence: " + toString(pDataArray->count) +"\n"); 	}
+			if ((pDataArray->count) % 100 == 0) { LOG(SCREENONLY) << "Processing sequence: " + toString(pDataArray->count) + "\n"; }
 		}
 		//report progress
-		if((pDataArray->count) % 100 != 0){	pDataArray->m->mothurOutJustToScreen("Processing sequence: " + toString(pDataArray->count)+"\n"); 		}
-		
+		if ((pDataArray->count) % 100 != 0) { LOG(SCREENONLY) << "Processing sequence: " + toString(pDataArray->count) + "\n"; }
+
 		pDataArray->numNoParents = chimera->getNumNoParents();
-		if (pDataArray->numNoParents == pDataArray->count) { 	pDataArray->m->mothurOut("[WARNING]: megablast returned 0 potential parents for all your sequences. This could be due to formatdb.exe not being setup properly, please check formatdb.log for errors.\n"); }
+		if (pDataArray->numNoParents == pDataArray->count) { LOG(WARNING) << "megablast returned 0 potential parents for all your sequences. This could be due to formatdb.exe not being setup properly, please check formatdb.log for errors.\n"; }
 
 		out.close();
 		out2.close();
 		if (pDataArray->trim) { out3.close(); }
 		inFASTA.close();
 		delete chimera;
-		
+
 		return 0;
-		
+
 	}
-	catch(exception& e) {
-		pDataArray->m->errorOut(e, "ChimeraSlayerCommand", "MySlayerThreadFunction");
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in ChimeraSlayerCommand, MySlayerThreadFunction";
 		exit(1);
 	}
-} 
+}
 
 /**************************************************************************************************/
 
-static DWORD WINAPI MySlayerGroupThreadFunction(LPVOID lpParam){ 
+static DWORD WINAPI MySlayerGroupThreadFunction(LPVOID lpParam) {
 	slayerData* pDataArray;
 	pDataArray = (slayerData*)lpParam;
-	
+
 	try {
-        ofstream outCountList;
-        if (pDataArray->hasCount && pDataArray->dups) { pDataArray->m->openOutputFile(pDataArray->countlist, outCountList); }
+		ofstream outCountList;
+		if (pDataArray->hasCount && pDataArray->dups) { File::openOutputFile(pDataArray->countlist, outCountList); }
 
 		int totalSeqs = 0;
-        pDataArray->end = 0;
-		
+		pDataArray->end = 0;
+
 		for (map<string, map<string, int> >::iterator itFile = pDataArray->fileToPriority.begin(); itFile != pDataArray->fileToPriority.end(); itFile++) {
-			
-			if (pDataArray->m->control_pressed) {  return 0;  }
-			
+
+			if (ctrlc_pressed) { return 0; }
+
 			int start = time(NULL);
 			string thisFastaName = itFile->first;
 			map<string, int> thisPriority = itFile->second;
-			string thisoutputFileName = pDataArray->m->getRootName(pDataArray->m->getSimpleName(thisFastaName)) + pDataArray->fileGroup[thisFastaName] + "slayer.chimera";
-			string thisaccnosFileName = pDataArray->m->getRootName(pDataArray->m->getSimpleName(thisFastaName)) + pDataArray->fileGroup[thisFastaName] + "slayer.accnos";
-			string thistrimFastaFileName = pDataArray->m->getRootName(pDataArray->m->getSimpleName(thisFastaName)) + pDataArray->fileGroup[thisFastaName] + "slayer.fasta";
-			
-			pDataArray->m->mothurOutEndLine(); pDataArray->m->mothurOut("Checking sequences from group: " + pDataArray->fileGroup[thisFastaName] + "."); pDataArray->m->mothurOutEndLine(); 
-		
+			string thisoutputFileName = pDataArray->File::getRootName(File::getSimpleName(thisFastaName)) + pDataArray->fileGroup[thisFastaName] + "slayer.chimera";
+			string thisaccnosFileName = pDataArray->File::getRootName(File::getSimpleName(thisFastaName)) + pDataArray->fileGroup[thisFastaName] + "slayer.accnos";
+			string thistrimFastaFileName = pDataArray->File::getRootName(File::getSimpleName(thisFastaName)) + pDataArray->fileGroup[thisFastaName] + "slayer.fasta";
+
+			LOG(INFO) << std::endl << "Checking sequences from group: " + pDataArray->fileGroup[thisFastaName] + ".\n";
+
 			//int numSeqs = driver(lines[0], thisoutputFileName, thisFastaName, thisaccnosFileName, thistrimFastaFileName, thisPriority);
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			
+
 			ofstream out;
-			pDataArray->m->openOutputFile(thisoutputFileName, out);
-			
+			File::openOutputFile(thisoutputFileName, out);
+
 			ofstream out2;
-			pDataArray->m->openOutputFile(thisaccnosFileName, out2);
-			
+			File::openOutputFile(thisaccnosFileName, out2);
+
 			ofstream out3;
-			if (pDataArray->trim) {  pDataArray->m->openOutputFile(thistrimFastaFileName, out3); }
-			
+			if (pDataArray->trim) { File::openOutputFile(thistrimFastaFileName, out3); }
+
 			ifstream inFASTA;
-			pDataArray->m->openInputFile(thisFastaName, inFASTA);
-			
+			File::openInputFile(thisFastaName, inFASTA);
+
 			Chimera* chimera;
-			chimera = new ChimeraSlayer(thisFastaName, pDataArray->templatefile, pDataArray->trim, thisPriority, pDataArray->search, pDataArray->ksize, pDataArray->match, pDataArray->mismatch, pDataArray->window, pDataArray->divR, pDataArray->minSimilarity, pDataArray->minCoverage, pDataArray->minBS, pDataArray->minSNP, pDataArray->parents, pDataArray->iters, pDataArray->increment, pDataArray->numwanted, pDataArray->realign, pDataArray->blastlocation, pDataArray->threadId);	
-			chimera->printHeader(out); 
-			
+			chimera = new ChimeraSlayer(thisFastaName, pDataArray->templatefile, pDataArray->trim, thisPriority, pDataArray->search, pDataArray->ksize, pDataArray->match, pDataArray->mismatch, pDataArray->window, pDataArray->divR, pDataArray->minSimilarity, pDataArray->minCoverage, pDataArray->minBS, pDataArray->minSNP, pDataArray->parents, pDataArray->iters, pDataArray->increment, pDataArray->numwanted, pDataArray->realign, pDataArray->blastlocation, pDataArray->threadId);
+			chimera->printHeader(out);
+
 			int numSeqs = 0;
-			
-			if (pDataArray->m->control_pressed) { out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera;  return 0;	}
-			
-			if (chimera->getUnaligned()) { 
-				pDataArray->m->mothurOut("Your template sequences are different lengths, please correct."); pDataArray->m->mothurOutEndLine(); 
+
+			if (ctrlc_pressed) { out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera;  return 0; }
+
+			if (chimera->getUnaligned()) {
+				LOG(INFO) << "Your template sequences are different lengths, please correct." << '\n';
 				out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close();
 				delete chimera;
-				return 0; 
+				return 0;
 			}
 			int templateSeqsLength = chimera->getLength();
-			
+
 			bool done = false;
 			while (!done) {
-				
-				if (pDataArray->m->control_pressed) {	out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera; return 1;	}
-				
-				Sequence* candidateSeq = new Sequence(inFASTA);  pDataArray->m->gobble(inFASTA);
+
+				if (ctrlc_pressed) { out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete chimera; return 1; }
+
+				Sequence* candidateSeq = new Sequence(inFASTA);  pDataArray->File::gobble(inFASTA);
 				string candidateAligned = candidateSeq->getAligned();
-				
+
 				if (candidateSeq->getName() != "") { //incase there is a commented sequence at the end of a file
-					if (candidateSeq->getAligned().length() != templateSeqsLength) {  
-						pDataArray->m->mothurOut(candidateSeq->getName() + " is not the same length as the template sequences. Skipping."); pDataArray->m->mothurOutEndLine();
-					}else{
+					if (candidateSeq->getAligned().length() != templateSeqsLength) {
+						LOG(INFO) << candidateSeq->getName() + " is not the same length as the template sequences. Skipping." << '\n';
+					}
+					else {
 						//find chimeras
 						chimera->getChimeras(candidateSeq);
-						
-						if (pDataArray->m->control_pressed) {	out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete candidateSeq; delete chimera; return 1;	}
-						
+
+						if (ctrlc_pressed) { out.close(); out2.close(); if (pDataArray->trim) { out3.close(); } inFASTA.close(); delete candidateSeq; delete chimera; return 1; }
+
 						//if you are not chimeric, then check each half
 						data_results wholeResults = chimera->getResults();
-						
+
 						//determine if we need to split
 						bool isChimeric = false;
-						
+
 						if (wholeResults.flag == "yes") {
 							string chimeraFlag = "no";
-							if(  (wholeResults.results[0].bsa >= pDataArray->minBS && wholeResults.results[0].divr_qla_qrb >= pDataArray->divR)
-							   ||
-							   (wholeResults.results[0].bsb >= pDataArray->minBS && wholeResults.results[0].divr_qlb_qra >= pDataArray->divR) ) { chimeraFlag = "yes"; }
-							
-							
-							if (chimeraFlag == "yes") {	
+							if ((wholeResults.results[0].bsa >= pDataArray->minBS && wholeResults.results[0].divr_qla_qrb >= pDataArray->divR)
+								||
+								(wholeResults.results[0].bsb >= pDataArray->minBS && wholeResults.results[0].divr_qlb_qra >= pDataArray->divR)) {
+								chimeraFlag = "yes";
+							}
+
+
+							if (chimeraFlag == "yes") {
 								if ((wholeResults.results[0].bsa >= pDataArray->minBS) || (wholeResults.results[0].bsb >= pDataArray->minBS)) { isChimeric = true; }
 							}
 						}
-						
+
 						if ((!isChimeric) && pDataArray->trimera) {
-							
+
 							//split sequence in half by bases
 							string leftQuery, rightQuery;
 							Sequence tempSeq(candidateSeq->getName(), candidateAligned);
 							//divideInHalf(tempSeq, leftQuery, rightQuery);
 							string queryUnAligned = tempSeq.getUnaligned();
 							int numBases = int(queryUnAligned.length() * 0.5);
-							
+
 							string queryAligned = tempSeq.getAligned();
 							leftQuery = tempSeq.getAligned();
 							rightQuery = tempSeq.getAligned();
-							
+
 							int baseCount = 0;
 							int leftSpot = 0;
 							for (int i = 0; i < queryAligned.length(); i++) {
 								//if you are a base
-								if (isalpha(queryAligned[i])) {		
-									baseCount++; 
+								if (isalpha(queryAligned[i])) {
+									baseCount++;
 								}
-								
+
 								//if you have half
-								if (baseCount >= numBases) {  leftSpot = i; break; } //first half
+								if (baseCount >= numBases) { leftSpot = i; break; } //first half
 							}
-							
+
 							//blank out right side
 							for (int i = leftSpot; i < leftQuery.length(); i++) { leftQuery[i] = '.'; }
-							
+
 							//blank out left side
 							for (int i = 0; i < leftSpot; i++) { rightQuery[i] = '.'; }
-							
+
 							//run chimeraSlayer on each piece
 							Sequence* left = new Sequence(candidateSeq->getName(), leftQuery);
 							Sequence* right = new Sequence(candidateSeq->getName(), rightQuery);
-							
+
 							//find chimeras
 							chimera->getChimeras(left);
 							data_results leftResults = chimera->getResults();
-							
+
 							chimera->getChimeras(right);
 							data_results rightResults = chimera->getResults();
-							
+
 							//if either piece is chimeric then report
 							Sequence trimmed = chimera->print(out, out2, leftResults, rightResults);
-							if (pDataArray->trim) { trimmed.printSequence(out3);  }
-							
+							if (pDataArray->trim) { trimmed.printSequence(out3); }
+
 							delete left; delete right;
-							
-						}else { //already chimeric
-							//print results
-							Sequence trimmed = chimera->print(out, out2);
-							if (pDataArray->trim) { trimmed.printSequence(out3);  }
+
 						}
-						
-						
+						else { //already chimeric
+						   //print results
+							Sequence trimmed = chimera->print(out, out2);
+							if (pDataArray->trim) { trimmed.printSequence(out3); }
+						}
+
+
 					}
 					numSeqs++;
 				}
-				
+
 				delete candidateSeq;
-				
+
 				if (inFASTA.eof()) { break; }
-				
+
 				//report progress
-				if((numSeqs) % 100 == 0){	pDataArray->m->mothurOutJustToScreen("Processing sequence: " + toString(numSeqs)+"\n"); pDataArray->m->mothurOutEndLine();		}
+				if ((numSeqs) % 100 == 0) { LOG(SCREENONLY) << "Processing sequence: " + toString(numSeqs) + "\n" << '\n'; }
 			}
 			//report progress
-			if((numSeqs) % 100 != 0){	pDataArray->m->mothurOutJustToScreen("Processing sequence: " + toString(numSeqs)+"\n"); 		}
-			
+			if ((numSeqs) % 100 != 0) { LOG(SCREENONLY) << "Processing sequence: " + toString(numSeqs) + "\n"; }
+
 			pDataArray->numNoParents = chimera->getNumNoParents();
-			if (pDataArray->numNoParents == numSeqs) { 	pDataArray->m->mothurOut("[WARNING]: megablast returned 0 potential parents for all your sequences. This could be due to formatdb.exe not being setup properly, please check formatdb.log for errors.\n"); }
-			
+			if (pDataArray->numNoParents == numSeqs) { LOG(WARNING) << "megablast returned 0 potential parents for all your sequences. This could be due to formatdb.exe not being setup properly, please check formatdb.log for errors.\n"; }
+
 			out.close();
 			out2.close();
 			if (pDataArray->trim) { out3.close(); }
 			inFASTA.close();
 			delete chimera;
 			pDataArray->end++;
-			
+
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			
-            //if we provided a count file with group info and set dereplicate=t, then we want to create a *.pick.count_table
-            //This table will zero out group counts for seqs determined to be chimeric by that group.
-            if (pDataArray->dups) {
-                if (!pDataArray->m->isBlank(thisaccnosFileName)) {
-                    ifstream in;
-                    pDataArray->m->openInputFile(thisaccnosFileName, in);
-                    string name;
-                    if (pDataArray->hasCount) {
-                        while (!in.eof()) {
-                            in >> name; pDataArray->m->gobble(in);
-                            outCountList << name << '\t' << pDataArray->fileGroup[thisFastaName] << endl;
-                        }
-                        in.close();
-                    }else {
-                        map<string, map<string, string> >::iterator itGroupNameMap = pDataArray->group2NameMap.find(pDataArray->fileGroup[thisFastaName]);
-                        if (itGroupNameMap != pDataArray->group2NameMap.end()) {
-                            map<string, string> thisnamemap = itGroupNameMap->second;
-                            map<string, string>::iterator itN;
-                            ofstream out;
-                            pDataArray->m->openOutputFile(thisaccnosFileName+".temp", out);
-                            while (!in.eof()) {
-                                in >> name; pDataArray->m->gobble(in);
-                                //pDataArray->m->mothurOut("here = " + name + '\t');
-                                itN = thisnamemap.find(name);
-                                if (itN != thisnamemap.end()) {
-                                    vector<string> tempNames; pDataArray->m->splitAtComma(itN->second, tempNames);
-                                    for (int j = 0; j < tempNames.size(); j++) { out << tempNames[j] << endl; }
-                                    //pDataArray->m->mothurOut(itN->second + '\n');
-                                    
-                                }else { pDataArray->m->mothurOut("[ERROR]: parsing cannot find " + name + ".\n"); pDataArray->m->control_pressed = true; }
-                            }
-                            out.close();
-                            in.close();
-                            pDataArray->m->renameFile(thisaccnosFileName+".temp", thisaccnosFileName);
-                        }else { pDataArray->m->mothurOut("[ERROR]: parsing cannot find " + pDataArray->fileGroup[thisFastaName] + ".\n"); pDataArray->m->control_pressed = true; }
-                    }
-                    
-                }
-            }
-            
-            
+
+			//if we provided a count file with group info and set dereplicate=t, then we want to create a *.pick.count_table
+			//This table will zero out group counts for seqs determined to be chimeric by that group.
+			if (pDataArray->dups) {
+				if (!pDataArray->File::isBlank(thisaccnosFileName)) {
+					ifstream in;
+					File::openInputFile(thisaccnosFileName, in);
+					string name;
+					if (pDataArray->hasCount) {
+						while (!in.eof()) {
+							in >> name; pDataArray->File::gobble(in);
+							outCountList << name << '\t' << pDataArray->fileGroup[thisFastaName] << endl;
+						}
+						in.close();
+					}
+					else {
+						map<string, map<string, string> >::iterator itGroupNameMap = pDataArray->group2NameMap.find(pDataArray->fileGroup[thisFastaName]);
+						if (itGroupNameMap != pDataArray->group2NameMap.end()) {
+							map<string, string> thisnamemap = itGroupNameMap->second;
+							map<string, string>::iterator itN;
+							ofstream out;
+							File::openOutputFile(thisaccnosFileName + ".temp", out);
+							while (!in.eof()) {
+								in >> name; pDataArray->File::gobble(in);
+								//LOG(INFO) << "here = " + name + '\t';
+								itN = thisnamemap.find(name);
+								if (itN != thisnamemap.end()) {
+									vector<string> tempNames; pDataArray->m->splitAtComma(itN->second, tempNames);
+									for (int j = 0; j < tempNames.size(); j++) { out << tempNames[j] << endl; }
+									//LOG(INFO) << itN->second + '\n';
+
+								}
+								else { LOG(LOGERROR) << "parsing cannot find " + name + ".\n"; ctrlc_pressed = true; }
+							}
+							out.close();
+							in.close();
+							pDataArray->m->renameFile(thisaccnosFileName + ".temp", thisaccnosFileName);
+						}
+						else { LOG(LOGERROR) << "parsing cannot find " + pDataArray->fileGroup[thisFastaName] + ".\n"; ctrlc_pressed = true; }
+					}
+
+				}
+			}
+
+
 			//append files
-			pDataArray->m->appendFiles(thisoutputFileName, pDataArray->outputFName); pDataArray->m->mothurRemove(thisoutputFileName); 
-			pDataArray->m->appendFiles(thisaccnosFileName, pDataArray->accnos); pDataArray->m->mothurRemove(thisaccnosFileName);
-			if (pDataArray->trim) { pDataArray->m->appendFiles(thistrimFastaFileName, pDataArray->fasta); pDataArray->m->mothurRemove(thistrimFastaFileName); }
-			pDataArray->m->mothurRemove(thisFastaName);
-			
+			pDataArray->File::appendFiles(thisoutputFileName, pDataArray->outputFName); pDataArray->File::remove(thisoutputFileName);
+			pDataArray->File::appendFiles(thisaccnosFileName, pDataArray->accnos); pDataArray->File::remove(thisaccnosFileName);
+			if (pDataArray->trim) { pDataArray->File::appendFiles(thistrimFastaFileName, pDataArray->fasta); pDataArray->File::remove(thistrimFastaFileName); }
+			pDataArray->File::remove(thisFastaName);
+
 			totalSeqs += numSeqs;
-			
-			pDataArray->m->mothurOutEndLine(); pDataArray->m->mothurOut("It took " + toString(time(NULL) - start) + " secs to check " + toString(numSeqs) + " sequences from group " + pDataArray->fileGroup[thisFastaName] + ".");	pDataArray->m->mothurOutEndLine();
+
+			LOG(INFO) << std::endl << "It took " + toString(time(NULL) - start) + " secs to check " + toString(numSeqs) + " sequences from group " + pDataArray->fileGroup[thisFastaName] + "." << '\n';
 		}
-		
+
 		pDataArray->count = totalSeqs;
-        if (pDataArray->hasCount && pDataArray->dups) { outCountList.close(); }
-		
+		if (pDataArray->hasCount && pDataArray->dups) { outCountList.close(); }
+
 		return 0;
-		
+
 	}
-	catch(exception& e) {
-		pDataArray->m->errorOut(e, "ChimeraSlayerCommand", "MySlayerGroupThreadFunction");
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in ChimeraSlayerCommand, MySlayerGroupThreadFunction";
 		exit(1);
 	}
-} 
+}
 
 #endif
 

@@ -1,5 +1,4 @@
 #include "namefileparameter.h"
-#include "application.h"
 #include "settings.h"
 #include "filehandling/file.h"
 #include "utility.h"
@@ -8,10 +7,9 @@ void NameFileParameter::validateAndSet(string newValue) {
 	this->value = value;
 }
 
-bool NameFileParameter::getNameFile(vector<string> files, string output) {
+bool NameFileParameter::getNameFile(Settings& settings, vector<string> files, string output) {
 	try {
-		Settings& settings = Application::getApplication()->getSettings();
-		string namefile = settings.getNameFile();
+		string namefile = settings.getCurrent("name");
 		bool match = false;
 
 		if ((namefile != "") && (!(settings.getMothurCalling()))) {
@@ -44,7 +42,7 @@ bool NameFileParameter::getNameFile(vector<string> files, string output) {
 		return match;
 	}
 	catch (exception& e) {
-		//m->errorOut(e, "OptionParser", "getNameFile");
+		//LOG(FATAL) << e.what() << " in OptionParser, getNameFile";
 		//exit(1);
 		throw;
 	}

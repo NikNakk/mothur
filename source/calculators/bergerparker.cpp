@@ -9,23 +9,17 @@
 
 #include "bergerparker.h"
 
-/***************************************************************/
+ /***************************************************************/
 
-EstOutput BergerParker::getValues(SAbundVector* rank){
-	try {
-		data.resize(1,0);
-		//Berger-Parker index
-		double BP = (double)rank->getMaxRank() / (double)rank->getNumSeqs();
-		
-		data[0] = BP;
-		if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
+EstOutput BergerParker::getValues(SAbundVector* rank) {
+	data.resize(1, 0);
+	//Berger-Parker index
+	double BP = (double)rank->getMaxRank() / (double)rank->getNumSeqs();
 
-		return data;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "BergerParker", "getValues");
-		exit(1);
-	}
+	data[0] = BP;
+	if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
+
+	return data;
 }
 
 /***********************************************************************/

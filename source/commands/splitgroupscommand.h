@@ -11,7 +11,7 @@
  */
 
 
-/* split.groups - given a group file, split sequences and names files in to separate files *.group1.fasta and .group1.names. */
+ /* split.groups - given a group file, split sequences and names files in to separate files *.group1.fasta and .group1.names. */
 
 
 #include "command.hpp"
@@ -21,34 +21,34 @@
 /***************************************************************************************/
 
 class SplitGroupCommand : public Command {
-	
-public:
-	SplitGroupCommand(string);	
-	SplitGroupCommand();
-	~SplitGroupCommand() {}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "split.groups";				}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Split.group"; }
-	string getDescription()		{ return "split a name or fasta file by group"; }
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+public:
+	SplitGroupCommand(Settings& settings, string option);
+	SplitGroupCommand(Settings& settings);
+	~SplitGroupCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "split.groups"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Split.group"; }
+	string getDescription() { return "split a name or fasta file by group"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	vector<string> outputNames;
-		
+
 	string outputDir, namefile, groupfile, countfile, groups, fastafile;
 	vector<string> Groups;
 	bool abort;
-    
-    int runNameGroup();
-    int runCount();
+
+	int runNameGroup();
+	int runCount();
 };
 
 /***************************************************************************************/

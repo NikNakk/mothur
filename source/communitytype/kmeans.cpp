@@ -11,18 +11,12 @@
 /**************************************************************************************************/
 
 KMeans::KMeans(vector<vector<int> > cm, int p) : CommunityTypeFinder() {
-    try {
-        countMatrix = cm;
-        numSamples = (int)countMatrix.size();
-        numOTUs = (int)countMatrix[0].size();
-        numPartitions = p;
-        
-        findkMeans();
-    }
-	catch(exception& e) {
-		m->errorOut(e, "KMeans", "KMeans");
-		exit(1);
-	}
+	countMatrix = cm;
+	numSamples = (int)countMatrix.size();
+	numOTUs = (int)countMatrix[0].size();
+	numPartitions = p;
+
+	findkMeans();
 }
 /**************************************************************************************************/
 

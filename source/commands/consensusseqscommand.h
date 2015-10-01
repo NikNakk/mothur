@@ -17,26 +17,26 @@
 
 class ConsensusSeqsCommand : public Command {
 public:
-	ConsensusSeqsCommand(string);
-	ConsensusSeqsCommand();
-	~ConsensusSeqsCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "consensus.seqs";		}
-	string getCommandCategory()		{ return "Sequence Processing"; }
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Consensus.seqs"; }
-	string getDescription()		{ return "create a consensus sequence for each OTU or for a fasta file"; }
+	ConsensusSeqsCommand(Settings& settings, string option);
+	ConsensusSeqsCommand(Settings& settings);
+	~ConsensusSeqsCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "consensus.seqs"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Consensus.seqs"; }
+	string getDescription() { return "create a consensus sequence for each OTU or for a fasta file"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-	
-    CountTable ct;
+
+	CountTable ct;
 	bool abort, allLines;
 	string fastafile, listfile, namefile, countfile, label, outputDir;
 	set<string> labels;
@@ -45,8 +45,8 @@ private:
 	map<string, string> nameMap;
 	map<string, int> nameFileMap;
 	int seqLength;
-    float cutoff;
-	
+	float cutoff;
+
 	int readFasta();
 	int readNames();
 	int processList(ListVector*&);

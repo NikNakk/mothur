@@ -14,24 +14,24 @@
 class DesignMap;
 
 class AmovaCommand : public Command {
-	
+
 public:
-	AmovaCommand(string);
-	AmovaCommand();
+	AmovaCommand(Settings& settings, string option);
+	AmovaCommand(Settings& settings);
 	~AmovaCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "amova";					}
-	string getCommandCategory()		{ return "Hypothesis Testing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-    string getCitation() { return "Anderson MJ (2001). A new method for non-parametric multivariate analysis of variance. Austral Ecol 26: 32-46.\nhttp://www.mothur.org/wiki/Amova"; }
-	string getDescription()		{ return "analysis of molecular variance"; }
-	
+	string getCommandName() { return "amova"; }
+	string getCommandCategory() { return "Hypothesis Testing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "Anderson MJ (2001). A new method for non-parametric multivariate analysis of variance. Austral Ecol 26: 32-46.\nhttp://www.mothur.org/wiki/Amova"; }
+	string getDescription() { return "analysis of molecular variance"; }
+
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }
-	
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	double runAMOVA(ofstream&, map<string, vector<int> >, double);
 	double calcSSWithin(map<string, vector<int> >&);

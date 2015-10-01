@@ -13,25 +13,25 @@
 #include "sequence.hpp"
 
 class RefChimeraTest {
-	
+
 public:
-	RefChimeraTest(){};
-    ~RefChimeraTest(){}
-    RefChimeraTest(vector<Sequence>&, bool);
+	RefChimeraTest() {};
+	~RefChimeraTest() {}
+	RefChimeraTest(vector<Sequence>&, bool);
 	int printHeader(ofstream&);
-    int analyzeQuery(string, string, ofstream&);
-    int getClosestRefIndex();
-    string getClosestRefAlignment();
-    string getQueryAlignment();
+	int analyzeQuery(string, string, ofstream&);
+	int getClosestRefIndex();
+	string getClosestRefAlignment();
+	string getQueryAlignment();
 
 private:
 	int getAlignedMismatches(string&, vector<vector<int> >&, vector<vector<int> >&, int&);
-    int analyzeAlignedQuery(string, string, ofstream&);
-    int analyzeUnalignedQuery(string, string, ofstream&);
-    double alignQueryToReferences(string, string, string&, string&, double&);
-    int getUnalignedDiffs(string, string, vector<int>&, vector<int>&, vector<int>&, vector<int>&);
+	int analyzeAlignedQuery(string, string, ofstream&);
+	int analyzeUnalignedQuery(string, string, ofstream&);
+	double alignQueryToReferences(string, string, string&, string&, double&);
+	int getUnalignedDiffs(string, string, vector<int>&, vector<int>&, vector<int>&, vector<int>&);
 
-    int getChimera(vector<vector<int> >&, vector<vector<int> >&, int&, int&, int&, vector<int>&, vector<int>&, vector<int>&, vector<int>&);
+	int getChimera(vector<vector<int> >&, vector<vector<int> >&, int&, int&, int&, vector<int>&, vector<int>&, vector<int>&, vector<int>&);
 	int getTrimera(vector<vector<int> >&, vector<vector<int> >&, int&, int&, int&, int&, int&, vector<int>&, vector<int>&, vector<int>&, vector<int>&);
 	string stitchBimera(int, int, int);
 	string stitchTrimera(int, int, int, int, int);
@@ -42,10 +42,10 @@ private:
 	int numRefSeqs;
 	int alignLength;
 	int bestMatch;
-    string bestRefAlignment;
-    string bestQueryAlignment;
+	string bestRefAlignment;
+	string bestQueryAlignment;
 	bool aligned;
-    
+
 	MothurOut* m;
 };
 

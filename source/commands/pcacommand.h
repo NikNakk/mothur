@@ -14,27 +14,27 @@
 #include "linearalgebra.h"
 #include "sharedrabundfloatvector.h"
 
-/*****************************************************************/
+ /*****************************************************************/
 class PCACommand : public Command {
-	
-public:
-	PCACommand(string);	
-	PCACommand();
-	~PCACommand() {}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "pca";					}
-	string getCommandCategory()		{ return "Hypothesis Testing";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "McCune B, Grace JB, Urban DL (2002). Analysis of ecological communities. MjM Software Design: Gleneden Beach, OR. \nLegendre P, Legendre L (1998). Numerical Ecology. Elsevier: New York. \nhttp://www.mothur.org/wiki/Pca"; }
-	string getDescription()		{ return "pca"; }
 
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+public:
+	PCACommand(Settings& settings, string option);
+	PCACommand(Settings& settings);
+	~PCACommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "pca"; }
+	string getCommandCategory() { return "Hypothesis Testing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "McCune B, Grace JB, Urban DL (2002). Analysis of ecological communities. MjM Software Design: Gleneden Beach, OR. \nLegendre P, Legendre L (1998). Numerical Ecology. Elsevier: New York. \nhttp://www.mothur.org/wiki/Pca"; }
+	string getDescription() { return "pca"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 
 	bool abort, metric;
@@ -42,11 +42,11 @@ private:
 	vector<string> outputNames, Groups;
 	set<string> labels;
 	LinearAlgebra linearCalc;
-	
+
 	//vector< vector<double> > createMatrix(vector<SharedRAbundFloatVector*>);
 	int process(vector<SharedRAbundFloatVector*>&);
 	void output(string, string, vector<string>, vector<vector<double> >&, vector<double>);
-	
+
 };
 
 /*****************************************************************/

@@ -9,24 +9,17 @@
 
 #include "helpcommand.h"
 
-//**********************************************************************************************************************
+ //**********************************************************************************************************************
 
-HelpCommand::HelpCommand(string option)  {
+HelpCommand::HelpCommand(Settings& settings, string option) : Command(settings, option) {
 }
 //**********************************************************************************************************************
-int HelpCommand::execute(){
-	try {
-		CommandFactory commandFactory;
-        commandFactory.printCommands(cout);
-		m->mothurOut("For more information about a specific command type 'commandName(help)' i.e. 'read.dist(help)'"); m->mothurOutEndLine();
-	
-		m->mothurOutEndLine(); m->mothurOut("For further assistance please refer to the Mothur manual on our wiki at http://www.mothur.org/wiki, or contact Pat Schloss at mothur.bugs@gmail.com.\n");
-	
-		return 0;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "HelpCommand", "execute");
-		exit(1);
-	}
+int HelpCommand::execute() {
+	CommandFactory commandFactory;
+	LOG(SCREENONLY) << commandFactory.getCommands();
+	LOG(INFO) << "For more information about a specific command type 'commandName(help)' i.e. 'read.dist(help)'\n";
+	LOG(INFO) << "For further assistance please refer to the Mothur manual on our wiki at http://www.mothur.org/wiki, or contact Pat Schloss at mothur.bugs@gmail.com.";
+
+	return 0;
 }
 //**********************************************************************************************************************/

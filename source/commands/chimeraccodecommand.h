@@ -15,31 +15,31 @@
 #include "chimera.h"
 
 
-/***********************************************************/
+ /***********************************************************/
 
 class ChimeraCcodeCommand : public Command {
 public:
-	ChimeraCcodeCommand(string);
-	ChimeraCcodeCommand();
-	~ChimeraCcodeCommand(){}
-	
+	ChimeraCcodeCommand(Settings& settings, string option);
+	ChimeraCcodeCommand(Settings& settings);
+	~ChimeraCcodeCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "chimera.ccode";		}
-	string getCommandCategory()		{ return "Sequence Processing"; }
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "chimera.ccode"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "Gonzalez JM, Zimmermann J, Saiz-Jimenez C (2005). Evaluating putative chimeric sequences from PCR-amplified products. Bioinformatics 21: 333-7. \nhttp://www.mothur.org/wiki/Chimera.ccode"; }
-	string getDescription()		{ return "detect chimeric sequences"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-		
+	string getDescription() { return "detect chimeric sequences"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	vector<int> processIDS;   //processid
 	vector<linePair*> lines;
-	
+
 	int driver(linePair*, string, string, string);
 	int createProcesses(string, string, string);
 

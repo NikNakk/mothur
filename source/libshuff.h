@@ -13,12 +13,12 @@
 #include "fullmatrix.h"
 
 class Libshuff {
-	
+
 public:
 	Libshuff(FullMatrix*, int, float, float);
-    virtual ~Libshuff() {}
+	virtual ~Libshuff() {}
 	virtual vector<vector<double> > evaluateAll() = 0;
-	virtual float evaluatePair(int,int) = 0;
+	virtual float evaluatePair(int, int) = 0;
 	void randomizeGroups(int, int);
 	void resetGroup(int);
 	vector<vector<vector<double> > > getSavedMins();
@@ -27,10 +27,10 @@ protected:
 	void initializeGroups(FullMatrix*);
 	vector<double> getMinX(int);
 	vector<double> getMinXY(int, int);
-	
+
 	vector<vector<vector<double> > > savedMins;
-	
-	
+
+
 	FullMatrix* matrix;
 	vector<int> groupSizes;
 	vector<string> groupNames;
@@ -41,7 +41,7 @@ protected:
 	float cutOff;
 	int iters;
 	float stepSize;
-	
+
 	int numGroups;
 	MothurOut* m;
 };

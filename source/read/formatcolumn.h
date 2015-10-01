@@ -11,20 +11,20 @@
 
 #include "formatmatrix.h"
 
-/******************************************************/
+ /******************************************************/
 
 class FormatColumnMatrix : public FormatMatrix {
-	
+
 public:
 	FormatColumnMatrix(string);
 	~FormatColumnMatrix();
 	int read(NameAssignment*);
-    int read(CountTable*);
-	
+	int read(CountTable*);
+
 private:
 	ifstream fileHandle;
 	string filename;
-	
+
 };
 
 /******************************************************/

@@ -12,201 +12,169 @@
 #include "listvector.hpp"
 #include "rabundvector.hpp"
 
-/***********************************************************************/
+ /***********************************************************************/
 
-InputData::InputData(string fName, string f) : format(f){
-	m = MothurOut::getInstance();
-	m->openInputFile(fName, fileHandle);
+InputData::InputData(string fName, string f) : format(f) {
+	File::openInputFile(fName, fileHandle);
 	filename = fName;
 	m->saveNextLabel = "";
 }
 /***********************************************************************/
 
-InputData::~InputData(){
+InputData::~InputData() {
 	fileHandle.close();
 	m->saveNextLabel = "";
 }
 
 /***********************************************************************/
 
-InputData::InputData(string fName, string orderFileName, string f) : format(f){
-	try {
-		m = MothurOut::getInstance();
-		ifstream ofHandle;
-		m->openInputFile(orderFileName, ofHandle);
-		string name;
+InputData::InputData(string fName, string orderFileName, string f) : format(f) {
+	ifstream ofHandle;
+	File::openInputFile(orderFileName, ofHandle);
+	string name;
 
-		int count = 0;
-	
-		while(ofHandle){
-			ofHandle >> name;
-			orderMap[name] = count;
-			count++;
-			m->gobble(ofHandle);
-		}
-		ofHandle.close();
-	
-		m->openInputFile(fName, fileHandle);
-		m->saveNextLabel = "";
-		
+	int count = 0;
+
+	while (ofHandle) {
+		ofHandle >> name;
+		orderMap[name] = count;
+		count++;
+		File::gobble(ofHandle);
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "InputData");
-		exit(1);
-	}
+	ofHandle.close();
+
+	File::openInputFile(fName, fileHandle);
+	m->saveNextLabel = "";
+
 }
 /***********************************************************************/
 
-ListVector* InputData::getListVector(){
-	try {
-		if(!fileHandle.eof()){
-			if(format == "list") {
-				list = new ListVector(fileHandle);
-			}else{ list = NULL;  }
-					
-			m->gobble(fileHandle);
-			return list;
+ListVector* InputData::getListVector() {
+	if (!fileHandle.eof()) {
+		if (format == "list") {
+			list = new ListVector(fileHandle);
 		}
-		else{
-			return NULL;
-		}
+		else { list = NULL; }
+
+		File::gobble(fileHandle);
+		return list;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getListVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
 /***********************************************************************/
-ListVector* InputData::getListVector(string label){
-	try {
-		ifstream in;
-		string  thisLabel;
-		m->openInputFile(filename, in);
-        m->saveNextLabel = "";
-		
-		if(in){
+ListVector* InputData::getListVector(string label) {
+	ifstream in;
+	string  thisLabel;
+	File::openInputFile(filename, in);
+	m->saveNextLabel = "";
 
-			if (format == "list") {
-			
-				while (in.eof() != true) {
-					
-					list = new ListVector(in);
-					thisLabel = list->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete list;	}
-					m->gobble(in);
-				}
-			}else{ list = NULL;  }
-			
-			in.close();
-			return list;
+	if (in) {
+
+		if (format == "list") {
+
+			while (in.eof() != true) {
+
+				list = new ListVector(in);
+				thisLabel = list->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete list; }
+				File::gobble(in);
+			}
 		}
-		else{
-			return NULL;
-		}
+		else { list = NULL; }
+
+		in.close();
+		return list;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getListVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 /***********************************************************************/
-ListVector* InputData::getListVector(string label, bool resetFP){
-	try {
-		string  thisLabel;
-		fileHandle.clear();
-		fileHandle.seekg(0);
-        m->saveNextLabel = "";
-		
-		if(fileHandle){
+ListVector* InputData::getListVector(string label, bool resetFP) {
+	string  thisLabel;
+	fileHandle.clear();
+	fileHandle.seekg(0);
+	m->saveNextLabel = "";
 
-			if (format == "list") {
-			
-				while (fileHandle.eof() != true) {
-					
-					list = new ListVector(fileHandle); m->gobble(fileHandle);
-					thisLabel = list->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete list;	}
-				}
-			}else{ list = NULL;  }
-		
-			return list;
+	if (fileHandle) {
+
+		if (format == "list") {
+
+			while (fileHandle.eof() != true) {
+
+				list = new ListVector(fileHandle); File::gobble(fileHandle);
+				thisLabel = list->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete list; }
+			}
 		}
-		else{
-			return NULL;
-		}
+		else { list = NULL; }
+
+		return list;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getListVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
 /***********************************************************************/
 
-SharedListVector* InputData::getSharedListVector(){
-	try {
-		if(fileHandle){
-			if (format == "shared")  {
-				SharedList = new SharedListVector(fileHandle);
-			}else{ SharedList = NULL;  }
-					
-			m->gobble(fileHandle);
-			return SharedList;
+SharedListVector* InputData::getSharedListVector() {
+	if (fileHandle) {
+		if (format == "shared") {
+			SharedList = new SharedListVector(fileHandle);
 		}
-		else{
-			return NULL;
-		}
+		else { SharedList = NULL; }
+
+		File::gobble(fileHandle);
+		return SharedList;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedListVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 /***********************************************************************/
 
-SharedListVector* InputData::getSharedListVector(string label){
-	try {
-		ifstream in;
-		string  thisLabel;
-		m->openInputFile(filename, in);
-		
-		if(in){
+SharedListVector* InputData::getSharedListVector(string label) {
+	ifstream in;
+	string  thisLabel;
+	File::openInputFile(filename, in);
 
-			if (format == "shared")  {
-			
-				while (in.eof() != true) {
-					
-					SharedList = new SharedListVector(in);
-					thisLabel = SharedList->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete SharedList;	}
-					m->gobble(in);
-				}
+	if (in) {
 
-			}else{ SharedList = NULL;  }
-				
-			in.close();
-			return SharedList;
-			
-		}else{
-			return NULL;
+		if (format == "shared") {
+
+			while (in.eof() != true) {
+
+				SharedList = new SharedListVector(in);
+				thisLabel = SharedList->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete SharedList; }
+				File::gobble(in);
+			}
+
 		}
+		else { SharedList = NULL; }
+
+		in.close();
+		return SharedList;
+
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedListVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
@@ -214,63 +182,55 @@ SharedListVector* InputData::getSharedListVector(string label){
 
 /***********************************************************************/
 
-SharedOrderVector* InputData::getSharedOrderVector(){
-	try {
-		if(fileHandle){
-			if (format == "sharedfile")  {
-				SharedOrder = new SharedOrderVector(fileHandle);
-			}else{ SharedOrder = NULL;  }
-				
-			m->gobble(fileHandle);
-			return SharedOrder;
-			
-		}else{
-			return NULL;
+SharedOrderVector* InputData::getSharedOrderVector() {
+	if (fileHandle) {
+		if (format == "sharedfile") {
+			SharedOrder = new SharedOrderVector(fileHandle);
 		}
+		else { SharedOrder = NULL; }
+
+		File::gobble(fileHandle);
+		return SharedOrder;
+
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedOrderVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
 /***********************************************************************/
 
-SharedOrderVector* InputData::getSharedOrderVector(string label){
-	try {
-		ifstream in;
-		string  thisLabel;
-		m->openInputFile(filename, in);
-        m->saveNextLabel = "";
-		
-		if(in){
+SharedOrderVector* InputData::getSharedOrderVector(string label) {
+	ifstream in;
+	string  thisLabel;
+	File::openInputFile(filename, in);
+	m->saveNextLabel = "";
 
-			if (format == "sharedfile")  {
-			
-				while (in.eof() != true) {
-					
-					SharedOrder = new SharedOrderVector(in);
-					thisLabel = SharedOrder->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete SharedOrder;	}
-					m->gobble(in);
-				}
+	if (in) {
 
-			}else{ SharedOrder = NULL;  }
-				
-			in.close();
-			return SharedOrder;
-			
-		}else{
-			return NULL;
+		if (format == "sharedfile") {
+
+			while (in.eof() != true) {
+
+				SharedOrder = new SharedOrderVector(in);
+				thisLabel = SharedOrder->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete SharedOrder; }
+				File::gobble(in);
+			}
+
 		}
+		else { SharedOrder = NULL; }
+
+		in.close();
+		return SharedOrder;
+
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedOrderVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
@@ -278,612 +238,561 @@ SharedOrderVector* InputData::getSharedOrderVector(string label){
 
 /***********************************************************************/
 
-OrderVector* InputData::getOrderVector(){
-	try {
-		if(fileHandle){
-			if((format == "list") || (format == "listorder")) {
-				input = new ListVector(fileHandle);
-			}
-			else if (format == "shared")  {
-				input = new SharedListVector(fileHandle);
-			}
-			else if(format == "rabund"){
-				input = new RAbundVector(fileHandle);
-			}
-			else if(format == "order"){		
-				input = new OrderVector(fileHandle);
-			}
-			else if(format == "sabund"){
-				input = new SAbundVector(fileHandle);
-			}
-						
-			m->gobble(fileHandle);
-			
-			output = new OrderVector();	
-			*output = (input->getOrderVector());
-		
-			return output;
+OrderVector* InputData::getOrderVector() {
+	if (fileHandle) {
+		if ((format == "list") || (format == "listorder")) {
+			input = new ListVector(fileHandle);
 		}
-		else{
-			return NULL;
+		else if (format == "shared") {
+			input = new SharedListVector(fileHandle);
 		}
+		else if (format == "rabund") {
+			input = new RAbundVector(fileHandle);
+		}
+		else if (format == "order") {
+			input = new OrderVector(fileHandle);
+		}
+		else if (format == "sabund") {
+			input = new SAbundVector(fileHandle);
+		}
+
+		File::gobble(fileHandle);
+
+		output = new OrderVector();
+		*output = (input->getOrderVector());
+
+		return output;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getOrderVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
 /***********************************************************************/
-OrderVector* InputData::getOrderVector(string label){
-	try {
-	
-		ifstream in;
-		string  thisLabel;
-		m->openInputFile(filename, in);
-		
-		if(in){
-			if((format == "list") || (format == "listorder")) {
-                m->saveNextLabel = "";
-				while (in.eof() != true) {
-					
-					input = new ListVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-			}
-			else if (format == "shared")  {
-				m->saveNextLabel = "";
-				while (in.eof() != true) {
-					
-					input = new SharedListVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
+OrderVector* InputData::getOrderVector(string label) {
 
-			}
-			else if(format == "rabund"){
-				
-				while (in.eof() != true) {
-					
-					input = new RAbundVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
+	ifstream in;
+	string  thisLabel;
+	File::openInputFile(filename, in);
 
-			}
-			else if(format == "order"){			
-				
-				while (in.eof() != true) {
-					
-					input = new OrderVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
+	if (in) {
+		if ((format == "list") || (format == "listorder")) {
+			m->saveNextLabel = "";
+			while (in.eof() != true) {
 
-			}
-			else if(format == "sabund"){
-				
-				while (in.eof() != true) {
-					
-					input = new SAbundVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-					
-				}
+				input = new ListVector(in);
+				thisLabel = input->getLabel();
 
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
 			}
-						
-			in.close();		
+		}
+		else if (format == "shared") {
+			m->saveNextLabel = "";
+			while (in.eof() != true) {
 
-			output = new OrderVector();
-			*output = (input->getOrderVector());
-			
-			return output;
+				input = new SharedListVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
 
 		}
-		else{
-			return NULL;
+		else if (format == "rabund") {
+
+			while (in.eof() != true) {
+
+				input = new RAbundVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
 		}
+		else if (format == "order") {
+
+			while (in.eof() != true) {
+
+				input = new OrderVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
+		}
+		else if (format == "sabund") {
+
+			while (in.eof() != true) {
+
+				input = new SAbundVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+
+			}
+
+		}
+
+		in.close();
+
+		output = new OrderVector();
+		*output = (input->getOrderVector());
+
+		return output;
+
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getOrderVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
 /***********************************************************************/
 //this is used when you don't need the order vector
-vector<SharedRAbundVector*> InputData::getSharedRAbundVectors(){
-	try {
-		if(fileHandle){
-			if (format == "sharedfile")  {
-				SharedRAbundVector* SharedRAbund = new SharedRAbundVector(fileHandle);
+vector<SharedRAbundVector*> InputData::getSharedRAbundVectors() {
+	if (fileHandle) {
+		if (format == "sharedfile") {
+			SharedRAbundVector* SharedRAbund = new SharedRAbundVector(fileHandle);
+			if (SharedRAbund != NULL) {
+				return SharedRAbund->getSharedRAbundVectors();
+			}
+		}
+		else if (format == "shared") {
+			SharedList = new SharedListVector(fileHandle);
+
+			if (SharedList != NULL) {
+				return SharedList->getSharedRAbundVector();
+			}
+		}
+		File::gobble(fileHandle);
+	}
+
+	//this is created to signal to calling function that the input file is at eof
+	vector<SharedRAbundVector*> null;  null.push_back(NULL);
+	return null;
+
+}
+/***********************************************************************/
+vector<SharedRAbundVector*> InputData::getSharedRAbundVectors(string label) {
+	ifstream in;
+	string  thisLabel;
+
+	File::openInputFile(filename, in);
+	m->saveNextLabel = "";
+
+	if (in) {
+		if (format == "sharedfile") {
+			while (in.eof() != true) {
+
+				SharedRAbundVector* SharedRAbund = new SharedRAbundVector(in);
 				if (SharedRAbund != NULL) {
-					return SharedRAbund->getSharedRAbundVectors();
+					thisLabel = SharedRAbund->getLabel();
+
+					//if you are at the last label
+					if (thisLabel == label) { in.close(); return SharedRAbund->getSharedRAbundVectors(); }
+					else {
+						//so you don't loose this memory
+						vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors();
+						for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; }
+						delete SharedRAbund;
+					}
 				}
-			}else if (format == "shared") {
-				SharedList = new SharedListVector(fileHandle);
-				
+				else { break; }
+				File::gobble(in);
+
+			}
+		}
+		else if (format == "shared") {
+			while (in.eof() != true) {
+
+				SharedList = new SharedListVector(in);
+
 				if (SharedList != NULL) {
-					return SharedList->getSharedRAbundVector();
+					thisLabel = SharedList->getLabel();
+					//if you are at the last label
+					if (thisLabel == label) { in.close(); return SharedList->getSharedRAbundVector(); }
+					else {
+						//so you don't loose this memory
+						delete SharedList;
+					}
 				}
+				else { break; }
+				File::gobble(in);
+
 			}
-			m->gobble(fileHandle);
+
 		}
-				
-		//this is created to signal to calling function that the input file is at eof
-		vector<SharedRAbundVector*> null;  null.push_back(NULL);
-		return null;
-		
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedRAbundVectors");
-		exit(1);
-	}
-}
-/***********************************************************************/
-vector<SharedRAbundVector*> InputData::getSharedRAbundVectors(string label){
-	try {
-		ifstream in;
-		string  thisLabel;
-		
-		m->openInputFile(filename, in);
-		m->saveNextLabel = "";
-	
-		if(in){
-			if (format == "sharedfile")  {
-				while (in.eof() != true) {
-					
-					SharedRAbundVector* SharedRAbund = new SharedRAbundVector(in);
-					if (SharedRAbund != NULL) {
-						thisLabel = SharedRAbund->getLabel();
-					
-						//if you are at the last label
-						if (thisLabel == label) {  in.close(); return SharedRAbund->getSharedRAbundVectors();  }
-						else {
-							//so you don't loose this memory
-							vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors(); 
-							for (int i = 0; i < lookup.size(); i++) {  delete lookup[i];  }
-							delete SharedRAbund;
-						}
-					}else{  break;  }
-					m->gobble(in);
-					
-				}
-			}else if (format == "shared") {
-				while (in.eof() != true) {
-					
-					SharedList = new SharedListVector(in);
-					
-					if (SharedList != NULL) {
-						thisLabel = SharedList->getLabel();
-						//if you are at the last label
-						if (thisLabel == label) {  in.close(); return SharedList->getSharedRAbundVector();  }
-						else {
-							//so you don't loose this memory
-							delete SharedList;
-						}
-					}else{  break;  }
-					m->gobble(in);
-					
-				}
-			
-			}
-		}
-				
-		//this is created to signal to calling function that the input file is at eof
-		vector<SharedRAbundVector*> null;  null.push_back(NULL);
-		in.close();
-		return null;
-	
-	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedRAbundVectors");
-		exit(1);
-	}
+
+	//this is created to signal to calling function that the input file is at eof
+	vector<SharedRAbundVector*> null;  null.push_back(NULL);
+	in.close();
+	return null;
+
 }
 
 /***********************************************************************/
 //this is used when you don't need the order vector
-vector<SharedRAbundFloatVector*> InputData::getSharedRAbundFloatVectors(){
-	try {
-		if(fileHandle){
-			if (format == "relabund")  {
-				SharedRAbundFloatVector* SharedRelAbund = new SharedRAbundFloatVector(fileHandle);
+vector<SharedRAbundFloatVector*> InputData::getSharedRAbundFloatVectors() {
+	if (fileHandle) {
+		if (format == "relabund") {
+			SharedRAbundFloatVector* SharedRelAbund = new SharedRAbundFloatVector(fileHandle);
+			if (SharedRelAbund != NULL) {
+				return SharedRelAbund->getSharedRAbundFloatVectors();
+			}
+		}
+		else if (format == "sharedfile") {
+			SharedRAbundVector* SharedRAbund = new SharedRAbundVector(fileHandle);
+			if (SharedRAbund != NULL) {
+				vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors();
+				vector<SharedRAbundFloatVector*> lookupFloat = SharedRAbund->getSharedRAbundFloatVectors(lookup);
+				for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; } lookup.clear();
+				return lookupFloat;
+			}
+
+		}
+		File::gobble(fileHandle);
+	}
+
+	//this is created to signal to calling function that the input file is at eof
+	vector<SharedRAbundFloatVector*> null;  null.push_back(NULL);
+	return null;
+
+}
+/***********************************************************************/
+vector<SharedRAbundFloatVector*> InputData::getSharedRAbundFloatVectors(string label) {
+	ifstream in;
+	string  thisLabel;
+
+	File::openInputFile(filename, in);
+	m->saveNextLabel = "";
+
+	if (in) {
+		if (format == "relabund") {
+			while (in.eof() != true) {
+
+				SharedRAbundFloatVector* SharedRelAbund = new SharedRAbundFloatVector(in);
 				if (SharedRelAbund != NULL) {
-					return SharedRelAbund->getSharedRAbundFloatVectors();
+					thisLabel = SharedRelAbund->getLabel();
+					//if you are at the last label
+					if (thisLabel == label) { in.close(); return SharedRelAbund->getSharedRAbundFloatVectors(); }
+					else {
+						//so you don't loose this memory
+						vector<SharedRAbundFloatVector*> lookup = SharedRelAbund->getSharedRAbundFloatVectors();
+						for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; }
+						delete SharedRelAbund;
+					}
 				}
-			}else if (format == "sharedfile")  {
-				SharedRAbundVector* SharedRAbund = new SharedRAbundVector(fileHandle);
+				else { break; }
+				File::gobble(in);
+			}
+		}
+		else if (format == "sharedfile") {
+			while (in.eof() != true) {
+
+				SharedRAbundVector* SharedRAbund = new SharedRAbundVector(in);
 				if (SharedRAbund != NULL) {
-					vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors(); 
-					vector<SharedRAbundFloatVector*> lookupFloat = SharedRAbund->getSharedRAbundFloatVectors(lookup); 
-					for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; } lookup.clear();
-					return lookupFloat;  
+					thisLabel = SharedRAbund->getLabel();
+
+					//if you are at the last label
+					if (thisLabel == label) {
+						in.close();
+						vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors();
+						vector<SharedRAbundFloatVector*> lookupFloat = SharedRAbund->getSharedRAbundFloatVectors(lookup);
+						for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; } lookup.clear();
+						return lookupFloat;
+					}
+					else {
+						//so you don't loose this memory
+						vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors();
+						for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; } lookup.clear();
+						delete SharedRAbund;
+					}
 				}
-						
+				else { break; }
+				File::gobble(in);
 			}
-			m->gobble(fileHandle);
 		}
-				
-		//this is created to signal to calling function that the input file is at eof
-		vector<SharedRAbundFloatVector*> null;  null.push_back(NULL);
-		return null;
-		
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedRAbundFloatVectors");
-		exit(1);
+
+
+	//this is created to signal to calling function that the input file is at eof
+	vector<SharedRAbundFloatVector*> null;  null.push_back(NULL);
+	in.close();
+	return null;
+
+}
+/***********************************************************************/
+
+SAbundVector* InputData::getSAbundVector() {
+	if (fileHandle) {
+		if (format == "list") {
+			input = new ListVector(fileHandle);
+		}
+		else if (format == "shared") {
+			input = new SharedListVector(fileHandle);
+		}
+		else if (format == "rabund") {
+			input = new RAbundVector(fileHandle);
+		}
+		else if (format == "order") {
+			input = new OrderVector(fileHandle);
+		}
+		else if (format == "sabund") {
+			input = new SAbundVector(fileHandle);
+		}
+		File::gobble(fileHandle);
+
+		sabund = new SAbundVector();
+		*sabund = (input->getSAbundVector());
+
+		return sabund;
+	}
+	else {
+		return NULL;
 	}
 }
 /***********************************************************************/
-vector<SharedRAbundFloatVector*> InputData::getSharedRAbundFloatVectors(string label){
-	try {
-		ifstream in;
-		string  thisLabel;
-		
-		m->openInputFile(filename, in);
-		m->saveNextLabel = "";
-		
-		if(in){
-			if (format == "relabund")  {
-				while (in.eof() != true) {
-					
-					SharedRAbundFloatVector* SharedRelAbund = new SharedRAbundFloatVector(in);
-					if (SharedRelAbund != NULL) {
-						thisLabel = SharedRelAbund->getLabel();
-						//if you are at the last label
-						if (thisLabel == label) {  in.close(); return SharedRelAbund->getSharedRAbundFloatVectors();  }
-						else {
-							//so you don't loose this memory
-							vector<SharedRAbundFloatVector*> lookup = SharedRelAbund->getSharedRAbundFloatVectors(); 
-							for (int i = 0; i < lookup.size(); i++) {  delete lookup[i];  }
-							delete SharedRelAbund;
-						}
-					}else{  break;  }
-					m->gobble(in);
-				}
-			}else if (format == "sharedfile")  {
-				while (in.eof() != true) {
-					
-					SharedRAbundVector* SharedRAbund = new SharedRAbundVector(in);
-					if (SharedRAbund != NULL) {
-						thisLabel = SharedRAbund->getLabel();
-						
-						//if you are at the last label
-						if (thisLabel == label) {  
-							in.close(); 
-							vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors(); 
-							vector<SharedRAbundFloatVector*> lookupFloat = SharedRAbund->getSharedRAbundFloatVectors(lookup); 
-							for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; } lookup.clear();
-							return lookupFloat;  
-						}else {
-							//so you don't loose this memory
-							vector<SharedRAbundVector*> lookup = SharedRAbund->getSharedRAbundVectors(); 
-							for (int i = 0; i < lookup.size(); i++) { delete lookup[i]; } lookup.clear();
-							delete SharedRAbund;
-						}
-					}else{  break;  }
-					m->gobble(in);
-				}
-			}	
+SAbundVector* InputData::getSAbundVector(string label) {
+
+	ifstream in;
+	string  thisLabel;
+	File::openInputFile(filename, in);
+
+	if (in) {
+		if (format == "list") {
+			m->saveNextLabel = "";
+			while (in.eof() != true) {
+
+				input = new ListVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
 		}
-		
-				
-		//this is created to signal to calling function that the input file is at eof
-		vector<SharedRAbundFloatVector*> null;  null.push_back(NULL);
+		else if (format == "shared") {
+			m->saveNextLabel = "";
+			while (in.eof() != true) {
+
+				input = new SharedListVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
+		}
+		else if (format == "rabund") {
+
+			while (in.eof() != true) {
+
+				input = new RAbundVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
+		}
+		else if (format == "order") {
+
+			while (in.eof() != true) {
+
+				input = new OrderVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
+		}
+		else if (format == "sabund") {
+
+			while (in.eof() != true) {
+
+				input = new SAbundVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+
+			}
+
+		}
+
 		in.close();
-		return null;
-	
+
+		sabund = new SAbundVector();
+		*sabund = (input->getSAbundVector());
+
+		return sabund;
+
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSharedRAbundFloatVectors");
-		exit(1);
-	}
-}
-/***********************************************************************/
-
-SAbundVector* InputData::getSAbundVector(){
-	try {
-		if(fileHandle){
-			if (format == "list") {
-				input = new ListVector(fileHandle);
-			}
-			else if (format == "shared")  {
-				input = new SharedListVector(fileHandle);
-			}
-			else if(format == "rabund"){
-				input = new RAbundVector(fileHandle);
-			}
-			else if(format == "order"){			
-				input = new OrderVector(fileHandle);
-			}
-			else if(format == "sabund"){
-				input = new SAbundVector(fileHandle);
-			}					
-			m->gobble(fileHandle);
-
-			sabund = new SAbundVector();
-			*sabund = (input->getSAbundVector());
-
-			return sabund;
-		}
-		else{
-			return NULL;
-		}
-	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSAbundVector");
-		exit(1);
-	}
-}
-/***********************************************************************/
-SAbundVector* InputData::getSAbundVector(string label){
-	try {
-	
-		ifstream in;
-		string  thisLabel;
-		m->openInputFile(filename, in);
-		
-		if(in){
-			if (format == "list") {
-                m->saveNextLabel = "";
-				while (in.eof() != true) {
-					
-					input = new ListVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-			}
-			else if (format == "shared")  {
-				m->saveNextLabel = "";
-				while (in.eof() != true) {
-					
-					input = new SharedListVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-
-			}
-			else if(format == "rabund"){
-				
-				while (in.eof() != true) {
-					
-					input = new RAbundVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-
-			}
-			else if(format == "order"){			
-				
-				while (in.eof() != true) {
-					
-					input = new OrderVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-
-			}
-			else if(format == "sabund"){
-				
-				while (in.eof() != true) {
-					
-					input = new SAbundVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-					
-				}
-
-			}
-			
-			in.close();		
-
-			sabund = new SAbundVector();
-			*sabund = (input->getSAbundVector());
-
-			return sabund;
-
-		}
-		else{
-			return NULL;
-		}
-	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getSAbundVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 
 /***********************************************************************/
-RAbundVector* InputData::getRAbundVector(){
-	try {
-		if(fileHandle){
-			if (format == "list") {
-				input = new ListVector(fileHandle);
-			}
-			else if (format == "shared")  {
-				input = new SharedListVector(fileHandle);
-			}
-			else if(format == "rabund"){
-				input = new RAbundVector(fileHandle);
-			}
-			else if(format == "order"){			
-				input = new OrderVector(fileHandle);
-			}
-			else if(format == "sabund"){
-				input = new SAbundVector(fileHandle);
-			}
-			
-			m->gobble(fileHandle);
-
-			rabund = new RAbundVector();
-			*rabund = (input->getRAbundVector());
-
-			return rabund;
+RAbundVector* InputData::getRAbundVector() {
+	if (fileHandle) {
+		if (format == "list") {
+			input = new ListVector(fileHandle);
 		}
-		else{
-			return NULL;
+		else if (format == "shared") {
+			input = new SharedListVector(fileHandle);
 		}
+		else if (format == "rabund") {
+			input = new RAbundVector(fileHandle);
+		}
+		else if (format == "order") {
+			input = new OrderVector(fileHandle);
+		}
+		else if (format == "sabund") {
+			input = new SAbundVector(fileHandle);
+		}
+
+		File::gobble(fileHandle);
+
+		rabund = new RAbundVector();
+		*rabund = (input->getRAbundVector());
+
+		return rabund;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getRAbundVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 /***********************************************************************/
-RAbundVector* InputData::getRAbundVector(string label){
-	try {
-	
-		ifstream in;
-		string  thisLabel;
-		m->openInputFile(filename, in);
-		
-		if(in){
-			if (format == "list") {
-                m->saveNextLabel = "";
-			
-				while (in.eof() != true) {
-					
-					input = new ListVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
+RAbundVector* InputData::getRAbundVector(string label) {
+
+	ifstream in;
+	string  thisLabel;
+	File::openInputFile(filename, in);
+
+	if (in) {
+		if (format == "list") {
+			m->saveNextLabel = "";
+
+			while (in.eof() != true) {
+
+				input = new ListVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
 			}
-			else if (format == "shared")  {
-                m->saveNextLabel = "";
-				
-				while (in.eof() != true) {
-					
-					input = new SharedListVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-
-			}
-			else if(format == "rabund"){
-				
-				while (in.eof() != true) {
-					
-					input = new RAbundVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-
-			}
-			else if(format == "order"){			
-				
-				while (in.eof() != true) {
-					
-					input = new OrderVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-				}
-
-			}
-			else if(format == "sabund"){
-				
-				while (in.eof() != true) {
-					
-					input = new SAbundVector(in);
-					thisLabel = input->getLabel();
-					
-					//if you are at the last label
-					if (thisLabel == label) {  break;  }
-					//so you don't loose this memory
-					else {	delete input;	}
-					m->gobble(in);
-					
-				}
-
-			}			
-			
-			
-			in.close();		
-
-			rabund = new RAbundVector();
-			*rabund = (input->getRAbundVector());
-
-			return rabund;
 		}
-		else{
-			return NULL;
+		else if (format == "shared") {
+			m->saveNextLabel = "";
+
+			while (in.eof() != true) {
+
+				input = new SharedListVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
 		}
+		else if (format == "rabund") {
+
+			while (in.eof() != true) {
+
+				input = new RAbundVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
+		}
+		else if (format == "order") {
+
+			while (in.eof() != true) {
+
+				input = new OrderVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+			}
+
+		}
+		else if (format == "sabund") {
+
+			while (in.eof() != true) {
+
+				input = new SAbundVector(in);
+				thisLabel = input->getLabel();
+
+				//if you are at the last label
+				if (thisLabel == label) { break; }
+				//so you don't loose this memory
+				else { delete input; }
+				File::gobble(in);
+
+			}
+
+		}
+
+
+		in.close();
+
+		rabund = new RAbundVector();
+		*rabund = (input->getRAbundVector());
+
+		return rabund;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "InputData", "getRAbundVector");
-		exit(1);
+	else {
+		return NULL;
 	}
 }
 

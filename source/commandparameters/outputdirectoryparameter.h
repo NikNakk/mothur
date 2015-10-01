@@ -5,10 +5,10 @@
 
 class OutputDirectoryParameter : public DirectoryParameter {
 public:
-	explicit OutputDirectoryParameter(string name = "outputdir", bool required = false, bool important = false,
+	explicit OutputDirectoryParameter(Settings& settings, string name = "outputdir", bool required = false, bool important = false,
 		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		DirectoryParameter(name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual void validateAndSet(string value);
+		DirectoryParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
+	virtual void validateAndSet(string value);Y
 private:
 	string value;
 };

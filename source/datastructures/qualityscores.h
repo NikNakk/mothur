@@ -10,11 +10,10 @@
  *
  */
 
-//DataStructure for a quality file.
+ //DataStructure for a quality file.
 
 
 #include "mothur.h"
-#include "mothurout.h"
 #include "sequence.hpp"
 
 /**************************************************************************************************/
@@ -22,18 +21,18 @@
 class QualityScores {
 public:
 	QualityScores();
-    ~QualityScores() {}
-    QualityScores(string n, vector<int> qs);
+	~QualityScores() {}
+	QualityScores(string n, vector<int> qs);
 	QualityScores(ifstream&);
-    #ifdef USE_BOOST
-    QualityScores(boost::iostreams::filtering_istream&);
-    #endif
-    int read(ifstream&);
+#ifdef USE_BOOST
+	QualityScores(boost::iostreams::filtering_istream&);
+#endif
+	int read(ifstream&);
 	string getName();
-	int getLength(){    return (int)qScores.size();  }
+	int getLength() { return (int)qScores.size(); }
 	vector<int> getQualityScores() { return qScores; }
 	void printQScores(ofstream&);
-    void printQScores(ostream&);
+	void printQScores(ostream&);
 	void trimQScores(int, int);
 	void flipQScores();
 	bool stripQualThreshold(Sequence&, double);
@@ -43,23 +42,23 @@ public:
 	void updateQScoreErrorMap(map<char, vector<int> >&, string, int, int, int);
 	void updateForwardMap(vector<vector<int> >&, int, int, int);
 	void updateReverseMap(vector<vector<int> >&, int, int, int);
-    void setName(string n); 
-    void setScores(vector<int> qs) { qScores = qs; seqLength = qScores.size(); }
-    vector<int> getScores() { return qScores; }
-	
+	void setName(string n);
+	void setScores(vector<int> qs) { qScores = qs; seqLength = qScores.size(); }
+	vector<int> getScores() { return qScores; }
+
 private:
-	
+
 	double calculateAverage(bool);
 	MothurOut* m;
 	vector<int> qScores;
-	
+
 	string seqName;
 	int seqLength;
-    
-    string getSequenceName(ifstream&);
-    #ifdef USE_BOOST
-    string getSequenceName(boost::iostreams::filtering_istream&);
-    #endif
+
+	string getSequenceName(ifstream&);
+#ifdef USE_BOOST
+	string getSequenceName(boost::iostreams::filtering_istream&);
+#endif
 };
 
 /**************************************************************************************************/

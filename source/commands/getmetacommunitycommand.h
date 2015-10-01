@@ -61,48 +61,48 @@
 
 class GetMetaCommunityCommand : public Command {
 public:
-    GetMetaCommunityCommand(string);
-    GetMetaCommunityCommand();
-    ~GetMetaCommunityCommand(){}
-    
-    vector<string> setParameters();
-    string getCommandName()			{ return "get.communitytype";		}
-    string getCommandCategory()		{ return "OTU-Based Approaches";         }
-    
-    string getOutputPattern(string);
-    
+	GetMetaCommunityCommand(Settings& settings, string option);
+	GetMetaCommunityCommand(Settings& settings);
+	~GetMetaCommunityCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "get.communitytype"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getOutputPattern(string);
+
 	string getHelpString();
-    string getCitation() { return "Holmes I, Harris K, Quince C (2012) Dirichlet Multinomial Mixtures: Generative Models for Microbial Metagenomics. PLoS ONE 7(2): e30126. doi:10.1371/journal.pone.0030126 http://www.mothur.org/wiki/get.communitytype"; }
-    string getDescription()		{ return "Assigns samples to bins using a Dirichlet multinomial mixture model"; }
-    
-    int execute();
-    void help() { m->mothurOut(getHelpString()); }
-    
+	string getCitation() { return "Holmes I, Harris K, Quince C (2012) Dirichlet Multinomial Mixtures: Generative Models for Microbial Metagenomics. PLoS ONE 7(2): e30126. doi:10.1371/journal.pone.0030126 http://www.mothur.org/wiki/get.communitytype"; }
+	string getDescription() { return "Assigns samples to bins using a Dirichlet multinomial mixture model"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-    bool abort, allLines, subsample;
-    string outputDir;
-    vector<string> outputNames;
-    string sharedfile, method, calc;
-    int minpartitions, maxpartitions, optimizegap, processors, iters, subsampleSize;
-    vector<string> Groups, Estimators;
-    set<string> labels;
-    
-    vector<vector<double> > generateDistanceMatrix(vector<SharedRAbundVector*>& lookup);
-    int driver(vector<SharedRAbundVector*> thisLookup, vector< vector<seqDist> >& calcDists, Calculator*);
-    int processDriver(vector<SharedRAbundVector*>&, vector<int>&, string, vector<string>, vector<string>, vector<string>, int);
-    int createProcesses(vector<SharedRAbundVector*>&);
-    vector<double> generateDesignFile(int, map<string,string>);
-    int generateSummaryFile(int, map<string,string>, vector<double>);
+	bool abort, allLines, subsample;
+	string outputDir;
+	vector<string> outputNames;
+	string sharedfile, method, calc;
+	int minpartitions, maxpartitions, optimizegap, processors, iters, subsampleSize;
+	vector<string> Groups, Estimators;
+	set<string> labels;
+
+	vector<vector<double> > generateDistanceMatrix(vector<SharedRAbundVector*>& lookup);
+	int driver(vector<SharedRAbundVector*> thisLookup, vector< vector<seqDist> >& calcDists, Calculator*);
+	int processDriver(vector<SharedRAbundVector*>&, vector<int>&, string, vector<string>, vector<string>, vector<string>, int);
+	int createProcesses(vector<SharedRAbundVector*>&);
+	vector<double> generateDesignFile(int, map<string, string>);
+	int generateSummaryFile(int, map<string, string>, vector<double>);
 
 };
 
 /**************************************************************************************************/
 struct summaryData {
-    
-    string name;
-    double refMean, difference;
-    vector<double> partMean, partLCI, partUCI;
-    
+
+	string name;
+	double refMean, difference;
+	vector<double> partMean, partLCI, partUCI;
+
 };
 
 #endif

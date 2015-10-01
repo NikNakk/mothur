@@ -28,53 +28,54 @@
 
 // Levels for logging, made so that it would be easy to change, remove, add levels -- KjellKod
 struct LEVELS {
-   // force internal copy of the const char*. This is a simple safeguard for when g3log is used in a
-   // "dynamic, runtime loading of shared libraries"
+	// force internal copy of the const char*. This is a simple safeguard for when g3log is used in a
+	// "dynamic, runtime loading of shared libraries"
 
-   LEVELS(const LEVELS& other): value(other.value), text(other.text.c_str()) {}
-   LEVELS(int id, const char* idtext) : value(id), text(idtext) {}
+	LEVELS(const LEVELS& other) : value(other.value), text(other.text.c_str()) {}
+	LEVELS(int id, const char* idtext) : value(id), text(idtext) {}
 
-   bool operator==(const LEVELS& rhs)  const {
-      return (value == rhs.value && text == rhs.text);
-   }
+	bool operator==(const LEVELS& rhs)  const {
+		return (value == rhs.value && text == rhs.text);
+	}
 
-   bool operator!=(const LEVELS& rhs) const {
-      return (value != rhs.value || text != rhs.text);
-   }
+	bool operator!=(const LEVELS& rhs) const {
+		return (value != rhs.value || text != rhs.text);
+	}
 
-   friend void swap(LEVELS& first, LEVELS& second) {
-      using std::swap;
-      swap(first.value, second.value);
-      swap(first.text, second.text);
-   }
-
-
-   LEVELS& operator=(LEVELS other) {
-      swap(*this, other);
-      return *this;
-   }
+	friend void swap(LEVELS& first, LEVELS& second) {
+		using std::swap;
+		swap(first.value, second.value);
+		swap(first.text, second.text);
+	}
 
 
-   int value;
-   std::string text;
+	LEVELS& operator=(LEVELS other) {
+		swap(*this, other);
+		return *this;
+	}
+
+
+	int value;
+	std::string text;
 };
 
 
 
 namespace g3 {
-   static const int kDebugVaulue = 0;
+	static const int kDebugVaulue = 0;
 }
 
 #if (defined(CHANGE_G3LOG_DEBUG_TO_DBUG))
-const LEVELS DBUG {g3::kDebugVaulue, {"DEBUG"}},
+const LEVELS DBUG{ g3::kDebugVaulue, {"DEBUG"} },
 #else
-const LEVELS DEBUG {g3::kDebugVaulue, {"DEBUG"}},
+const LEVELS DEBUG{ g3::kDebugVaulue, {"DEBUG"} },
 #endif
-      SCREENONLY { g3::kDebugVaulue + 1,{ "SCREENONLY" } },
-	  FILEONLY{ SCREENONLY.value + 1,{ "FILEONLY" } },
-      INFO {INFO.value + 1, {"INFO"}},
-      WARNING {INFO.value + 1, {"WARNING"}},
-	  LOGERROR{ WARNING.value + 1, {"ERROR"} },
+SCREENONLY{ g3::kDebugVaulue + 1,{ "SCREENONLY" } },
+FILEONLY{ SCREENONLY.value + 1,{ "FILEONLY" } },
+INFO{ INFO.value + 1, {"INFO"} },
+WARNING{ INFO.value + 1, {"WARNING"} },
+LOGERROR{ WARNING.value + 1, {"ERROR"} },
+LOGWAIT{ LOGERROR.value + 1, {"WAIT"} },
 
 
 // Insert here *any* extra logging levels that is needed. You can do so in your own source file
@@ -95,29 +96,29 @@ const LEVELS DEBUG {g3::kDebugVaulue, {"DEBUG"}},
 
 // 1) Remember to update the FATAL initialization below
 // 2) Remember to update the initialization of "g3loglevels.cpp/g_log_level_status"
-      FATAL {500, {"FATAL"}};
+FATAL{ 500, {"FATAL"} };
 
 namespace g3 {
-   namespace internal {
-      const LEVELS CONTRACT {1000, {"CONTRACT"}},
-            FATAL_SIGNAL {1001, {"FATAL_SIGNAL"}},
-            FATAL_EXCEPTION {1002, {"FATAL_EXCEPTION"}};
+	namespace internal {
+		const LEVELS CONTRACT{ 1000, {"CONTRACT"} },
+			FATAL_SIGNAL{ 1001, {"FATAL_SIGNAL"} },
+			FATAL_EXCEPTION{ 1002, {"FATAL_EXCEPTION"} };
 
-      /// helper function to tell the logger if a log message was fatal. If it is it will force
-      /// a shutdown after all log entries are saved to the sinks
-      bool wasFatal(const LEVELS& level);
-   }
+		/// helper function to tell the logger if a log message was fatal. If it is it will force
+		/// a shutdown after all log entries are saved to the sinks
+		bool wasFatal(const LEVELS& level);
+	}
 
 #ifdef G3_DYNAMIC_LOGGING
-   // Only safe if done at initialization in a single-thread context
-   namespace only_change_at_initialization {
-      // Enable/Disable a log level {DEBUG,INFO,WARNING,FATAL}
-      void setLogLevel(LEVELS level, bool enabled_status);
-      std::string printLevels();
-      void reset();
+	// Only safe if done at initialization in a single-thread context
+	namespace only_change_at_initialization {
+		// Enable/Disable a log level {DEBUG,INFO,WARNING,FATAL}
+		void setLogLevel(LEVELS level, bool enabled_status);
+		std::string printLevels();
+		void reset();
 
-   } // only_change_at_initialization
+	} // only_change_at_initialization
 #endif
-   bool logLevel(LEVELS level);
+	bool logLevel(LEVELS level);
 } // g3
 

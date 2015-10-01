@@ -15,28 +15,28 @@
 #include "sharedsabundvector.h"
 #include "sharedrabundfloatvector.h"
 #include "rabundvector.hpp"
-//#include "groupmap.h"
+ //#include "groupmap.h"
 
-/*  DataStructure for a shared file.
-	This class is a child to datavector.  It represents OTU information at a certain distance. 
-	It is similiar to an rabundvector except each member of data knows which group it belongs to.
-	Each member of the internal container "data" is a struct of type individual. 
-	An individual which knows the OTU from which it came, 
-	the group it is in and its abundance.  */
+ /*  DataStructure for a shared file.
+	 This class is a child to datavector.  It represents OTU information at a certain distance.
+	 It is similiar to an rabundvector except each member of data knows which group it belongs to.
+	 Each member of the internal container "data" is a struct of type individual.
+	 An individual which knows the OTU from which it came,
+	 the group it is in and its abundance.  */
 
 
 class SharedRAbundVector : public DataVector {
-	
+
 public:
 	SharedRAbundVector();
 	SharedRAbundVector(int);
 	//SharedRAbundVector(string, vector<int>);
-	SharedRAbundVector(const SharedRAbundVector& bv) : DataVector(bv), data(bv.data), maxRank(bv.maxRank), numBins(bv.numBins), numSeqs(bv.numSeqs), group(bv.group), index(bv.index){};
-    SharedRAbundVector(ifstream&);
+	SharedRAbundVector(const SharedRAbundVector& bv) : DataVector(bv), data(bv.data), maxRank(bv.maxRank), numBins(bv.numBins), numSeqs(bv.numSeqs), group(bv.group), index(bv.index) {};
+	SharedRAbundVector(ifstream&);
 	~SharedRAbundVector();
 
-	int getNumBins();		
-	int getNumSeqs();							
+	int getNumBins();
+	int getNumSeqs();
 	int getMaxRank();
 	string getGroup();
 	void setGroup(string);
@@ -50,7 +50,7 @@ public:
 	individual get(int);
 	vector <individual> getData();
 	int getAbundance(int);
-    vector<int> getAbundances();
+	vector<int> getAbundances();
 	int numNZ();
 	void sortD();  //Sorts the data in descending order.
 	void push_front(int, int, string); //abundance, otu, groupname
@@ -62,23 +62,23 @@ public:
 	void clear();
 	vector<individual>::reverse_iterator rbegin();
 	vector<individual>::reverse_iterator rend();
-	
+
 	void print(ostream&);
 	void printHeaders(ostream&);
-		
+
 	RAbundVector getRAbundVector();
 	RAbundVector getRAbundVector2();
 	SAbundVector getSAbundVector();
-	OrderVector getOrderVector(map<string,int>*);
+	OrderVector getOrderVector(map<string, int>*);
 	SharedOrderVector getSharedOrderVector();
 	SharedSAbundVector getSharedSAbundVector();
 	SharedRAbundVector getSharedRAbundVector();
 	vector<SharedRAbundVector*> getSharedRAbundVectors();
 	vector<SharedRAbundFloatVector*> getSharedRAbundFloatVectors(vector<SharedRAbundVector*>);
-	
+
 private:
-    int eliminateZeroOTUS();
-	vector<individual>  data; 
+	int eliminateZeroOTUS();
+	vector<individual>  data;
 	vector<SharedRAbundVector*> lookup;
 	//GlobalData* globaldata;
 	//GroupMap* groupmap;
@@ -86,7 +86,7 @@ private:
 	int numBins;
 	int numSeqs;
 	string group;
-	int index;	
+	int index;
 };
 
 

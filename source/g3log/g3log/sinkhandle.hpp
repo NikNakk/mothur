@@ -13,43 +13,70 @@
 #include <memory>
 #include <functional>
 #include <type_traits>
+#include <mutex>
+#include <condition_variable>
+
 
 namespace g3 {
 
-   // The Sinkhandle is the client's access point to the specific sink instance.
-   // Only through the Sinkhandle can, and should, the real sink's specific API
-   // be called.
-   //
-   // The real sink will be owned by the g3logger. If the real sink is deleted
-   // calls to sink's API through the SinkHandle will return an exception embedded
-   // in the resulting future. Ref: SinkHandle::call
-   template<class T>
-   class SinkHandle {
-      std::weak_ptr<internal::Sink<T>> _sink;
+	// The Sinkhandle is the client's access point to the specific sink instance.
+	// Only through the Sinkhandle can, and should, the real sink's specific API
+	// be called.
+	//
+	// The real sink will be owned by the g3logger. If the real sink is deleted
+	// calls to sink's API through the SinkHandle will return an exception embedded
+	// in the resulting future. Ref: SinkHandle::call
+	template<class T>
+	class SinkHandle {
+		std::weak_ptr<internal::Sink<T>> _sink;
+		std::mutex m_;
+		std::condition_variable cond_;
 
-   public:
-      SinkHandle(std::shared_ptr<internal::Sink<T>> sink)
-         : _sink(sink) {}
+	public:
+		SinkHandle(std::shared_ptr<internal::Sink<T>> sink)
+			: _sink(sink) {}
 
-      ~SinkHandle() {}
+		~SinkHandle() {}
 
+		// Asynchronous call to the real sink. If the real sink is already deleted
+		// the returned future will contain a bad_weak_ptr exception instead of the
+		// call result.
+		template<typename AsyncCall, typename... Args>
+		auto call(AsyncCall func, Args &&... args) -> std::future<typename std::result_of<decltype(func)(T, Args...)>::type> {
+			try {
+				std::shared_ptr<internal::Sink<T>> sink(_sink);
+				return sink->async(func, std::forward<Args>(args)...);
+			}
+			catch (const std::bad_weak_ptr &e) {
+				typedef typename std::result_of<decltype(func)(T, Args...)>::type PromiseType;
+				std::promise<PromiseType> promise;
+				promise.set_exception(std::make_exception_ptr(e));
+				return std::move(promise.get_future());
+			}
+		}
 
-      // Asynchronous call to the real sink. If the real sink is already deleted
-      // the returned future will contain a bad_weak_ptr exception instead of the
-      // call result.
-      template<typename AsyncCall, typename... Args>
-      auto call(AsyncCall func , Args &&... args) -> std::future<typename std::result_of<decltype(func)(T, Args...)>::type> {
-         try {
-            std::shared_ptr<internal::Sink<T>> sink(_sink);
-            return sink->async(func, std::forward<Args>(args)...);
-         } catch (const std::bad_weak_ptr &e) {
-            typedef typename std::result_of<decltype(func)(T, Args...)>::type PromiseType;
-            std::promise<PromiseType> promise;
-            promise.set_exception(std::make_exception_ptr(e));
-            return std::move(promise.get_future());
-         }
-      }
-   };
+		void cinWaiting() {
+			std::unique_lock<std::mutex> lock(m_);
+			cond_.wait(lock);
+			waitUntilClear();
+		}
+
+		void notifyCinWaiting() {
+			std::unique_lock<std::mutex> lock(m_);
+			cond_.notify_one();
+		}
+
+		void waitUntilClear() {
+			try {
+				std::shared_ptr<internal::Sink<T>> sink(_sink);
+				sink->_bg->waitUntilClear();
+			}
+			catch (const std::bad_weak_ptr&) {
+				return;
+			}
+		}
+
+	};
 }
 
 

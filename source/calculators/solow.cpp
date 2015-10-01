@@ -26,7 +26,7 @@ EstOutput Solow::getValues(SAbundVector* rank){
 		return data;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "Solow", "getValues");
+		LOG(FATAL) << e.what() << " in Solow, getValues";
 		exit(1);
 	}
 }

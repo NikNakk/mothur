@@ -18,33 +18,33 @@
 
 class ListOtuLabelsCommand : public Command {
 public:
-    ListOtuLabelsCommand(string);
-    ListOtuLabelsCommand();
-    ~ListOtuLabelsCommand(){}
-    
-    vector<string> setParameters();
-    string getCommandName()			{ return "list.otulabels";          }
-    string getCommandCategory()		{ return "OTU-Based Approaches";	} 
-    //commmand category choices: Sequence Processing, OTU-Based Approaches, Hypothesis Testing, Phylotype Analysis, General, Clustering and Hidden
-    
-	string getHelpString();	
-    string getOutputPattern(string);	
-    string getCitation() { return "http://www.mothur.org/wiki/List.otulabels"; }
-    string getDescription()		{ return "lists otu labels from shared or relabund file. Can be used by get.otulabels with output from classify.otu, otu.association, or corr.axes to select specific otus."; }
-    
-    int execute(); 
-    void help() { m->mothurOut(getHelpString()); }	
-    
+	ListOtuLabelsCommand(Settings& settings, string option);
+	ListOtuLabelsCommand(Settings& settings);
+	~ListOtuLabelsCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "list.otulabels"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+	//commmand category choices: Sequence Processing, OTU-Based Approaches, Hypothesis Testing, Phylotype Analysis, General, Clustering and Hidden
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/List.otulabels"; }
+	string getDescription() { return "lists otu labels from shared or relabund file. Can be used by get.otulabels with output from classify.otu, otu.association, or corr.axes to select specific otus."; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-    bool abort, allLines;
-    string outputDir, sharedfile, relabundfile, label, inputFileName, format, listfile;
-    vector<string> outputNames;
-    vector<string> Groups;
-    set<string> labels;
-    
-    int createList(vector<SharedRAbundFloatVector*>&);
-    int createList(vector<SharedRAbundVector*>&);
-    int createList(ListVector*&);
+	bool abort, allLines;
+	string outputDir, sharedfile, relabundfile, label, inputFileName, format, listfile;
+	vector<string> outputNames;
+	vector<string> Groups;
+	set<string> labels;
+
+	int createList(vector<SharedRAbundFloatVector*>&);
+	int createList(vector<SharedRAbundVector*>&);
+	int createList(ListVector*&);
 
 };
 

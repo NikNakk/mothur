@@ -12,10 +12,10 @@
 
 #include "taxonomynode.h"
 
-/**************************************************************************************************/
+ /**************************************************************************************************/
 
 struct thetaAlign {
-	thetaAlign() : A(0), T(0), G(0), C(0), gap(0){}
+	thetaAlign() : A(0), T(0), G(0), C(0), gap(0) {}
 	unsigned int A;
 	unsigned int T;
 	unsigned int G;
@@ -26,17 +26,17 @@ struct thetaAlign {
 /**************************************************************************************************/
 
 class AlignNode : public TaxonomyNode {
-	
+
 public:
 	AlignNode(string, int);
 	int loadSequence(string&);
 	int checkTheta();
-    void printTheta();
+	void printTheta();
 	double getPxGivenkj_D_j(string& query);	//P(x | k_j, D, j)
 	double getSimToConsensus(string& query);
-	vector<thetaAlign> getTheta()	{	return theta;	}
+	vector<thetaAlign> getTheta() { return theta; }
 	int addThetas(vector<thetaAlign>, int);
-	
+
 private:
 	vector<thetaAlign> theta;
 	vector<unsigned int> columnCounts;

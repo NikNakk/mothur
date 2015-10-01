@@ -15,27 +15,27 @@
 #include "chimera.h"
 
 
-/***********************************************************/
+ /***********************************************************/
 
 class ChimeraBellerophonCommand : public Command {
 public:
-	ChimeraBellerophonCommand(string);
-	ChimeraBellerophonCommand();
-	~ChimeraBellerophonCommand(){}
-	
+	ChimeraBellerophonCommand(Settings& settings, string option);
+	ChimeraBellerophonCommand(Settings& settings);
+	~ChimeraBellerophonCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "chimera.bellerophon";	}
-	string getCommandCategory()		{ return "Sequence Processing"; }
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "chimera.bellerophon"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "Huber T, Faulkner G, Hugenholtz P (2004). Bellerophon: a program to detect chimeric sequences in multiple sequence alignments. Bioinformatics 20: 2317-9. \nhttp://www.mothur.org/wiki/Chimera.bellerophon"; }
-	string getDescription()		{ return "detect chimeric sequences"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-		
+	string getDescription() { return "detect chimeric sequences"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 
 	bool abort, filter, correction;

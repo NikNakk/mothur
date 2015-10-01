@@ -15,28 +15,28 @@
 
 class MantelCommand : public Command {
 public:
-	MantelCommand(string);
-	MantelCommand();
-	~MantelCommand(){}
-	
+	MantelCommand(Settings& settings, string option);
+	MantelCommand(Settings& settings);
+	~MantelCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "mantel";					}
-	string getCommandCategory()		{ return "Hypothesis Testing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "mantel"; }
+	string getCommandCategory() { return "Hypothesis Testing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "McCune B, Grace JB, Urban DL (2002). Analysis of ecological communities. MjM Software Design: Gleneden Beach, OR. \nLegendre P, Legendre L (1998). Numerical Ecology. Elsevier: New York. \nhttp://www.mothur.org/wiki/Mantel"; }
-	string getDescription()		{ return "Mantel’s test for correlation between matrices"; }
+	string getDescription() { return "Mantel’s test for correlation between matrices"; }
 
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }
-	
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-	
+
 	string phylipfile1, phylipfile2, outputDir, method;
 	bool abort;
 	int iters;
-	
+
 	vector<string> outputNames;
 };
 

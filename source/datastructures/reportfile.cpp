@@ -8,43 +8,32 @@
  */
 
 #include "mothur.h"
-#include "mothurout.h"
 #include "reportfile.h"
 
-/**************************************************************************************************/
+ /**************************************************************************************************/
 
-ReportFile::ReportFile(){
-	try {
-		m = MothurOut::getInstance();
-	}
-	catch(exception& e) {
-		m->errorOut(e, "ReportFile", "ReportFile");
-		exit(1);
-	}							
+ReportFile::ReportFile() {
+}
+catch (exception& e) {
+	LOG(FATAL) << e.what() << " in ReportFile, ReportFile";
+	exit(1);
+}
 }
 
 /**************************************************************************************************/
 
-int ReportFile::readHeaders(ifstream& repFile, string repFileName){
+int ReportFile::readHeaders(ifstream& repFile, string repFileName) {
 	try {
-		m->openInputFile(repFileName, repFile);
-		m->getline(repFile);
-        return 0;
+		File::openInputFile(repFileName, repFile);
+		File::getline(repFile);
+		return 0;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "ReportFile", "ReportFile");
-		exit(1);
-	}							
-}
 
 
-/**************************************************************************************************/
+	/**************************************************************************************************/
 
-int ReportFile::read(ifstream& repFile){
-	try {
-		
-		m = MothurOut::getInstance();
-		
+	int ReportFile::read(ifstream& repFile) {
+
 		repFile >> queryName;
 		repFile >> queryLength;
 		repFile >> templateName;
@@ -62,22 +51,17 @@ int ReportFile::read(ifstream& repFile){
 		repFile >> longestInsert;
 		repFile >> simBtwnQueryAndTemplate;
 
-		if(dummySearchScore != "nan"){
+		if (dummySearchScore != "nan") {
 			istringstream stream(dummySearchScore);
 			stream >> searchScore;
 		}
-		else{
+		else {
 			searchScore = 0;
 		}
-		
-		m->gobble(repFile);
-        return 0;
-	}
-	catch(exception& e) {
-		m->errorOut(e, "ReportFile", "ReportFile");
-		exit(1);
-	}							
-	
-}
 
-/**************************************************************************************************/
+		File::gobble(repFile);
+		return 0;
+
+	}
+
+	/**************************************************************************************************/

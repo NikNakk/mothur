@@ -1,12 +1,15 @@
-#ifndef parametertypes_h
-#define parametertypes_h
+#pragma once
 
 #include "inputtypeparameter.h"
 #include "fastafileparameter.h"
 #include "namefileparameter.h"
 #include "countfileparameter.h"
+#include "referencefileparameter.h"
 #include "multipleparameter.h"
+#include "calcparameter.h"
 #include "numberparameter.h"
+#include "integerparameter.h"
+#include "processorsparameter.h"
 #include "seedparameter.h"
 #include "booleanparameter.h"
 #include "directoryparameter.h"
@@ -14,5 +17,4 @@
 #include "inputdirectoryparameter.h"
 #include "commandparametercollection.h"
 #include "outputfileparameter.h"
-
-#endif
+#include "stringparameter.h"

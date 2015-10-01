@@ -1,6 +1,9 @@
 #include "logsinks.h"
 #include <sstream>
 #include <iostream>
+#include <memory>
+#include "g3log/sinkhandle.hpp"
+#include "g3log/g3log.hpp"
 
 LogMainLogFile::LogMainLogFile(std::string& filename) : filename(filename)
 {
@@ -22,12 +25,21 @@ LogMainLogFile::~LogMainLogFile() {
 void LogMainLogFile::fileWrite(g3::LogMessageMover message)
 {
 	g3::LogMessage msg = message.get();
-	if (msg.level() != "SCREENONLY") {
+	if (msg.level() != "SCREENONLY" && !finished) {
+		std::unique_lock<std::mutex> lock(m_);
 		out << msg.message() << std::endl;
 	}
 }
 
-
 void LogScreen::screenWrite(g3::LogMessageMover message) {
-	std::cout << message.get().message() << std::endl;
+	g3::LogMessage msg = message.get();
+	if (msg.level() != "FILEONLY") {
+		std::cout << msg.message() << std::endl;
+	}
+}
+
+void LogMainLogFile::stopAndClose() {
+	std::unique_lock<std::mutex> lock(m_);
+	finished = true;
+	out.close();
 }

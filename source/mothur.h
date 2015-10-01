@@ -10,9 +10,9 @@
  *
  */
 
-/* This file contains all the standard incudes we use in the project as well as some common utilities. */
+ /* This file contains all the standard incudes we use in the project as well as some common utilities. */
 
-//#include <cstddef>
+ //#include <cstddef>
 
 #ifndef NOMINMAX
 #define NOMINMAX // Required on Windows because of macros for min and max
@@ -22,10 +22,13 @@
 //config
 #include "mothurConfig.h"
 
+//logging
+#include "g3log/g3log.hpp"
+
 //boost libraries
 #ifdef USE_BOOST
-    #include <boost/iostreams/filtering_stream.hpp>
-    #include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
 #endif
 
 //io libraries
@@ -48,7 +51,7 @@
 #include <map>
 #include <string>
 #include <list>
-#include <string.h>
+#include <string>
 
 //math
 #include <cmath>
@@ -60,36 +63,48 @@
 #include <cerrno>
 #include <ctime>
 #include <limits>
+#include <atomic>
 
 /***********************************************************************/
 
 #if defined (UNIX)
-	#include <sys/wait.h>
-	#include <sys/time.h>
-	#include <sys/resource.h>
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <unistd.h>
-	
+#include <sys/wait.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #else
-	#include <conio.h> //allows unbuffered screen capture from stdin
-	#include <direct.h> //get cwd
-	#include <windows.h>
-	#include <psapi.h>
-	#include <direct.h>
-	#include <tchar.h>
+#include <conio.h> //allows unbuffered screen capture from stdin
+#include <direct.h> //get cwd
+#include <windows.h>
+#include <psapi.h>
+#include <direct.h>
+#include <tchar.h>
 
 #endif
 
 #ifdef USE_READLINE
-	#include <readline/readline.h>
-	#include <readline/history.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #elif USE_EDITLINE
-	#include <editline/readline.h>
+#include <editline/readline.h>
 #endif
 
 
 using namespace std;
+
+namespace
+{
+	atomic<bool> ctrlc_pressed;
+	atomic<bool> mothur_executing;
+#ifdef UNIX
+	static const char path_delimiter = '/';
+#else
+	static const char path_delimiter = '\\';
+#endif
+}
 
 #define exp(x) (exp((double) x))
 #define sqrt(x) (sqrt((double) x))
@@ -109,7 +124,7 @@ struct IntNode {
 	int rcoef;
 	IntNode* left;
 	IntNode* right;
-	
+
 	IntNode(int lv, int rv, IntNode* l, IntNode* r) : lvalue(lv), rvalue(rv), left(l), right(r) {};
 	IntNode() {};
 };
@@ -123,7 +138,7 @@ struct ThreadNode {
 struct diffPair {
 	float	prob;
 	float	reverseProb;
-	
+
 	diffPair() {
 		prob = 0; reverseProb = 0;
 	}
@@ -146,8 +161,8 @@ struct CommonHeader {
 	int flogramFormatCode;
 	string flowChars; //length depends on number flow reads
 	string keySequence; //length depends on key length
-	
-	CommonHeader(){ magicNumber=0; indexOffset=0; indexLength=0; numReads=0; headerLength=0; keyLength=0; numFlowsPerRead=0; flogramFormatCode='s'; }
+
+	CommonHeader() { magicNumber = 0; indexOffset = 0; indexLength = 0; numReads = 0; headerLength = 0; keyLength = 0; numFlowsPerRead = 0; flogramFormatCode = 's'; }
 	~CommonHeader() { }
 };
 /**********************************************************/
@@ -163,8 +178,8 @@ struct Header {
 	string timestamp;
 	string region;
 	string xy;
-	
-	Header() { headerLength=0; nameLength=0; numBases=0; clipQualLeft=0; clipQualRight=0; clipAdapterLeft=0; clipAdapterRight=0; }
+
+	Header() { headerLength = 0; nameLength = 0; numBases = 0; clipQualLeft = 0; clipQualRight = 0; clipAdapterLeft = 0; clipAdapterRight = 0; }
 	~Header() { }
 };
 /**********************************************************/
@@ -173,47 +188,47 @@ struct seqRead {
 	vector<unsigned int> flowIndex;
 	string bases;
 	vector<unsigned int> qualScores;
-	
+
 	seqRead() { }
 	~seqRead() { }
 };
 /**********************************************************/
 struct linePair {
-    unsigned long long start;
-    unsigned long long end;
-    linePair(unsigned long long i, unsigned long long j) : start(i), end(j) {}
-    linePair(){ start=0; end=0; }
-    ~linePair(){}
+	unsigned long long start;
+	unsigned long long end;
+	linePair(unsigned long long i, unsigned long long j) : start(i), end(j) {}
+	linePair() { start = 0; end = 0; }
+	~linePair() {}
 };
 /***********************************************************************/
-struct PDistCell{
+struct PDistCell {
 	ull index;
 	float dist;
-	PDistCell() :  index(0), dist(0) {};
-	PDistCell(ull c, float d) :  index(c), dist(d) {}
+	PDistCell() : index(0), dist(0) {};
+	PDistCell(ull c, float d) : index(c), dist(d) {}
 };
 /***********************************************************************/
-struct consTax{
+struct consTax {
 	string name;
-    string taxonomy;
-    int abundance;
-	consTax() :  name(""), taxonomy("unknown"), abundance(0) {};
-	consTax(string n, string t, int a) :  name(n), taxonomy(t), abundance(a) {}
+	string taxonomy;
+	int abundance;
+	consTax() : name(""), taxonomy("unknown"), abundance(0) {};
+	consTax(string n, string t, int a) : name(n), taxonomy(t), abundance(a) {}
 };
 /***********************************************************************/
-struct listCt{
-    string bin;
-    int binSize;
-    listCt() :  bin(""), binSize(0) {};
-    listCt(string b, int a) :  bin(b), binSize(a) {}
+struct listCt {
+	string bin;
+	int binSize;
+	listCt() : bin(""), binSize(0) {};
+	listCt(string b, int a) : bin(b), binSize(a) {}
 };
 /***********************************************************************/
-struct consTax2{
-    string taxonomy;
-    int abundance;
-    string otuName;
-	consTax2() :  otuName("OTUxxx"), taxonomy("unknown"), abundance(0) {};
-	consTax2(string n, string t, int a) :  otuName(n), taxonomy(t), abundance(a) {}
+struct consTax2 {
+	string taxonomy;
+	int abundance;
+	string otuName;
+	consTax2() : otuName("OTUxxx"), taxonomy("unknown"), abundance(0) {};
+	consTax2(string n, string t, int a) : otuName(n), taxonomy(t), abundance(a) {}
 };
 /************************************************************/
 struct clusterNode {
@@ -235,14 +250,14 @@ struct seqDist {
 struct distlinePair {
 	int start;
 	int end;
-	
+
 };
 /************************************************************/
 struct oligosPair {
 	string forward;
 	string reverse;
-	
-	oligosPair() { forward = ""; reverse = "";  }
+
+	oligosPair() { forward = ""; reverse = ""; }
 	oligosPair(string f, string r) : forward(f), reverse(r) {}
 	~oligosPair() {}
 };
@@ -262,70 +277,71 @@ struct compGroup {
 	string group2;
 	compGroup() {}
 	compGroup(string s, string nm) : group1(s), group2(nm) {}
-    string getCombo() { return group1+"-"+group2; }
+	string getCombo() { return group1 + "-" + group2; }
 	~compGroup() {}
 };
 /***************************************************************/
 struct spearmanRank {
 	string name;
 	float score;
-	
+
 	spearmanRank(string n, float s) : name(n), score(s) {}
 };
 //***********************************************************************
-inline bool compareIndexes(PDistCell left, PDistCell right){
-	return (left.index > right.index);	
+inline bool compareIndexes(PDistCell left, PDistCell right) {
+	return (left.index > right.index);
 }
 //********************************************************************************************************************
-inline bool compareSpearman(spearmanRank left, spearmanRank right){
-	return (left.score < right.score);	
+inline bool compareSpearman(spearmanRank left, spearmanRank right) {
+	return (left.score < right.score);
 }
 //********************************************************************************************************************
-inline double max(double left, double right){
-    if (left > right) { return left; }
-    else { return right; }
+inline double max(double left, double right) {
+	if (left > right) { return left; }
+	else { return right; }
 }
 //********************************************************************************************************************
-inline double max(int left, double right){
-    double value = left;
-    if (left > right) { return value; }
-    else { return right; }
+inline double max(int left, double right) {
+	double value = left;
+	if (left > right) { return value; }
+	else { return right; }
 }
 //********************************************************************************************************************
-inline double max(double left, int right){
-    double value = right;
-    if (left > value) { return left; }
-    else { return value; }
+inline double max(double left, int right) {
+	double value = right;
+	if (left > value) { return left; }
+	else { return value; }
 }
 //********************************************************************************************************************
 //sorts highest to lowest
-inline bool compareSeqPriorityNodes(seqPriorityNode left, seqPriorityNode right){
+inline bool compareSeqPriorityNodes(seqPriorityNode left, seqPriorityNode right) {
 	if (left.numIdentical > right.numIdentical) {
-        return true;
-    }else if (left.numIdentical == right.numIdentical) {
-        if (left.seq > right.seq) { return true; }
-        else { return false; }
-    }
-    return false;	
-} 
- 
+		return true;
+	}
+	else if (left.numIdentical == right.numIdentical) {
+		if (left.seq > right.seq) { return true; }
+		else { return false; }
+	}
+	return false;
+}
+
 /************************************************************/
 //sorts lowest to highest
-inline bool compareDistLinePairs(distlinePair left, distlinePair right){
-	return (left.end < right.end);	
-} 
+inline bool compareDistLinePairs(distlinePair left, distlinePair right) {
+	return (left.end < right.end);
+}
 //********************************************************************************************************************
 //sorts lowest to highest
-inline bool compareSequenceDistance(seqDist left, seqDist right){
-	return (left.dist < right.dist);	
+inline bool compareSequenceDistance(seqDist left, seqDist right) {
+	return (left.dist < right.dist);
 }
 //********************************************************************************************************************
 //returns sign of double
-inline double sign(double temp){
+inline double sign(double temp) {
 	//find sign
-    if (temp > 0)       { return 1.0;   }
-    else if (temp < 0)  { return -1.0;  }
-    return 0;
+	if (temp > 0) { return 1.0; }
+	else if (temp < 0) { return -1.0; }
+	return 0;
 }
 /***********************************************************************/
 
@@ -334,90 +350,90 @@ inline double sign(double temp){
 
 class BadConversion : public runtime_error {
 public:
-	BadConversion(const string& s) : runtime_error(s){ }
+	BadConversion(const string& s) : runtime_error(s) { }
 };
 
 //**********************************************************************************************************************
 template<typename T>
-void convert(const string& s, T& x, bool failIfLeftoverChars = true){
-	
-		istringstream i(s);
-		char c;
-		if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
-			throw BadConversion(s);
-	
+void convert(const string& s, T& x, bool failIfLeftoverChars = true) {
+
+	istringstream i(s);
+	char c;
+	if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
+		throw BadConversion(s);
+
 }
 //**********************************************************************************************************************
-template <typename T> int sgn(T val){ return (val > T(0)) - (val < T(0)); }
+template <typename T> int sgn(T val) { return (val > T(0)) - (val < T(0)); }
 //**********************************************************************************************************************
 
 template<typename T>
-bool convertTestFloat(const string& s, T& x, bool failIfLeftoverChars = true){
-	
-		istringstream i(s);
-		char c;
-		if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
-		{
-			return false;
-		} 
-		return true;
-	
-}
+bool convertTestFloat(const string& s, T& x, bool failIfLeftoverChars = true) {
 
-//**********************************************************************************************************************
+	istringstream i(s);
+	char c;
+	if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
+	{
+		return false;
+	}
+	return true;
 
-template<typename T>
-bool convertTest(const string& s, T& x, bool failIfLeftoverChars = true){
-	
-		istringstream i(s);
-		char c;
-		if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
-		{
-			return false;
-		} 
-		return true;
-	
-}
-//**********************************************************************************************************************
-template<typename T>
-string toString(const T&x){
-	
-		stringstream output;
-		output << x;
-		return output.str();
-	
 }
 
 //**********************************************************************************************************************
 
 template<typename T>
-string toHex(const T&x){
-	
-		stringstream output;
-		
-		output << hex << x;
+bool convertTest(const string& s, T& x, bool failIfLeftoverChars = true) {
 
-		return output.str();
-	
+	istringstream i(s);
+	char c;
+	if (!(i >> x) || (failIfLeftoverChars && i.get(c)))
+	{
+		return false;
+	}
+	return true;
+
+}
+//**********************************************************************************************************************
+template<typename T>
+string toString(const T&x) {
+
+	stringstream output;
+	output << x;
+	return output.str();
+
+}
+
+//**********************************************************************************************************************
+
+template<typename T>
+string toHex(const T&x) {
+
+	stringstream output;
+
+	output << hex << x;
+
+	return output.str();
+
 }
 //**********************************************************************************************************************
 
 template<typename T>
-string toString(const T&x, int i){
-	
-		stringstream output;
-		
-		output.precision(i);
-		output << fixed << x;
-		
-		return output.str();
-	
+string toString(const T&x, int i) {
+
+	stringstream output;
+
+	output.precision(i);
+	output << fixed << x;
+
+	return output.str();
+
 }
 //**********************************************************************************************************************
 
 template<class T>
-T fromString(const string& s){
-	istringstream stream (s);
+T fromString(const string& s) {
+	istringstream stream(s);
 	T t;
 	stream >> t;
 	return t;

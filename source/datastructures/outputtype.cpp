@@ -5,7 +5,7 @@
 
 string OutputType::getOutputFileName(map<string, string> variableParts)
 //uses the pattern to create an output filename for a given type and input file name.  
-{	
+{
 	try {
 		string filename = "";
 		vector<string> patterns;
@@ -27,7 +27,7 @@ string OutputType::getOutputFileName(map<string, string> variableParts)
 			for (int i = 0; i < numVariablesPerPattern.size(); i++) {
 				if (numVariablesPerPattern[i] < variableParts.size()) { pattern = patterns[i]; foundPattern = true; break; }
 			}
-			if (!foundPattern) { LOG(LOGERROR) << "[ERROR]: Not enough variable pieces."; }//m->control_pressed = true; }
+			if (!foundPattern) { LOG(LOGERROR) << "[ERROR]: Not enough variable pieces."; }//ctrlc_pressed = true; }
 		}
 
 		if (pattern != "") {

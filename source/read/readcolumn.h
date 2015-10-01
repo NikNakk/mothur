@@ -11,20 +11,20 @@
 
 #include "readmatrix.hpp"
 
-/******************************************************/
+ /******************************************************/
 
 class ReadColumnMatrix : public ReadMatrix {
-	
+
 public:
 	ReadColumnMatrix(string);
 	ReadColumnMatrix(string, bool);
 	~ReadColumnMatrix();
 	int read(NameAssignment*);
-    int read(CountTable*);
+	int read(CountTable*);
 private:
 	ifstream fileHandle;
 	string distFile;
-	
+
 };
 
 /******************************************************/

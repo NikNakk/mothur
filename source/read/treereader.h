@@ -1,5 +1,4 @@
-#ifndef Mothur_treereader_h
-#define Mothur_treereader_h
+#pragma once
 
 //
 //  treereader.h
@@ -9,33 +8,27 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#include "mothurout.h"
 #include "tree.h"
 #include "counttable.h"
 
 class TreeReader {
-    
+
 public:
-    
-    TreeReader(string tf, string cf);
-    TreeReader(string tf, string gf, string nf);
-	~TreeReader() {}	
-    
-    vector<Tree*> getTrees()            { return trees;     }
-    
+
+	TreeReader(string tf, string cf);
+	TreeReader(string tf, string gf, string nf);
+	~TreeReader() {}
+
+	vector<Tree> getTrees() { return trees; }
+
 private:
-    MothurOut* m;
-	vector<Tree*> trees;
-    CountTable* ct;
-    //map<string, string> nameMap; //dupName -> uniqueName
+	vector<Tree> trees;
+	CountTable ctY;
+	//map<string, string> nameMap; //dupName -> uniqueName
    // map<string, string> names;
-    
-    string treefile, groupfile, namefile, countfile;
-    
-    bool readTrees();
-    int readNamesFile();
+
+	string treefile, groupfile, namefile, countfile;
+
+	bool readTrees();
+	int readNamesFile();
 };
-
-
-
-#endif

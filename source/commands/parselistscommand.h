@@ -14,34 +14,34 @@
 #include "inputdata.h"
 #include "listvector.hpp"
 
-/***************************************************************************************/
+ /***************************************************************************************/
 
 class ParseListCommand : public Command {
-	
+
 public:
-	ParseListCommand(string);
-	ParseListCommand();	
+	ParseListCommand(Settings& settings, string option);
+	ParseListCommand(Settings& settings);
 	~ParseListCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "parse.list";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "parse.list"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Parse.list"; }
-	string getDescription()		{ return "parses a list file by group"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	string getDescription() { return "parses a list file by group"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	int parse(ListVector*);
-		
+
 	ListVector* list;
 	GroupMap* groupMap;
-    CountTable ct;
-	
+	CountTable ct;
+
 	ofstream out;
 	string outputDir, listfile, groupfile, label, countfile;
 	set<string> labels;

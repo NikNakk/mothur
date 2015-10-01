@@ -17,32 +17,32 @@
 
 class CorrAxesCommand : public Command {
 public:
-	CorrAxesCommand(string);
-	CorrAxesCommand();
-	~CorrAxesCommand(){}
-	
+	CorrAxesCommand(Settings& settings, string option);
+	CorrAxesCommand(Settings& settings);
+	~CorrAxesCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "corr.axes";				}
-	string getCommandCategory()		{ return "Hypothesis Testing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "corr.axes"; }
+	string getCommandCategory() { return "Hypothesis Testing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "McCune B, Grace JB, Urban DL (2002). Analysis of ecological communities. MjM Software Design: Gleneden Beach, OR. \nLegendre P, Legendre L (1998). Numerical Ecology. Elsevier: New York. \nhttp://www.mothur.org/wiki/Corr.axes"; }
-	string getDescription()		{ return "calculate the correlation coefficient for each column in a shared/relabund file to the axes displayed in a pcoa file"; }
-	
+	string getDescription() { return "calculate the correlation coefficient for each column in a shared/relabund file to the axes displayed in a pcoa file"; }
+
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }	
+	void help() { LOG(INFO) << getHelpString(); }
 private:
 
 	string axesfile, sharedfile, relabundfile, metadatafile, groups, label, inputFileName, outputDir, method;
 	bool abort, pickedGroups;
 	int numaxes;
 	set<string> names;
-	
+
 	vector<string> outputNames, Groups;
 	vector<SharedRAbundFloatVector*> lookupFloat;
 	vector<string> metadataLabels;
-	
+
 	int getSharedFloat(InputData*);
 	int getMetadata();
 	int eliminateZeroOTUS(vector<SharedRAbundFloatVector*>&);
@@ -50,7 +50,7 @@ private:
 	int calcPearson(map<string, vector<float> >&, ofstream&);
 	int calcSpearman(map<string, vector<float> >&, ofstream&);
 	int calcKendall(map<string, vector<float> >&, ofstream&);
-	
+
 };
 
 

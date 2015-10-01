@@ -13,30 +13,30 @@
 #include "command.hpp"
 
 class CountGroupsCommand : public Command {
-	
+
 public:
-	
-	CountGroupsCommand(string);
-	CountGroupsCommand();	
-	~CountGroupsCommand(){}
-	
+
+	CountGroupsCommand(Settings& settings, string option);
+	CountGroupsCommand(Settings& settings);
+	~CountGroupsCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "count.groups";			}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "count.groups"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Count.groups"; }
-	string getDescription()		{ return "counts the number of sequences in each group"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	string getDescription() { return "counts the number of sequences in each group"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	string sharedfile, groupfile, countfile, outputDir, groups, accnosfile;
 	bool abort;
 	vector<string> Groups;
-    vector<string> outputNames;
+	vector<string> outputNames;
 };
 
 #endif

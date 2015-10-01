@@ -11,20 +11,19 @@
  */
 
 
-#include "mothurout.h"
 
 class MothurFisher {
-	
+
 public:
-	MothurFisher(){otuLabel = ""; m = MothurOut::getInstance(); }
-	~MothurFisher(){}
-	
+	MothurFisher() { otuLabel = ""; m = MothurOut::getInstance(); }
+	~MothurFisher() {}
+
 	double fexact(double, double, double, double, string);
-	
+
 private:
 	MothurOut* m;
 	double sleft, sright, sless, slarg;
-	double sn11,sn1_,sn_1,sn,sprob;
+	double sn11, sn1_, sn_1, sn, sprob;
 	double lngamm(double);
 	double lnfact(double);
 	double lnbico(double, double);
@@ -32,7 +31,7 @@ private:
 	double myhyper(double);
 	double hyper0(double, double, double, double);
 	double exact(double, double, double, double);
-    string otuLabel;
+	string otuLabel;
 };
 
 

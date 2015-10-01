@@ -5,32 +5,31 @@
 
 #include "mothur.h"
 #include "sparsedistancematrix.h"
-#include "mothurout.h"
 
 class RAbundVector;
 class ListVector;
 
 class Cluster {
-	
+
 public:
 	Cluster(RAbundVector*, ListVector*, SparseDistanceMatrix*, float, string, float);
-    virtual ~Cluster() {}
-    virtual void update(double&);				
+	virtual ~Cluster() {}
+	virtual void update(double&);
 	virtual string getTag() = 0;
-	virtual void setMapWanted(bool m);  
-	virtual map<string, int> getSeqtoBin()  {  return seq2Bin;	}
-    
-protected:	    
+	virtual void setMapWanted(bool m);
+	virtual map<string, int> getSeqtoBin() { return seq2Bin; }
+
+protected:
 	virtual bool updateDistance(PDistCell& colCell, PDistCell& rowCell) = 0;
-    
+
 	virtual void clusterBins();
 	virtual void clusterNames();
 	virtual void updateMap();
-	
+
 	RAbundVector* rabund;
 	ListVector* list;
-	SparseDistanceMatrix* dMatrix;	
-	
+	SparseDistanceMatrix* dMatrix;
+
 	ull smallRow;
 	ull smallCol;
 	float smallDist, adjust;
@@ -38,7 +37,7 @@ protected:
 	float cutoff;
 	map<string, int> seq2Bin;
 	string method;
-	
+
 	ull nRowCells;
 	ull nColCells;
 	MothurOut* m;
@@ -51,9 +50,9 @@ public:
 	CompleteLinkage(RAbundVector*, ListVector*, SparseDistanceMatrix*, float, string, float);
 	bool updateDistance(PDistCell& colCell, PDistCell& rowCell);
 	string getTag();
-	
+
 private:
-    
+
 };
 
 /***********************************************************************/
@@ -61,12 +60,12 @@ private:
 class SingleLinkage : public Cluster {
 public:
 	SingleLinkage(RAbundVector*, ListVector*, SparseDistanceMatrix*, float, string, float);
-    //void update(double&);
+	//void update(double&);
 	bool updateDistance(PDistCell& colCell, PDistCell& rowCell);
 	string getTag();
-	
+
 private:
-    
+
 };
 
 /***********************************************************************/
@@ -76,14 +75,14 @@ public:
 	AverageLinkage(RAbundVector*, ListVector*, SparseDistanceMatrix*, float, string, float);
 	bool updateDistance(PDistCell& colCell, PDistCell& rowCell);
 	string getTag();
-	
+
 private:
 	int saveRow;
 	int saveCol;
 	int rowBin;
 	int colBin;
 	int totalBin;
-    
+
 };
 
 /***********************************************************************/
@@ -93,10 +92,10 @@ public:
 	WeightedLinkage(RAbundVector*, ListVector*, SparseDistanceMatrix*, float, string, float);
 	bool updateDistance(PDistCell& colCell, PDistCell& rowCell);
 	string getTag();
-	
+
 private:
 	int saveRow;
-	int saveCol;	
+	int saveCol;
 };
 
 /***********************************************************************/

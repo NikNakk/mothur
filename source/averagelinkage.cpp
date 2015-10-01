@@ -12,7 +12,7 @@
 /***********************************************************************/
 
 AverageLinkage::AverageLinkage(RAbundVector* rav, ListVector* lv, SparseDistanceMatrix* dm, float c, string s, float a) :
-Cluster(rav, lv, dm, c, s, a)
+	Cluster(rav, lv, dm, c, s, a)
 {
 	saveRow = -1;
 	saveCol = -1;
@@ -29,23 +29,17 @@ string AverageLinkage::getTag() {
 /***********************************************************************/
 //This function updates the distance based on the average linkage method.
 bool AverageLinkage::updateDistance(PDistCell& colCell, PDistCell& rowCell) {
-	try {
-		if ((saveRow != smallRow) || (saveCol != smallCol)) {
-			rowBin = rabund->get(smallRow);
-			colBin = rabund->get(smallCol);
-			totalBin = rowBin + colBin;
-			saveRow = smallRow;
-			saveCol = smallCol;
-		}
-		//cout << "colcell.dist = " << colCell.dist << '\t' << smallRow << '\t' << smallCol << '\t' << rowCell.dist << endl;
-		colCell.dist = (colBin * colCell.dist + rowBin * rowCell.dist) / totalBin;
-        
-		return(true);
+	if ((saveRow != smallRow) || (saveCol != smallCol)) {
+		rowBin = rabund->get(smallRow);
+		colBin = rabund->get(smallCol);
+		totalBin = rowBin + colBin;
+		saveRow = smallRow;
+		saveCol = smallCol;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "AverageLinkage", "updateDistance");
-		exit(1);
-	}
+	//cout << "colcell.dist = " << colCell.dist << '\t' << smallRow << '\t' << smallCol << '\t' << rowCell.dist << endl;
+	colCell.dist = (colBin * colCell.dist + rowBin * rowCell.dist) / totalBin;
+
+	return(true);
 }
 
 /***********************************************************************/

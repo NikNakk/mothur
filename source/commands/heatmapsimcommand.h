@@ -19,23 +19,23 @@
 class HeatMapSimCommand : public Command {
 
 public:
-	HeatMapSimCommand(string);
-	HeatMapSimCommand();
-	~HeatMapSimCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "heatmap.sim";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Heatmap.sim"; }
-	string getDescription()		{ return "generate a heatmap indicating the pairwise distance between multiple samples using a variety of calculators"; }
+	HeatMapSimCommand(Settings& settings, string option);
+	HeatMapSimCommand(Settings& settings);
+	~HeatMapSimCommand() {}
 
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "heatmap.sim"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Heatmap.sim"; }
+	string getDescription() { return "generate a heatmap indicating the pairwise distance between multiple samples using a variety of calculators"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	InputData* input;
 	vector<SharedRAbundVector*> lookup;
@@ -47,7 +47,7 @@ private:
 	string format, groups, label, calc, sharedfile, phylipfile, columnfile, countfile, namefile, outputDir, inputfile;
 	vector<string> Estimators, Groups, outputNames;
 	int fontsize;
-	
+
 	int runCommandShared();
 	int runCommandDist();
 

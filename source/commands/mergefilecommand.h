@@ -15,22 +15,22 @@
 
 class MergeFileCommand : public Command {
 public:
-	MergeFileCommand(string);
-	MergeFileCommand();
-	~MergeFileCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "merge.files";	}
-	string getCommandCategory()		{ return "General";		}
-	string getHelpString();	
-    string getOutputPattern(string){ return "";  }	
-	string getCitation() { return "http://www.mothur.org/wiki/Merge.files"; }
-	string getDescription()		{ return "appends files creating one file"; }
+	MergeFileCommand(Settings& settings, string option);
+	MergeFileCommand(Settings& settings);
+	~MergeFileCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "merge.files"; }
+	string getCommandCategory() { return "General"; }
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "http://www.mothur.org/wiki/Merge.files"; }
+	string getDescription() { return "appends files creating one file"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	vector<string> fileNames, outputNames;
 	string outputFileName;

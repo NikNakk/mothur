@@ -2,7 +2,6 @@
 #define SPARSEMATRIX_H
 
 #include "mothur.h"
-#include "mothurout.h"
 
 
 class ListVector;
@@ -10,7 +9,7 @@ class ListVector;
 /***********************************************************************/
 
 
- struct PCell{
+struct PCell {
 	ull row;
 	ull column;
 	float dist;
@@ -24,16 +23,16 @@ class ListVector;
 typedef list<PCell>::iterator MatData;
 
 class SparseMatrix {
-	
+
 public:
 	SparseMatrix();
-	~SparseMatrix(){  while(!mins.empty() && mins.back() == NULL){  mins.pop_back();	}  }
+	~SparseMatrix() { while (!mins.empty() && mins.back() == NULL) { mins.pop_back(); } }
 	int getNNodes();
 	void print();					//Print the contents of the matrix
 	void print(ListVector*);		//Print the contents of the matrix
 	PCell* getSmallestCell();		//Return the cell with the smallest distance
 	float getSmallDist();
-	
+
 	MatData rmCell(MatData);
 	void addCell(PCell);
 	void clear();
@@ -45,7 +44,7 @@ private:
 	int numNodes;
 
 	list<PCell> matrix;
-	
+
 	vector<PCell*> mins;
 	float smallDist;
 	int minsIndex;

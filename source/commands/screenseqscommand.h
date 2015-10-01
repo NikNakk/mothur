@@ -61,8 +61,8 @@ struct sumData {
 class ScreenSeqsCommand : public Command {
 
 public:
-	ScreenSeqsCommand(string);
-	ScreenSeqsCommand();
+	ScreenSeqsCommand(Settings& settings, string option);
+	ScreenSeqsCommand(Settings& settings);
 	~ScreenSeqsCommand() {}
 
 	vector<string> setParameters();
@@ -75,7 +75,7 @@ public:
 	string getDescription() { return "enables you to keep sequences that fulfill certain user defined criteria"; }
 
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }
+	void help() { LOG(INFO) << getHelpString(); }
 
 
 private:

@@ -12,32 +12,32 @@
 #include "command.hpp"
 
 class RenameSeqsCommand : public Command {
-    
+
 public:
-	RenameSeqsCommand(string);
-	RenameSeqsCommand();
+	RenameSeqsCommand(Settings& settings, string option);
+	RenameSeqsCommand(Settings& settings);
 	~RenameSeqsCommand() {}
-	
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "rename.seqs";		}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-	
+	string getCommandName() { return "rename.seqs"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
 	string getHelpString();
-    string getOutputPattern(string);
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Rename.seqs"; }
-	string getDescription()		{ return "rename sequences"; }
-    
-	
+	string getDescription() { return "rename sequences"; }
+
+
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }
-	
-	
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
-    
+
 	string fastaFile, nameFile, groupfile, outputDir, placement, delim, countfile;
 	vector<string> outputNames;
 	bool abort;
-	
+
 	map<string, string> nameMap;
 };
 

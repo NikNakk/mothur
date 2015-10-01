@@ -51,7 +51,7 @@ EstOutput ThetaN::getValues(vector<SharedRAbundVector*> shared) {
 		return data;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "ThetaN", "getValues");
+		LOG(FATAL) << e.what() << " in ThetaN, getValues";
 		exit(1);
 	}
 }

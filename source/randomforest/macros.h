@@ -12,21 +12,21 @@
 #include "mothurout.h" 
 
 /***********************************************************************/
-class OptimumFeatureSubsetSelector{
+class OptimumFeatureSubsetSelector {
 public:
-  OptimumFeatureSubsetSelector(string selectionType = "log2"): selectionType(selectionType){
-  }
-  
-  int getOptimumFeatureSubsetSize(int numFeatures){
+	OptimumFeatureSubsetSelector(string selectionType = "log2") : selectionType(selectionType) {
+	}
 
-    if (selectionType == "log2"){ return (int)ceil(log2(numFeatures)); }
-    else if (selectionType == "squareRoot"){ return (int)ceil(sqrt(numFeatures)); } 
-    return -1;
-  }
+	int getOptimumFeatureSubsetSize(int numFeatures) {
+
+		if (selectionType == "log2") { return (int)ceil(log2(numFeatures)); }
+		else if (selectionType == "squareRoot") { return (int)ceil(sqrt(numFeatures)); }
+		return -1;
+	}
 private:
-  string selectionType;
+	string selectionType;
 };
 
 /***********************************************************************/
-  
+
 #endif

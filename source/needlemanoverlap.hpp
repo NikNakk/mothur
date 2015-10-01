@@ -3,14 +3,14 @@
 
 /*
  *  needleman.h
- *  
+ *
  *
  *  Created by Pat Schloss on 12/15/08.
  *  Copyright 2008 Patrick D. Schloss. All rights reserved.
  *
  *	This class is an Alignment child class that implements the Needleman-Wunsch pairwise alignment algorithm as
  *	described in:
- *		
+ *
  *	Needleman SB & Wunsch CD.  1970.  A general method applicable to the search for similarities in the amino acid
  *		sequence of two proteins.  J Mol Biol.  48:443-53.
  *	Korf I, Yandell M, & Bedell J.  2003.  BLAST.  O'Reilly & Associates.  Sebastopol, CA.
@@ -24,21 +24,21 @@
 #include "mothur.h"
 #include "alignment.hpp"
 
-/**************************************************************************************************/
+ /**************************************************************************************************/
 
 class NeedlemanOverlap : public Alignment {
-	
+
 public:
 	NeedlemanOverlap(float, float, float, int);
 	~NeedlemanOverlap();
 	void align(string, string);
-    void alignPrimer(string, string);
-	
-private:	
+	void alignPrimer(string, string);
+
+private:
 	float gap;
 	float match;
 	float mismatch;
-    bool isEquivalent(char, char);
+	bool isEquivalent(char, char);
 };
 
 /**************************************************************************************************/

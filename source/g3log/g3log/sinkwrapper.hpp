@@ -11,12 +11,12 @@
 #include "g3log/logmessage.hpp"
 
 namespace g3 {
-   namespace internal {
+	namespace internal {
 
-      struct SinkWrapper {
-         virtual ~SinkWrapper() { }
-         virtual void send(LogMessageMover msg) = 0;
-      };
-   }
+		struct SinkWrapper {
+			virtual ~SinkWrapper() { }
+			virtual void send(LogMessageMover msg) = 0;
+		};
+	}
 }
 

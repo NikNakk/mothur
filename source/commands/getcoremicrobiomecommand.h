@@ -18,35 +18,35 @@
 
 class GetCoreMicroBiomeCommand : public Command {
 public:
-    GetCoreMicroBiomeCommand(string);
-    GetCoreMicroBiomeCommand();
-    ~GetCoreMicroBiomeCommand(){}
-    
-    vector<string> setParameters();
-    string getCommandName()			{ return "get.coremicrobiome";			}
-    string getCommandCategory()		{ return "OTU-Based Approaches";		} 
-    //commmand category choices: Sequence Processing, OTU-Based Approaches, Hypothesis Testing, Phylotype Analysis, General, Clustering and Hidden
-    
-	string getHelpString();	
-    string getOutputPattern(string);	
-    string getCitation() { return "http://www.mothur.org/wiki/Get.coremicrobiome"; }
-    string getDescription()		{ return "determines the fraction of OTUs that are found in varying numbers of samples for different minimum relative abundances"; }
-    
-    int execute(); 
-    void help() { m->mothurOut(getHelpString()); }	
-    
+	GetCoreMicroBiomeCommand(Settings& settings, string option);
+	GetCoreMicroBiomeCommand(Settings& settings);
+	~GetCoreMicroBiomeCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "get.coremicrobiome"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+	//commmand category choices: Sequence Processing, OTU-Based Approaches, Hypothesis Testing, Phylotype Analysis, General, Clustering and Hidden
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Get.coremicrobiome"; }
+	string getDescription() { return "determines the fraction of OTUs that are found in varying numbers of samples for different minimum relative abundances"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-    string relabundfile, sharedfile, inputFileName, format, output;
-    bool allLines;
-    vector<string> Groups;
-    set<string> labels;
-    bool abort;
-    string outputDir;
-    vector<string> outputNames;
-    float abund;
-    int samples, factor;
-    
-    int createTable(vector<SharedRAbundFloatVector*>&);
+	string relabundfile, sharedfile, inputFileName, format, output;
+	bool allLines;
+	vector<string> Groups;
+	set<string> labels;
+	bool abort;
+	string outputDir;
+	vector<string> outputNames;
+	float abund;
+	int samples, factor;
+
+	int createTable(vector<SharedRAbundFloatVector*>&);
 
 };
 

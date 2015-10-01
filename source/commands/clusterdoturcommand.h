@@ -18,24 +18,24 @@
 
 
 class ClusterDoturCommand : public Command {
-	
+
 public:
-	ClusterDoturCommand(string);
-	ClusterDoturCommand();
-	~ClusterDoturCommand(){}
-	
+	ClusterDoturCommand(Settings& settings, string option);
+	ClusterDoturCommand(Settings& settings);
+	~ClusterDoturCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "cluster.classic";		}
-	string getCommandCategory()		{ return "Clustering";			}
-    
-	string getHelpString();	
-    string getOutputPattern(string);		
-	string getCitation() { return "Schloss PD, Westcott SL (2011). Assessing and improving methods used in OTU-based approaches for 16S rRNA gene sequence analysis. Appl Environ Microbiol 77:3219.\nSchloss PD, Handelsman J (2005). Introducing DOTUR, a computer program for defining operational taxonomic units and estimating species richness. Appl Environ Microbiol 71: 1501-6.\nhttp://www.mothur.org/wiki/Cluster.classic\n";}
-	string getDescription()		{ return "cluster your sequences into OTUs using DOTUR’s method"; }
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	string getCommandName() { return "cluster.classic"; }
+	string getCommandCategory() { return "Clustering"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "Schloss PD, Westcott SL (2011). Assessing and improving methods used in OTU-based approaches for 16S rRNA gene sequence analysis. Appl Environ Microbiol 77:3219.\nSchloss PD, Handelsman J (2005). Introducing DOTUR, a computer program for defining operational taxonomic units and estimating species richness. Appl Environ Microbiol 71: 1501-6.\nhttp://www.mothur.org/wiki/Cluster.classic\n"; }
+	string getDescription() { return "cluster your sequences into OTUs using DOTUR’s method"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	bool abort, hard, sim;
 	string method, fileroot, tag, outputDir, phylipfile, namefile, countfile;
@@ -47,7 +47,7 @@ private:
 	RAbundVector* rabund;
 	RAbundVector oldRAbund;
 	ListVector oldList;
-	
+
 	void printData(string label, map<string, int>&);
 	vector<string> outputNames;
 };

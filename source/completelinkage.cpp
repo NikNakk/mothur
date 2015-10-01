@@ -17,18 +17,12 @@ string CompleteLinkage::getTag() {
 /***********************************************************************/
 //This function updates the distance based on the furthest neighbor method.
 bool CompleteLinkage::updateDistance(PDistCell& colCell, PDistCell& rowCell) {
-	try {
-		bool changed = false;
-		if (colCell.dist < rowCell.dist) {
-			colCell.dist = rowCell.dist;
-			changed = true;
-		}	
-		return(changed);
+	bool changed = false;
+	if (colCell.dist < rowCell.dist) {
+		colCell.dist = rowCell.dist;
+		changed = true;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "CompleteLinkage", "updateDistance");
-		exit(1);
-	}
+	return(changed);
 }
 
 /***********************************************************************/

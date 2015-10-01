@@ -7,19 +7,22 @@
 *
 */
 
+#include "commandfactory.hpp"
 #include "command.hpp"
-#include "clustercommand.h"
+#include "nocommands.h"
+#include "quitcommand.h"
+#include "helpcommand.h"
+#include "setlogfilecommand.h"
+#include "setseedcommand.h"
+#include "seqsummarycommand.h"
+/*#include "clustercommand.h"
 #include "collectcommand.h"
 #include "collectsharedcommand.h"
 #include "getgroupcommand.h"
 #include "getlabelcommand.h"
 #include "rarefactcommand.h"
-#include "summarycommand.h"
 #include "summarysharedcommand.h"
 #include "rarefactsharedcommand.h"
-#include "quitcommand.h"
-#include "helpcommand.h"
-#include "commandfactory.hpp"
 #include "deconvolutecommand.h"
 #include "parsimonycommand.h"
 #include "unifracunweightedcommand.h"
@@ -29,7 +32,6 @@
 #include "heatmapsimcommand.h"
 #include "filterseqscommand.h"
 #include "venncommand.h"
-#include "nocommands.h"
 #include "binsequencecommand.h"
 #include "getoturepcommand.h"
 #include "treegroupscommand.h"
@@ -38,7 +40,6 @@
 #include "matrixoutputcommand.h"
 #include "getsabundcommand.h"
 #include "getrabundcommand.h"
-#include "seqsummarycommand.h"
 #include "screenseqscommand.h"
 #include "reversecommand.h"
 #include "trimseqscommand.h"
@@ -65,7 +66,6 @@
 #include "chimerapintailcommand.h"
 #include "chimerabellerophoncommand.h"
 #include "chimerauchimecommand.h"
-#include "setlogfilecommand.h"
 #include "phylodiversitycommand.h"
 #include "makegroupcommand.h"
 #include "chopseqscommand.h"
@@ -109,6 +109,7 @@
 #include "mantelcommand.h"
 #include "makefastqcommand.h"
 #include "anosimcommand.h"
+#include "summarycommand.h"
 #include "getcurrentcommand.h"
 #include "setcurrentcommand.h"
 #include "sharedcommand.h"
@@ -153,21 +154,23 @@
 #include "mergesfffilecommand.h"
 #include "getmimarkspackagecommand.h"
 #include "mimarksattributescommand.h"
-#include "setseedcommand.h"
 #include "makefilecommand.h"
 #include "biominfocommand.h"
+*/
+#include "utility.h"
 
 /***********************************************************/
-CommandFactory::CommandFactory():
-append(false)
+CommandFactory::CommandFactory(Settings& settings) : settings(settings)
 {
-	m = MothurOut::getInstance();
 	// Register commands
-	Register("cluster", unique_ptr<CommandMakerBase>(new CommandMaker<ClusterCommand>));
-	Register("unique.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<DeconvoluteCommand>));
-	Register("parsimony", unique_ptr<CommandMakerBase>(new CommandMaker<ParsimonyCommand>));
 	Register("help", unique_ptr<CommandMakerBase>(new CommandMaker<HelpCommand>));
 	Register("quit", unique_ptr<CommandMakerBase>(new CommandMaker<QuitCommand>));
+	Register("summary.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<SeqSummaryCommand>));
+	Register("set.seed", unique_ptr<CommandMakerBase>(new CommandMaker<SetSeedCommand>));
+	Register("set.logfile", unique_ptr<CommandMakerBase>(new CommandMaker<SetLogFileCommand>));
+	/*Register("cluster", unique_ptr<CommandMakerBase>(new CommandMaker<ClusterCommand>));
+	Register("unique.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<DeconvoluteCommand>));
+	Register("parsimony", unique_ptr<CommandMakerBase>(new CommandMaker<ParsimonyCommand>));
 	Register("collect.single", unique_ptr<CommandMakerBase>(new CommandMaker<CollectCommand>));
 	Register("collect.shared", unique_ptr<CommandMakerBase>(new CommandMaker<CollectSharedCommand>));
 	Register("rarefaction.single", unique_ptr<CommandMakerBase>(new CommandMaker<RareFactCommand>));
@@ -191,7 +194,6 @@ append(false)
 	Register("dist.shared", unique_ptr<CommandMakerBase>(new CommandMaker<MatrixOutputCommand>));
 	Register("dist.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<DistanceCommand>));
 	Register("align.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<AlignCommand>));
-	Register("summary.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<SeqSummaryCommand>));
 	Register("screen.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<ScreenSeqsCommand>));
 	Register("reverse.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<ReverseSeqsCommand>));
 	Register("trim.seqs", unique_ptr<CommandMakerBase>(new CommandMaker<TrimSeqsCommand>));
@@ -221,7 +223,6 @@ append(false)
 	Register("nmds", unique_ptr<CommandMakerBase>(new CommandMaker<NMDSCommand>));
 	Register("otu.hierarchy", unique_ptr<CommandMakerBase>(new CommandMaker<OtuHierarchyCommand>));
 	Register("set.dir", unique_ptr<CommandMakerBase>(new CommandMaker<SetDirectoryCommand>));
-	Register("set.logfile", unique_ptr<CommandMakerBase>(new CommandMaker<SetLogFileCommand>));
 	Register("parse.list", unique_ptr<CommandMakerBase>(new CommandMaker<ParseListCommand>));
 	Register("phylo.diversity", unique_ptr<CommandMakerBase>(new CommandMaker<PhyloDiversityCommand>));
 	Register("make.group", unique_ptr<CommandMakerBase>(new CommandMaker<MakeGroupCommand>));
@@ -307,34 +308,15 @@ append(false)
 	Register("merge.sfffiles", unique_ptr<CommandMakerBase>(new CommandMaker<MergeSfffilesCommand>));
 	Register("get.mimarkspackage", unique_ptr<CommandMakerBase>(new CommandMaker<GetMIMarksPackageCommand>));
 	Register("mimarks.attributes", unique_ptr<CommandMakerBase>(new CommandMaker<MimarksAttributesCommand>));
-	Register("set.seed", unique_ptr<CommandMakerBase>(new CommandMaker<SetSeedCommand>));
 	Register("biom.info", unique_ptr<CommandMakerBase>(new CommandMaker<BiomInfoCommand>));
 	Register("make.file", unique_ptr<CommandMakerBase>(new CommandMaker<MakeFileCommand>));
+	*/
 }
 
 /***********************************************************/
 //This function calls the appropriate command fucntions based on user input.
 unique_ptr<Command> CommandFactory::getCommand(string commandName, string optionString) {
-	try {
-		
-		//user has opted to redirect output from dir where input files are located to some other place
-		if (outputDir != "") {
-			if (optionString != "") { optionString += ", outputdir=" + outputDir; }
-			else { optionString += "outputdir=" + outputDir; }
-		}
-
-		//user has opted to redirect input from dir where mothur.exe is located to some other place
-		if (inputDir != "") {
-			if (optionString != "") { optionString += ", inputdir=" + inputDir; }
-			else { optionString += "inputdir=" + inputDir; }
-		}
-
-		return Create(commandName, optionString);
-	}
-	catch (exception& e) {
-		m->errorOut(e, "CommandFactory", "getCommand");
-		exit(1);
-	}
+	return Create(commandName, optionString);
 }
 /***********************************************************/
 
@@ -348,40 +330,27 @@ unique_ptr<Command> CommandFactory::getCommand(string commandName, string option
 /***********************************************************/
 //This function calls the appropriate command fucntions based on user input, this is used by the pipeline command to check a users piepline for errors before running
 unique_ptr<Command> CommandFactory::getCommand(string commandName) {
-	try {
-		return Create(commandName);
-	}
-	catch (exception& e) {
-		m->errorOut(e, "CommandFactory", "getCommand");
-		exit(1);
-	}
+	return Create(commandName);
 }
 /***********************************************************************/
+/*
 bool CommandFactory::isValidCommand(string command) {
-	try {
 
 		//is the command in the map
 		if ((commandMakers.find(command)) != (commandMakers.end())) {
 			return true;
 		}
 		else {
-			m->mothurOut(command + " is not a valid command in Mothur.  Valid commands are ");
+			LOG(LOGERROR) << command + " is not a valid command in Mothur.  Valid commands are ";
 			for (TMapCommands::iterator it = commandMakers.begin(); it != commandMakers.end(); it++) {
-				m->mothurOut(it->first + ", ");
+				LOG(INFO) << it->first + ", ";
 			}
-			m->mothurOutEndLine();
+			LOG(INFO) << "";
 			return false;
 		}
 
-	}
-	catch (exception& e) {
-		m->errorOut(e, "CommandFactory", "isValidCommand");
-		exit(1);
-	}
 }
-/***********************************************************************/
 bool CommandFactory::isValidCommand(string command, string noError) {
-	try {
 
 		//is the command in the map
 		if ((commandMakers.find(command)) != (commandMakers.end())) {
@@ -391,60 +360,34 @@ bool CommandFactory::isValidCommand(string command, string noError) {
 			return false;
 		}
 
-	}
-	catch (exception& e) {
-		m->errorOut(e, "CommandFactory", "isValidCommand");
-		exit(1);
-	}
+}*/
+/***********************************************************************/
+string CommandFactory::getValidCommands() {
+	return "Valid commands are : " + Utility::join(getListCommands(), ", ");
 }
 /***********************************************************************/
-void CommandFactory::printCommands(ostream& out) {
-	try {
-		out << "Valid commands are: ";
-		for (TMapCommands::iterator it = commandMakers.begin(); it != commandMakers.end(); it++) {
-			out << it->first << ",";
+void CommandFactory::getCommandsCategories() {
+	ostringstream os;
+	vector<string> commands;
+	getListCommands(commands);
+	vector<string>::iterator it;
+
+	map<string, vector<string>> categories;
+	//loop through each command outputting info
+	for (it = commands.begin(); it != commands.end(); it++) {
+
+		unique_ptr<Command> thisCommand = getCommand(*it);
+
+		//don't add hidden commands
+		if (thisCommand->getCommandCategory() != "Hidden") {
+			categories[thisCommand->getCommandCategory()].push_back(thisCommand->getCommandName());
 		}
-		out << endl;
 	}
-	catch (exception& e) {
-		m->errorOut(e, "CommandFactory", "printCommands");
-		exit(1);
+
+	for (map<string, vector<string>>::iterator itCat = categories.begin(); itCat != categories.end(); itCat++) {
+		os << itCat->first << " commmands include: " << Utility::join(itCat->second, ", ") << endl;
 	}
-}
-/***********************************************************************/
-void CommandFactory::printCommandsCategories(ostream& out) {
-	try {
-		unique_ptr<vector<string>> commands = getListCommands();
-		vector<string>::iterator it;
 
-		map<string, string> categories;
-		map<string, string>::iterator itCat;
-		//loop through each command outputting info
-		for (it = commands->begin(); it != commands->end(); it++) {
-
-			unique_ptr<Command> thisCommand = getCommand(*it);
-
-			//don't add hidden commands
-			if (thisCommand->getCommandCategory() != "Hidden") {
-				itCat = categories.find(thisCommand->getCommandCategory());
-				if (itCat == categories.end()) {
-					categories[thisCommand->getCommandCategory()] = thisCommand->getCommandName();
-				}
-				else {
-					categories[thisCommand->getCommandCategory()] += ", " + thisCommand->getCommandName();
-				}
-			}
-		}
-
-		for (itCat = categories.begin(); itCat != categories.end(); itCat++) {
-			out << itCat->first << " commmands include: " << itCat->second << endl;
-		}
-
-	}
-	catch (exception& e) {
-		m->errorOut(e, "CommandFactory", "printCommandsCategories");
-		exit(1);
-	}
 }
 
 void CommandFactory::Register(string command, unique_ptr<CommandMakerBase> creator)
@@ -458,10 +401,10 @@ unique_ptr<Command> CommandFactory::Create(string command, string optionString)
 {
 	TMapCommands::iterator it = commandMakers.find(command);
 	if (it == commandMakers.end()) {
-		return unique_ptr<Command>(new NoCommand(optionString));
+		return unique_ptr<Command>(new NoCommand(settings, optionString));
 	}
 	else {
-		return it->second->Create(optionString);
+		return it->second->Create(settings, optionString);
 	}
 }
 /***********************************************************************/
@@ -469,19 +412,29 @@ unique_ptr<Command> CommandFactory::Create(string command)
 {
 	TMapCommands::iterator it = commandMakers.find(command);
 	if (it == commandMakers.end()) {
-		return unique_ptr<Command>(new NoCommand());
+		return unique_ptr<Command>(new NoCommand(settings));
 	}
 	else {
-		return it->second->Create();
+		return it->second->Create(settings);
 	}
 }
 /***********************************************************************/
-unique_ptr<vector<string>> CommandFactory::getListCommands()
+vector<string>& CommandFactory::getListCommands(vector<string>& commandList)
 {
-	unique_ptr<vector<string>> commandList(new vector<string>(commandMakers.size()));
-	for(TMapCommands::iterator it = commandMakers.begin(); it != commandMakers.end(); ++it) {
-		commandList->push_back(it->first);
+	commandList.clear();
+	commandList.resize(commandMakers.size());
+	for (TMapCommands::iterator it = commandMakers.begin(); it != commandMakers.end(); ++it) {
+		commandList.push_back(it->first);
 	}
+	return commandList;
+}
+/***********************************************************************/
+
+
+vector<string> CommandFactory::getListCommands()
+{
+	vector<string> commandList;
+	getListCommands(commandList);
 	return commandList;
 }
 /***********************************************************************/

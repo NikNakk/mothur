@@ -9,55 +9,48 @@
 #include "regularizedrandomforest.h"
 
 RegularizedRandomForest::RegularizedRandomForest(const vector <vector<int> > dataSet,
-                                                 const int numDecisionTrees,
-                                                 const string treeSplitCriterion = "gainratio")
-                        // TODO: update ctor according to basic RandomForest Class
-                      : Forest(dataSet,
-                               numDecisionTrees,
-                               treeSplitCriterion,
-                               false, 0.9, true, 0.4, "log2", 0.0) {
-    m = MothurOut::getInstance();
+	const int numDecisionTrees,
+	const string treeSplitCriterion = "gainratio")
+	// TODO: update ctor according to basic RandomForest Class
+	: Forest(dataSet,
+		numDecisionTrees,
+		treeSplitCriterion,
+		false, 0.9, true, 0.4, "log2", 0.0) {
 }
 
 int RegularizedRandomForest::calcForrestErrorRate() {
-    //
-    try {
-        return 0;
-    }
-    catch(exception& e) {
-		m->errorOut(e, "RegularizedRandomForest", "calcForrestErrorRate");
+	//
+	try {
+		return 0;
+	}
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in RegularizedRandomForest, calcForrestErrorRate";
 		exit(1);
 	}
 }
 
 int RegularizedRandomForest::calcForrestVariableImportance(string filename) {
-    //
-    try {
-        return 0;
-    }
-    catch(exception& e) {
-		m->errorOut(e, "RegularizedRandomForest", "calcForrestVariableImportance");
+	//
+	try {
+		return 0;
+	}
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in RegularizedRandomForest, calcForrestVariableImportance";
 		exit(1);
 	}
 }
 
 int RegularizedRandomForest::populateDecisionTrees() {
-    //
-    try {
-        return 0;
-    }
-    catch(exception& e) {
-		m->errorOut(e, "RegularizedRandomForest", "populateDecisionTrees");
+	//
+	try {
+		return 0;
+	}
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in RegularizedRandomForest, populateDecisionTrees";
 		exit(1);
 	}
 }
 
 int RegularizedRandomForest::updateGlobalOutOfBagEstimates(DecisionTree *decisionTree) {
-    try {
-        return 0;
-    }
-    catch(exception& e) {
-		m->errorOut(e, "RegularizedRandomForest", "updateGlobalOutOfBagEstimates");
-		exit(1);
-	}
+	return 0;
 }

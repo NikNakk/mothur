@@ -17,41 +17,41 @@
 #include "trimseqscommand.h"
 
 class SffMultipleCommand : public Command {
-	
+
 public:
-	SffMultipleCommand(string);
-	SffMultipleCommand();
-	~SffMultipleCommand(){}
-	
+	SffMultipleCommand(Settings& settings, string option);
+	SffMultipleCommand(Settings& settings);
+	~SffMultipleCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "sff.multiple";			}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "sff.multiple"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "http://www.mothur.org/wiki/Sff.multiple"; }
-	string getDescription()		{ return "run multiple sff files through, sffinfo, trim.flow, shhh.flows and trim.seqs combining the results"; }
-    
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	string getDescription() { return "run multiple sff files through, sffinfo, trim.flow, shhh.flows and trim.seqs combining the results"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-    string inputDir;
+	string inputDir;
 	string filename, outputDir, flowOrder, lookupFileName, minDelta;
 	vector<string> outputNames;
 	bool abort, trim, large, flip, allFiles, keepforward, append, makeGroup;
 	int maxFlows, minFlows, minLength, maxLength, maxHomoP, tdiffs, bdiffs, pdiffs, sdiffs, ldiffs;
 	int processors, maxIters, largeSize;
 	float signal, noise, cutoff, sigma;
-    int keepFirst, removeLast, maxAmbig;
-    
-    int readFile(vector<string>& sffFiles, vector<string>& oligosFiles);
-    int createProcesses(vector<string> sffFiles, vector<string> oligosFiles, string, string, string);
-    int driver(vector<string> sffFiles, vector<string> oligosFiles, int start, int end, string, string, string);
-    int mergeOutputFileList(map<string, vector<string> >& files, map<string, vector<string> >& temp);
+	int keepFirst, removeLast, maxAmbig;
+
+	int readFile(vector<string>& sffFiles, vector<string>& oligosFiles);
+	int createProcesses(vector<string> sffFiles, vector<string> oligosFiles, string, string, string);
+	int driver(vector<string> sffFiles, vector<string> oligosFiles, int start, int end, string, string, string);
+	int mergeOutputFileList(map<string, vector<string> >& files, map<string, vector<string> >& temp);
 
 
-    
+
 };
 
 #endif

@@ -14,27 +14,27 @@
 #include "command.hpp"
 #include "commandfactory.hpp"
 
-/****************************************************/
+ /****************************************************/
 
 class PipelineCommand : public Command {
-	
-public:
-	PipelineCommand(string);
-	PipelineCommand() { abort = true; calledHelp = true; setParameters(); }
-	~PipelineCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "pipeline.pds";	}
-	string getCommandCategory()		{ return "Hidden";			}
-	string getHelpString();	
-    string getOutputPattern(string) { return ""; }	
-	string getCitation() { return "Schloss PD, Gevers D, Westcott SL (2011).  Reducing the effects of PCR amplification and sequencing artifacts on 16S rRNA-based studies.  PLoS ONE.  6:e27310.\nhttp://www.mothur.org/wiki/Pipeline.pds"; }
-	string getDescription()		{ return "pat's pipeline"; }
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
+public:
+	PipelineCommand(Settings& settings, string option);
+	PipelineCommand(Settings& settings) : Command(settings) { abort = true; calledHelp = true; setParameters(); }
+	~PipelineCommand() {}
+
+	vector<string> setParameters();
+	string getCommandName() { return "pipeline.pds"; }
+	string getCommandCategory() { return "Hidden"; }
+	string getHelpString();
+	string getOutputPattern(string) { return ""; }
+	string getCitation() { return "Schloss PD, Gevers D, Westcott SL (2011).  Reducing the effects of PCR amplification and sequencing artifacts on 16S rRNA-based studies.  PLoS ONE.  6:e27310.\nhttp://www.mothur.org/wiki/Pipeline.pds"; }
+	string getDescription() { return "pat's pipeline"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
 	bool abort;
 	CommandFactory cFactory;
@@ -42,7 +42,7 @@ private:
 	vector<string> commands;
 	string outputDir, sffFile, alignFile, oligosFile, taxonomyFile, pipeFilename, classifyFile, chimeraFile;
 	int processors;
-	
+
 	bool readUsersPipeline();
 	int runUsersPipeline();
 	void createPatsPipeline();

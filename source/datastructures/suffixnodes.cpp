@@ -60,11 +60,11 @@ void SuffixLeaf::print(string sequence, int nodeNumber){
 	m->mothurOut(toString(this) + "\t" + toString(parentNode) + "\t" + toString(nodeNumber) + "\t" +
 	toString(-1) + "\t" + toString(startCharPosition) + "\t" + toString(endCharPosition) + "\t");
 	
-	m->mothurOut("/");
+	LOG(INFO) << "/";
 	for(int i=startCharPosition;i<=endCharPosition;i++){
-		m->mothurOut(toString(deCodeSequence(sequence[i])));
+		LOG(INFO) << toString(deCodeSequence(sequence[i]));
 	}
-	m->mothurOut("/");  m->mothurOutEndLine();
+	LOG(INFO) << "/" << '\n';
 }
 
 //********************************************************************************************************************
@@ -77,11 +77,11 @@ void SuffixBranch::print(string sequence, int nodeNumber){						//	this method i
 	m->mothurOut(toString(this) + "\t" + toString(parentNode) + "\t" + toString(nodeNumber) + "\t" +		//	of a leaf because it prints out a
 	toString(suffixNode) + "\t" + toString(startCharPosition) + "\t" + toString(endCharPosition) + "\t");  //	value for the suffix node
 	
-	m->mothurOut("/");
+	LOG(INFO) << "/";
 	for(int i=startCharPosition;i<=endCharPosition;i++){
-		m->mothurOut(toString(deCodeSequence(sequence[i])));
+		LOG(INFO) << toString(deCodeSequence(sequence[i]));
 	}
-	m->mothurOut("/");  m->mothurOutEndLine();
+	LOG(INFO) << "/" << '\n';
 }
 
 //	we can access the children by subtracting '0' from the the char value from the string, the difference is an int

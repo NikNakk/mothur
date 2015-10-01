@@ -9,7 +9,7 @@
  *  Copyright 2010 Schloss Lab. All rights reserved.
  *
  */
- 
+
 #include "command.hpp"
 #include "sharedrabundvector.h"
 #include "listvector.hpp"
@@ -22,23 +22,23 @@
 class SubSampleCommand : public Command {
 
 public:
-	SubSampleCommand(string);
-	SubSampleCommand();
+	SubSampleCommand(Settings& settings, string option);
+	SubSampleCommand(Settings& settings);
 	~SubSampleCommand() {}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "sub.sample";	}
-	string getCommandCategory()		{ return "Sequence Processing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Sub.sample"; }
-	string getDescription()		{ return "get a sampling of sequences from a list, shared, rabund, sabund or fasta file"; }
 
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-private:	
+	vector<string> setParameters();
+	string getCommandName() { return "sub.sample"; }
+	string getCommandCategory() { return "Sequence Processing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Sub.sample"; }
+	string getDescription() { return "get a sampling of sequences from a list, shared, rabund, sabund or fasta file"; }
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+private:
 	bool abort, pickedGroups, allLines, persample;
 	string listfile, groupfile, countfile, sharedfile, rabundfile, sabundfile, fastafile, namefile, taxonomyfile;
 	set<string> labels; //holds labels to be used
@@ -47,8 +47,8 @@ private:
 	int size;
 	vector<string> names;
 	map<string, vector<string> > nameMap;
-    CountTable ct;
-	
+	CountTable ct;
+
 	int getSubSampleShared();
 	int getSubSampleList();
 	int getSubSampleRabund();
@@ -60,8 +60,8 @@ private:
 	int processList(ListVector*&, set<string>&);
 	int getNames();
 	int readNames();
-    int getTax(set<string>&);
-	
+	int getTax(set<string>&);
+
 };
 
 #endif

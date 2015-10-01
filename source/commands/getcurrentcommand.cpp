@@ -9,187 +9,163 @@
 
 #include "getcurrentcommand.h"
 
-//**********************************************************************************************************************
-vector<string> GetCurrentCommand::setParameters(){	
+ //**********************************************************************************************************************
+vector<string> GetCurrentCommand::setParameters() {
 	try {
-		CommandParameter pclear("clear", "String", "", "", "", "", "","",false,false); parameters.push_back(pclear);
-		CommandParameter pseed("seed", "Number", "", "0", "", "", "","",false,false); parameters.push_back(pseed);
-        CommandParameter pinputdir("inputdir", "String", "", "", "", "", "","",false,false); parameters.push_back(pinputdir);
-		CommandParameter poutputdir("outputdir", "String", "", "", "", "", "","",false,false); parameters.push_back(poutputdir);
-		
-		vector<string> myArray;
-		for (int i = 0; i < parameters.size(); i++) {	myArray.push_back(parameters[i].name);		}
-		return myArray;
+		nkParameters.add(new StringParameter("clear"));
+		nkParameters.addStandardParameters();
 	}
-	catch(exception& e) {
-		m->errorOut(e, "GetCurrentCommand", "setParameters");
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in GetCurrentCommand, setParameters";
 		exit(1);
 	}
 }
 //**********************************************************************************************************************
-string GetCurrentCommand::getHelpString(){	
+string GetCurrentCommand::getHelpString() {
 	try {
-		string helpString = "";
-		helpString += "The get.current command outputs the current files saved by mothur.\n";
-		helpString += "The get.current command has one parameter: clear.\n";
-		helpString += "The clear parameter is used to indicate which file types you would like to clear values for, multiple types can be separated by dashes.\n";
-		helpString += "The get.current command should be in the following format: \n";
-		helpString += "get.current() or get.current(clear=fasta-name-accnos)\n";
+		string helpString = ""
+			"The get.current command outputs the current files saved by mothur.\n"
+			"The get.current command has one parameter: clear.\n"
+			"The clear parameter is used to indicate which file types you would like to clear values for, multiple types can be separated by dashes.\n"
+			"The get.current command should be in the following format: \n"
+			"get.current() or get.current(clear=fasta-name-accnos)\n";
 		return helpString;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "GetCurrentCommand", "getHelpString");
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in GetCurrentCommand, getHelpString";
 		exit(1);
 	}
 }
-//**********************************************************************************************************************
-GetCurrentCommand::GetCurrentCommand(){	
-	try {
-		abort = true; calledHelp = true;
-		setParameters();
-	}
-	catch(exception& e) {
-		m->errorOut(e, "GetCurrentCommand", "GetCurrentCommand");
-		exit(1);
-	}
-}
-//**********************************************************************************************************************
-GetCurrentCommand::GetCurrentCommand(string option)  {
-	try {
-		abort = false; calledHelp = false;   
-		
-		//allow user to run help
-		if(option == "help") { help(); abort = true; calledHelp = true; }
-		else if(option == "citation") { citation(); abort = true; calledHelp = true;}
-		
-		else {
-			vector<string> myArray = setParameters();
-			
-			OptionParser parser(option);
-			map<string,string> parameters = parser.getParameters();
-			
-			ValidParameters validParameter;
-			//check to make sure all parameters are valid for command
-			for (map<string,string>::iterator it = parameters.begin(); it != parameters.end(); it++) { 
-				if (validParameter.isValidParameter(it->first, myArray, it->second) != true) {  abort = true;  }
-			}
-			
-			clearTypes = validParameter.validFile(parameters, "clear", false);			
-			if (clearTypes == "not found") { clearTypes = ""; }
-			else { m->splitAtDash(clearTypes, types);	}
-		}
-		
-	}
-	catch(exception& e) {
-		m->errorOut(e, "GetCurrentCommand", "GetCurrentCommand");
-		exit(1);
-	}
-}
-//**********************************************************************************************************************
 
-int GetCurrentCommand::execute(){
+int GetCurrentCommand::execute() {
 	try {
-		
-		if (abort == true) { if (calledHelp) { return 0; }  return 2;	}
-        
+
+		if (abort == true) { if (calledHelp) { return 0; }  return 2; }
+
 		//user wants to clear a type
 		if (types.size() != 0) {
 			for (int i = 0; i < types.size(); i++) {
-				
-				if (m->control_pressed) { break; }
-				
+
+				if (ctrlc_pressed) { break; }
+
 				//look for file types
 				if (types[i] == "fasta") {
-					m->setFastaFile("");
-				}else if (types[i] == "qfile") {
-					m->setQualFile("");
-				}else if (types[i] == "phylip") {
-					m->setPhylipFile("");
-				}else if (types[i] == "column") {
-					m->setColumnFile("");
-				}else if (types[i] == "list") {
-					m->setListFile("");
-				}else if (types[i] == "rabund") {
-					m->setRabundFile("");
-				}else if (types[i] == "sabund") {
-					m->setSabundFile("");
-				}else if (types[i] == "name") {
-					m->setNameFile("");
-				}else if (types[i] == "group") {
-					m->setGroupFile("");
-				}else if (types[i] == "order") {
-					m->setOrderFile("");
-				}else if (types[i] == "ordergroup") {
-					m->setOrderGroupFile("");
-				}else if (types[i] == "tree") {
-					m->setTreeFile("");
-				}else if (types[i] == "shared") {
-					m->setSharedFile("");
-				}else if (types[i] == "relabund") {
-					m->setRelAbundFile("");
-				}else if (types[i] == "design") {
-					m->setDesignFile("");
-				}else if (types[i] == "sff") {
-					m->setSFFFile("");
-				}else if (types[i] == "oligos") {
-					m->setOligosFile("");
-				}else if (types[i] == "accnos") {
-					m->setAccnosFile("");
-				}else if (types[i] == "taxonomy") {
-					m->setTaxonomyFile("");
-				}else if (types[i] == "flow") {
-					m->setFlowFile("");
-                }else if (types[i] == "biom") {
-					m->setBiomFile("");
-                }else if (types[i] == "count") {
-					m->setCountTableFile("");
-                }else if (types[i] == "summary") {
-					m->setSummaryFile("");
-                }else if (types[i] == "file") {
-                    m->setFileFile("");
-				}else if (types[i] == "processors") {
-					m->setProcessors("1");
-				}else if (types[i] == "all") {
+					settings.setCurrent("fasta", "");
+				}
+				else if (types[i] == "qfile") {
+					settings.setCurrent("qual", "");
+				}
+				else if (types[i] == "phylip") {
+					settings.setCurrent("phylip", "");
+				}
+				else if (types[i] == "column") {
+					settings.setCurrent("column", "");
+				}
+				else if (types[i] == "list") {
+					settings.setCurrent("list", "");
+				}
+				else if (types[i] == "rabund") {
+					settings.setCurrent("rabund", "");
+				}
+				else if (types[i] == "sabund") {
+					settings.setCurrent("sabund", "");
+				}
+				else if (types[i] == "name") {
+					settings.setCurrent("name", "");
+				}
+				else if (types[i] == "group") {
+					settings.setCurrent("group", "");
+				}
+				else if (types[i] == "order") {
+					settings.setCurrent("order", "");
+				}
+				else if (types[i] == "ordergroup") {
+					settings.setCurrent("ordergroup", "");
+				}
+				else if (types[i] == "tree") {
+					settings.setCurrent("tree", "");
+				}
+				else if (types[i] == "shared") {
+					settings.setCurrent("shared", "");
+				}
+				else if (types[i] == "relabund") {
+					settings.setCurrent("relabund", "");
+				}
+				else if (types[i] == "design") {
+					settings.setCurrent("design", "");
+				}
+				else if (types[i] == "sff") {
+					settings.setCurrent("sff", "");
+				}
+				else if (types[i] == "oligos") {
+					settings.setCurrent("oligos", "");
+				}
+				else if (types[i] == "accnos") {
+					settings.setCurrent("accnos", "");
+				}
+				else if (types[i] == "taxonomy") {
+					settings.setCurrent("taxonomy", "");
+				}
+				else if (types[i] == "flow") {
+					settings.setCurrent("flow", "");
+				}
+				else if (types[i] == "biom") {
+					settings.setCurrent("biom", "");
+				}
+				else if (types[i] == "count") {
+					settings.setCurrent("counttable", "");
+				}
+				else if (types[i] == "summary") {
+					settings.setCurrent("summary", "");
+				}
+				else if (types[i] == "file") {
+					settings.setCurrent("file", "");
+				}
+				else if (types[i] == "processors") {
+					settings.setProcessors("1");
+				}
+				else if (types[i] == "all") {
 					m->clearCurrentFiles();
-				}else {
-					m->mothurOut("[ERROR]: mothur does not save a current file for " + types[i]); m->mothurOutEndLine();
+				}
+				else {
+					LOG(INFO) << "[ERROR]: mothur does not save a current file for " + types[i] << '\n';
 				}
 			}
 		}
-		
-		if (m->hasCurrentFiles()) {
-			m->mothurOutEndLine(); m->mothurOut("Current files saved by mothur:"); m->mothurOutEndLine();
+
+		if (settings.hasCurrentFiles()) {
+			LOG(INFO) << '\n' << "Current files saved by mothur:" << '\n';
 			m->printCurrentFiles();
 		}
-        
-        string inputDir = m->getInputDir();
-        if (inputDir != "") {
-            m->mothurOutEndLine(); m->mothurOut("Current input directory saved by mothur: " + inputDir); m->mothurOutEndLine();
-        }
-        
-        string outputDir = m->getOutputDir();
-        if (outputDir != "") {
-            m->mothurOutEndLine(); m->mothurOut("Current output directory saved by mothur: " + outputDir); m->mothurOutEndLine();
-        }
-        string defaultPath = m->getDefaultPath();
-        if (defaultPath != "") {
-            m->mothurOutEndLine(); m->mothurOut("Current default directory saved by mothur: " + defaultPath); m->mothurOutEndLine();
-        }
-        
-        
-        string temp = "./";
+
+		string inputDir = m->getInputDir();
+		if (inputDir != "") {
+			LOG(INFO) << '\n' << "Current input directory saved by mothur: " + inputDir << '\n';
+		}
+
+		string outputDir = settings.getOutputDir;
+		if (outputDir != "") {
+			LOG(INFO) << '\n' << "Current output directory saved by mothur: " + outputDir << '\n';
+		}
+		string defaultPath = settings.getDefaultPath();
+		if (defaultPath != "") {
+			LOG(INFO) << '\n' << "Current default directory saved by mothur: " + defaultPath << '\n';
+		}
+
+
+		string temp = "./";
 #if defined (UNIX)
 #else
-            temp = ".\\";
+		temp = ".\\";
 #endif
-        temp = m->getFullPathName(temp);
-        m->mothurOutEndLine(); m->mothurOut("Current working directory: " + temp); m->mothurOutEndLine();
-		
+		temp = m->getFullPathName(temp);
+		LOG(INFO) << '\n' << "Current working directory: " + temp << '\n';
+
 		return 0;
 	}
-	
-	catch(exception& e) {
-		m->errorOut(e, "GetCurrentCommand", "execute");
+
+	catch (exception& e) {
+		LOG(FATAL) << e.what() << " in GetCurrentCommand, execute";
 		exit(1);
 	}
 }

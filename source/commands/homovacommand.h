@@ -16,26 +16,26 @@
 class DesignMap;
 
 class HomovaCommand : public Command {
-	
+
 public:
-	HomovaCommand(string);
-	HomovaCommand();
-	~HomovaCommand(){}
-	
+	HomovaCommand(Settings& settings, string option);
+	HomovaCommand(Settings& settings);
+	~HomovaCommand() {}
+
 	vector<string> setParameters();
-	string getCommandName()			{ return "homova";					}
-	string getCommandCategory()		{ return "Hypothesis Testing";		}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
+	string getCommandName() { return "homova"; }
+	string getCommandCategory() { return "Hypothesis Testing"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
 	string getCitation() { return "Stewart CN, Excoffier L (1996). Assessing population genetic structure and variability with RAPD data: Application to Vaccinium macrocarpon (American Cranberry). J Evol Biol 9: 153-71. \nhttp://www.mothur.org/wiki/Homova"; }
-	string getDescription()		{ return "homova"; }
+	string getDescription() { return "homova"; }
 
 	int execute();
-	void help() { m->mothurOut(getHelpString()); }	
-	
+	void help() { LOG(INFO) << getHelpString(); }
+
 private:
-	double runHOMOVA(ofstream& , map<string, vector<int> >, double);
+	double runHOMOVA(ofstream&, map<string, vector<int> >, double);
 	double calcSigleSSWithin(vector<int>);
 	double calcBValue(map<string, vector<int> >, vector<double>&);
 	map<string, vector<int> > getRandomizedGroups(map<string, vector<int> >);

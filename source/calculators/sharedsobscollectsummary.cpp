@@ -9,64 +9,52 @@
 
 #include "sharedsobscollectsummary.h"
 
-/***********************************************************************/
-//This returns the number of shared species observed in several groups.  
-//The shared vector is each groups sharedrabundvector.
+ /***********************************************************************/
+ //This returns the number of shared species observed in several groups.  
+ //The shared vector is each groups sharedrabundvector.
 
-EstOutput SharedSobsCS::getValues(vector<SharedRAbundVector*> shared){
-	try {
-		data.resize(1,0);
-		double observed = 0;
-		int numGroups = shared.size();
+EstOutput SharedSobsCS::getValues(vector<SharedRAbundVector*> shared) {
+	data.resize(1, 0);
+	double observed = 0;
+	int numGroups = shared.size();
 
-		for (int i = 0; i < shared[0]->getNumBins(); i++) {
-			//get bin values and set sharedByAll 
-			bool sharedByAll = true;
-			for (int j = 0; j < numGroups; j++) {
-				if (shared[j]->getAbundance(i) == 0) { sharedByAll = false; }
-			}
-			
-			//they are shared
-			if (sharedByAll == true) {  observed++;  }
+	for (int i = 0; i < shared[0]->getNumBins(); i++) {
+		//get bin values and set sharedByAll 
+		bool sharedByAll = true;
+		for (int j = 0; j < numGroups; j++) {
+			if (shared[j]->getAbundance(i) == 0) { sharedByAll = false; }
 		}
 
-		data[0] = observed;
-		return data;
+		//they are shared
+		if (sharedByAll == true) { observed++; }
 	}
-	catch(exception& e) {
-		m->errorOut(e, "SharedSobsCS", "getValues");
-		exit(1);
-	}
+
+	data[0] = observed;
+	return data;
 }
 /***********************************************************************/
 //This returns the number of shared species observed in several groups.  
 //The shared vector is each groups sharedrabundvector.
 
-EstOutput SharedSobsCS::getValues(vector<SharedRAbundVector*> shared, vector<string>& labels){
-	try {
-		data.resize(1,0);
-		double observed = 0;
-		int numGroups = shared.size();
-        labels.clear();
-        
-		for (int i = 0; i < shared[0]->getNumBins(); i++) {
-			//get bin values and set sharedByAll 
-			bool sharedByAll = true;
-			for (int j = 0; j < numGroups; j++) {
-				if (shared[j]->getAbundance(i) == 0) { sharedByAll = false; }
-			}
-			
-			//they are shared
-			if (sharedByAll == true) {  observed++;  labels.push_back(m->currentSharedBinLabels[i]); }
+EstOutput SharedSobsCS::getValues(vector<SharedRAbundVector*> shared, vector<string>& labels) {
+	data.resize(1, 0);
+	double observed = 0;
+	int numGroups = shared.size();
+	labels.clear();
+
+	for (int i = 0; i < shared[0]->getNumBins(); i++) {
+		//get bin values and set sharedByAll 
+		bool sharedByAll = true;
+		for (int j = 0; j < numGroups; j++) {
+			if (shared[j]->getAbundance(i) == 0) { sharedByAll = false; }
 		}
-        
-		data[0] = observed;
-		return data;
+
+		//they are shared
+		if (sharedByAll == true) { observed++;  labels.push_back(settings.currentSharedBinLabels[i]); }
 	}
-	catch(exception& e) {
-		m->errorOut(e, "SharedSobsCS", "getValues");
-		exit(1);
-	}
+
+	data[0] = observed;
+	return data;
 }
 
 /***********************************************************************/

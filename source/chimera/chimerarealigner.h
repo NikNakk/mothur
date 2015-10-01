@@ -13,7 +13,7 @@
 #include "chimera.h"
 #include "alignment.hpp"
 
-/***********************************************************/
+ /***********************************************************/
 
 struct AlignCell {
 	int score;
@@ -25,20 +25,20 @@ struct AlignCell {
 
 struct  bases {
 	int A, T, G, C, Gap, Chars;
-	bases() : A(0), T(0), G(0), C(0), Gap(0), Chars(0){};
+	bases() : A(0), T(0), G(0), C(0), Gap(0), Chars(0) {};
 };
 
 /***********************************************************/
 
 
-class ChimeraReAligner  {
-	
+class ChimeraReAligner {
+
 public:
-	ChimeraReAligner();	 
+	ChimeraReAligner();
 	~ChimeraReAligner();
-	
+
 	void reAlign(Sequence*, vector<string>);
-				
+
 private:
 	void buildTemplateProfile(vector<string>);
 	void createAlignMatrix(int, int);

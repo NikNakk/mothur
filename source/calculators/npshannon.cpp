@@ -9,43 +9,37 @@
 
 #include "npshannon.h"
 
-/***********************************************************************/
+ /***********************************************************************/
 
 
-EstOutput NPShannon::getValues(SAbundVector* rank){
-	try {
-		data.resize(1,0);
-		float npShannon = 0.0000;
-	
-		double maxRank = (double)rank->getMaxRank();
-		double sampled = rank->getNumSeqs();
-	
-		double Chat = 1.0000 - (double)rank->get(1)/(double)sampled;
-	
-		if(Chat>0)	{	
-			for(int i=1;i<=maxRank;i++){
-				double pi = ((double) i)/((double)sampled);
-				double ChatPi = Chat*pi;
-				if(ChatPi>0){
-					npShannon += rank->get(i) * ChatPi*log(ChatPi)/(1-pow(1-ChatPi,(double)sampled));
-				}
+EstOutput NPShannon::getValues(SAbundVector* rank) {
+	data.resize(1, 0);
+	float npShannon = 0.0000;
+
+	double maxRank = static_cast<double>(rank->getMaxRank());
+	double sampled = rank->getNumSeqs();
+
+	double Chat = 1.0000 - static_cast<double>(rank->get(1)) / static_cast<double>(sampled);
+
+	if (Chat > 0) {
+		for (int i = 1;i <= maxRank;i++) {
+			double pi = (static_cast<double>(i)) / (static_cast<double>(sampled));
+			double ChatPi = Chat*pi;
+			if (ChatPi > 0) {
+				npShannon += static_cast<float>(rank->get(i) * ChatPi*log(ChatPi) / (1 - pow(1 - ChatPi, static_cast<double>(sampled))));
 			}
-			npShannon = -npShannon;
 		}
-		else{
-			npShannon = 0.000;
-		}
-	
-		data[0] = npShannon;
-		
-		if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
-		
-		return data;
+		npShannon = -npShannon;
 	}
-	catch(exception& e) {
-		m->errorOut(e, "NPShannon", "getValues");
-		exit(1);
+	else {
+		npShannon = 0.000;
 	}
+
+	data[0] = npShannon;
+
+	if (isnan(data[0]) || isinf(data[0])) { data[0] = 0; }
+
+	return data;
 }
 
 /***********************************************************************/

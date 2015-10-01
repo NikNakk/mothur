@@ -14,15 +14,15 @@
 class KmerNode;
 
 class KmerTree : public Classify {
-	
+
 public:
 	KmerTree(string, string, int, int);
 	~KmerTree();
-	
-    string getTaxonomy(Sequence*);
+
+	string getTaxonomy(Sequence*);
 
 private:
-    int addTaxonomyToTree(string, string, vector<int>&);
+	int addTaxonomyToTree(string, string, vector<int>&);
 	vector<int> ripKmerProfile(string);
 	int getMinRiskIndexKmer(vector<int>&, vector<int>&, vector<double>&);
 	int aggregateThetas();

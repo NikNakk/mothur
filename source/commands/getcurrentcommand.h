@@ -15,33 +15,20 @@
 
 class GetCurrentCommand : public Command {
 
-	public:
-		GetCurrentCommand(string);
-		GetCurrentCommand();
-		~GetCurrentCommand() {}
-	
-		vector<string> setParameters();
-		string getCommandName()			{ return "get.current";	}
-		string getCommandCategory()		{ return "General";		}
-        string getHelpString();	
-        string getOutputPattern(string)	{ return ""; }
-		string getCitation() { return "http://www.mothur.org/wiki/Get.current"; }
-		string getDescription()		{ return "get current files saved by mothur"; }
+public:
+	GetCurrentCommand(Settings& settings, string option) : Command(settings, option);
+	GetCurrentCommand(Settings& settings) : Command(settings);
+	~GetCurrentCommand() {}
 
-	
-		int execute(); 
-		void help() { m->mothurOut(getHelpString()); }	
-	
-	
-	private:
-		
-        CommandFactory* cFactory;
-		vector<string> outputNames;
-		bool abort;
-	
-		string clearTypes;
-		vector<string> types;
-		
+	vector<string> setParameters();
+	string getCommandName() { return "get.current"; }
+	string getCommandCategory() { return "General"; }
+	string getHelpString();
+	string getCitation() { return "http://www.mothur.org/wiki/Get.current"; }
+	string getDescription() { return "get current files saved by mothur"; }
+
+
+	virtual int execute();
 };
 
 #endif

@@ -14,22 +14,22 @@
 
 #include "calculator.h"
 
-/***********************************************************************/
+ /***********************************************************************/
 
 class NSeqs : public Calculator {
 
 public:
 	NSeqs() : Calculator("nseqs", 1, false) {};
-	EstOutput getValues(SAbundVector* rank){
-		data.resize(1,0);
+	EstOutput getValues(SAbundVector* rank) {
+		data.resize(1, 0);
 		data[0] = (double)rank->getNumSeqs();
 		return data;
 	}
-	
+
 	EstOutput getValues(vector<SharedRAbundVector*> shared) { //return number of sequences in the sharedotus
-		
+
 		int numGroups = shared.size();
-		data.clear(); data.resize(numGroups,0);
+		data.clear(); data.resize(numGroups, 0);
 
 		for (int i = 0; i < shared[0]->getNumBins(); i++) {
 			//get bin values and set sharedByAll 
@@ -37,9 +37,9 @@ public:
 			for (int j = 0; j < numGroups; j++) {
 				if (shared[j]->getAbundance(i) == 0) { sharedByAll = false; }
 			}
-			
+
 			//they are shared
-			if (sharedByAll == true) {  for (int j = 0; j < numGroups; j++) {  data[j] += shared[j]->getAbundance(i);  } }
+			if (sharedByAll == true) { for (int j = 0; j < numGroups; j++) { data[j] += shared[j]->getAbundance(i); } }
 		}
 
 		return data;

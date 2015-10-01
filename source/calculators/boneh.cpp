@@ -77,7 +77,7 @@ EstOutput Boneh::getValues(SAbundVector* sabund){
 		return data;
 	}
 	catch(exception& e) {
-		m->errorOut(e, "Boneh", "getValues");
+		LOG(FATAL) << e.what() << " in Boneh, getValues";
 		exit(1);
 	}
 }

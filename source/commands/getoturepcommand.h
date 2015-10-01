@@ -8,7 +8,7 @@
  *  Copyright 2009 Schloss Lab UMASS Amherst. All rights reserved.
  *
  */
- 
+
  /* The get.oturep command outputs a .fastarep file for each distance you specify, selecting one OTU representative for each bin. */
 
 #include "command.hpp"
@@ -23,45 +23,45 @@
 typedef map<int, float> SeqMap;
 
 struct repStruct {
-		string name;
-		string bin;
-        int simpleBin;
-		int size;
-		string group;
-		
-		repStruct(){}
-		repStruct(string n, string b, int sb, int s, string g) : name(n), bin(b), size(s), group(g), simpleBin(sb) { }
-		~repStruct() {}
+	string name;
+	string bin;
+	int simpleBin;
+	int size;
+	string group;
+
+	repStruct() {}
+	repStruct(string n, string b, int sb, int s, string g) : name(n), bin(b), size(s), group(g), simpleBin(sb) { }
+	~repStruct() {}
 };
 
 class GetOTURepCommand : public Command {
 
 public:
-	GetOTURepCommand(string);
-	GetOTURepCommand();
-	~GetOTURepCommand(){}
-	
-	vector<string> setParameters();
-	string getCommandName()			{ return "get.oturep";				}
-	string getCommandCategory()		{ return "OTU-Based Approaches";	}
-	
-	string getHelpString();	
-    string getOutputPattern(string);	
-	string getCitation() { return "http://www.mothur.org/wiki/Get.oturep"; }
-	string getDescription()		{ return "gets a representative sequence for each OTU"; }
+	GetOTURepCommand(Settings& settings, string option);
+	GetOTURepCommand(Settings& settings);
+	~GetOTURepCommand() {}
 
-	
-	int execute(); 
-	void help() { m->mothurOut(getHelpString()); }	
-	
-	
+	vector<string> setParameters();
+	string getCommandName() { return "get.oturep"; }
+	string getCommandCategory() { return "OTU-Based Approaches"; }
+
+	string getHelpString();
+	string getOutputPattern(string);
+	string getCitation() { return "http://www.mothur.org/wiki/Get.oturep"; }
+	string getDescription() { return "gets a representative sequence for each OTU"; }
+
+
+	int execute();
+	void help() { LOG(INFO) << getHelpString(); }
+
+
 private:
 	ListVector* list;
 	GroupMap* groupMap;
 	ReadMatrix* readMatrix;
 	FormatMatrix* formatMatrix;
 	NameAssignment* nameMap;
-    CountTable ct;
+	CountTable ct;
 	string filename, fastafile, listfile, namefile, groupfile, label, sorted, phylipfile, countfile, columnfile, distFile, format, outputDir, groups, method;
 	ofstream out;
 	ifstream in, inNames, inRow;
@@ -82,10 +82,10 @@ private:
 	int process(ListVector*);
 	SeqMap getMap(int);
 	string findRep(vector<string>, string); 	// returns the name of the "representative" sequence of given bin or subset of a bin, for groups
-    string findRepAbund(vector<string>, string);
+	string findRepAbund(vector<string>, string);
 	int processNames(string, string);
 	int processFastaNames(string, string, FastaMap*&);
-    int readDist();
+	int readDist();
 };
 
 #endif

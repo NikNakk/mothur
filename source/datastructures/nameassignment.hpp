@@ -4,11 +4,11 @@
 #include "mothur.h"
 #include "listvector.hpp"
 
-class NameAssignment : public map<string,int> {
+class NameAssignment : public map<string, int> {
 public:
 	NameAssignment(string);
 	NameAssignment();
-    ~NameAssignment(){}
+	~NameAssignment() {}
 	void readMap();
 	ListVector getListVector();
 	int get(string);
