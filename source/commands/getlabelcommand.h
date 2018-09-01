@@ -1,5 +1,4 @@
-#ifndef GETLABELCOMMAND_H
-#define GETLABELCOMMAND_H
+#pragma once
 
 /*
  *  getlabelcommand.h
@@ -40,4 +39,4 @@ private:
 	vector<string> outputNames;
 };
 
-#endif
+

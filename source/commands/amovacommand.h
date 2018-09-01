@@ -1,5 +1,4 @@
-#ifndef AMOVACOMMAND_H
-#define AMOVACOMMAND_H
+#pragma once
 
 /*
  *  amovacommand.h
@@ -48,5 +47,5 @@ private:
 	double experimentwiseAlpha;
 };
 
-#endif
+
 

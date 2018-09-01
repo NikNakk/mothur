@@ -1,5 +1,4 @@
-#ifndef READPHYLIPVECTOR_H
-#define READPHYLIPVECTOR_H
+#pragma once
 
 /*
  *  readphylipvector.h
@@ -25,9 +24,8 @@ public:
 
 private:
 	string distFile;
-	MothurOut* m;
 };
 
 /******************************************************/
 
-#endif
+

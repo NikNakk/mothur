@@ -1,5 +1,4 @@
-#ifndef SHANNON_H
-#define SHANNON_H
+#pragma once
 /*
  *  shannon.h
  *  Dotur
@@ -30,4 +29,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

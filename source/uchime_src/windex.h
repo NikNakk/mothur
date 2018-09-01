@@ -1,5 +1,4 @@
-#ifndef windex_h
-#define windex_h
+#pragma once
 
 class SFasta;
 struct SeqDB;
@@ -68,4 +67,4 @@ public:
 	void LogSizeHisto() const;
 	};
 
-#endif // windex_h
+ // windex_h

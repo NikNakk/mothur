@@ -1,5 +1,4 @@
-#ifndef EDIANNESSMACROS_H
-#define EDIANNESSMACROS_H
+#pragma once
 
 /*
  *   endiannessmacros.h
@@ -171,5 +170,5 @@
 #define le_int1(x) (x)
 #endif
 
-#endif
+
 

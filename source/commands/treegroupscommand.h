@@ -1,5 +1,4 @@
-#ifndef TREEGROUPCOMMAND_H
-#define TREEGROUPCOMMAND_H
+#pragma once
 
 /*
  *  treegroupscommand.h
@@ -135,7 +134,6 @@ struct treeSharedData {
 	vector<string>  Estimators;
 	unsigned long long start;
 	unsigned long long end;
-	MothurOut* m;
 	int count;
 
 	treeSharedData() {}
@@ -337,6 +335,6 @@ static DWORD WINAPI MyTreeSharedThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+
 
 

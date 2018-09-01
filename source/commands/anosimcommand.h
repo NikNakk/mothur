@@ -1,5 +1,4 @@
-#ifndef ANOSIMCOMMAND_H
-#define ANOSIMCOMMAND_H
+#pragma once
 
 /*
  *  anosimcommand.h
@@ -53,7 +52,7 @@ private:
 
 };
 
-#endif
+
 
 
 

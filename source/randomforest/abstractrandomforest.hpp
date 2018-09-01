@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef rrf_fs_prototype_abstractrandomforest_hpp
-#define rrf_fs_prototype_abstractrandomforest_hpp
+#pragma once
 
 #include "macros.h"
 #include "abstractdecisiontree.hpp"
@@ -58,9 +57,8 @@ protected:
 	// TODO: fix this, do we use pointers?
 	vector<AbstractDecisionTree*> decisionTrees;
 
-	MothurOut* m;
 
 private:
 
 };
-#endif
+

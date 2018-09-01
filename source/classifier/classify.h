@@ -1,5 +1,4 @@
-#ifndef CLASSIFY_H
-#define CLASSIFY_H
+#pragma once
 
 /*
  *  classify.h
@@ -48,11 +47,10 @@ protected:
 	int readTaxonomy(string);
 	vector<string> parseTax(string);
 	double getLogExpSum(vector<double>, int&);
-	MothurOut* m;
 
 };
 
 /**************************************************************************************************/
 
-#endif
+
 

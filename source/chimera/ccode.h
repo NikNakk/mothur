@@ -1,5 +1,4 @@
-#ifndef CCODE_H
-#define CCODE_H
+#pragma once
 
 /*
  *  ccode.h
@@ -79,6 +78,6 @@ private:
 
 /***********************************************************/
 
-#endif
+
 
 

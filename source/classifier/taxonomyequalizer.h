@@ -1,5 +1,4 @@
-#ifndef TAXONOMYEQUALIZER_H
-#define TAXONOMYEQUALIZER_H
+#pragma once
 
 
 /*
@@ -38,13 +37,12 @@ private:
 	int getHighestLevel(ifstream&);  //scans taxonomy file to find taxonomy with highest level
 	void extendTaxonomy(string, string&, int);  //name, taxonomy, desired level
 	void truncateTaxonomy(string, string&, int);  //name, taxonomy, desired level
-	MothurOut* m;
 
 };
 
 /**************************************************************************************************/
 
 
-#endif
+
 
 

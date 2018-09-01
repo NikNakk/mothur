@@ -1,5 +1,4 @@
-#ifndef VALIDPARAMETERS_H
-#define VALIDPARAMETERS_H
+#pragma once
 
 /*
  *  validparameter.h
@@ -32,9 +31,8 @@ public:
 private:
 	map<string, string>::iterator it;
 	map<string, vector<string> > parameterRanges;
-	MothurOut* m;
 	string commandName;
 
 };
 
-#endif
+

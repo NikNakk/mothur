@@ -1,5 +1,4 @@
-#ifndef RAREFACTCOMMAND_H
-#define RAREFACTCOMMAND_H
+#pragma once
 /*
  *  rarefactcommand.h
  *  Dotur
@@ -56,4 +55,4 @@ private:
 	vector<string> createGroupFile(vector<string>&, map<int, string>);
 };
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef HELPCOMMAND_H
-#define HELPCOMMAND_H
+#pragma once
 /*
  *  helpcommand.h
  *  Dotur
@@ -17,11 +16,11 @@
 class HelpCommand : public Command {
 
 public:
-	HelpCommand(Settings& settings, string option);
+	HelpCommand::HelpCommand(Settings& settings, ParameterListToProcess ptp) : Command(settings, ptp) {}
 	HelpCommand(Settings& settings) : Command(settings) {}
 	~HelpCommand() {}
 
-	vector<string> setParameters() { return outputNames; } //dummy, doesn't really do anything	
+	void setParameters() {}
 	string getCommandName() { return "help"; }
 	string getCommandCategory() { return "Hidden"; }
 	string getHelpString() { return "For more information about a specific command type 'commandName(help)' i.e. 'cluster(help)'"; }
@@ -30,13 +29,6 @@ public:
 	string getDescription() { return "help"; }
 
 	int execute();
-	void help() { LOG(INFO) << getHelpString(); }
-
-
-private:
-	CommandFactory* validCommands;
-	vector<string> outputNames;
-
 };
 
-#endif
+

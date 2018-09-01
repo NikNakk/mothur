@@ -1,5 +1,4 @@
-#ifndef THETAN_H
-#define THETAN_H
+#pragma once
 /*
  *  sharedthetan.h
  *  Dotur
@@ -30,4 +29,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef READBLAST_H
-#define READBLAST_H
+#pragma once
 /*
  *  readblast.h
  *  Mothur
@@ -40,12 +39,11 @@ private:
 	
 	SparseDistanceMatrix* matrix;
 	vector<seqDist> overlap;
-	MothurOut* m;
 	
 	int readNames(NameAssignment*);
 };
 
 /*******************************************************************************************/
 
-#endif
+
 

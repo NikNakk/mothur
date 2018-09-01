@@ -36,8 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#ifndef _READLINE_H_
-#define _READLINE_H_
+#pragma once
 
 #include <windows.h>
 
@@ -198,4 +197,4 @@ extern COORD _el_prev_size;
 }
 #endif
 
-#endif /* _READLINE_H_ */
+ /* _READLINE_H_ */

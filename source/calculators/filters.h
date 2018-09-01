@@ -1,5 +1,4 @@
-#ifndef FILTERS_H
-#define FILTERS_H
+#pragma once
 
 /*
  *  filters.h
@@ -106,5 +105,5 @@ protected:
 
 /***********************************************************************/
 
-#endif
+
 

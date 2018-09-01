@@ -1,5 +1,4 @@
-#ifndef HAMMING_H
-#define HAMMING_H
+#pragma once
 
 /*
  *  hamming.h
@@ -29,5 +28,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

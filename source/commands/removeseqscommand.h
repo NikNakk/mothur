@@ -1,5 +1,4 @@
-#ifndef REMOVESEQSCOMMAND_H
-#define REMOVESEQSCOMMAND_H
+#pragma once
 
 /*
  *  removeseqscommand.h
@@ -52,5 +51,5 @@ private:
 
 };
 
-#endif
+
 

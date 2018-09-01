@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef RF_DECISIONTREE_HPP
-#define RF_DECISIONTREE_HPP
+#pragma once
 
 #include "macros.h"
 #include "rftreenode.hpp"
@@ -74,4 +73,4 @@ private:
 	float featureStandardDeviationThreshold;
 };
 
-#endif
+

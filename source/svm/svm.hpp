@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef svm_hpp_
-#define svm_hpp_
+#pragma once
 
 
 #include <algorithm>
@@ -328,7 +327,6 @@ public:
 
 private:
 	ParameterMapVector parameterSetVector;
-	MothurOut* m;
 };
 
 
@@ -818,7 +816,6 @@ private:
 	const OutputFilter outputFilter;
 
 	double accuracy;
-	MothurOut* m;
 
 	// this is a map from label pairs to performance summaries
 	SvmToSvmPerformanceSummary svmToSvmPerformanceSummary;
@@ -1032,4 +1029,4 @@ public:
 };
 
 
-#endif /* svm_hpp_ */
+ /* svm_hpp_ */

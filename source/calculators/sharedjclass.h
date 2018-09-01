@@ -1,5 +1,4 @@
-#ifndef JCLASS_H
-#define JCLASS_H
+#pragma once
 /*
  *  sharedjclass.h
  *  Dotur
@@ -29,4 +28,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

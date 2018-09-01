@@ -1,5 +1,4 @@
-#ifndef SOLOW_H
-#define SOLOW_H
+#pragma once
 
 /*
  *  solow.h
@@ -31,4 +30,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

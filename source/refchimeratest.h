@@ -1,5 +1,4 @@
-#ifndef REFCHIMERATEST
-#define REFCHIMERATEST
+#pragma once
 
 /*
  *  refchimeratest.h
@@ -46,7 +45,6 @@ private:
 	string bestQueryAlignment;
 	bool aligned;
 
-	MothurOut* m;
 };
 
-#endif
+

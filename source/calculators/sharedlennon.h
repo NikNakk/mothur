@@ -1,5 +1,4 @@
-#ifndef LENNON_H
-#define LENNON_H
+#pragma once
 
 /*
  *  sharedlennon.h
@@ -28,4 +27,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

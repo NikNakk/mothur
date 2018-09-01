@@ -1,6 +1,6 @@
 #include "directoryparameter.h"
 #include "filehandling/file.h"
 
-void DirectoryParameter::validateAndSet(string newValue) {
+void DirectoryParameter::validateAndSet(std::string newValue) {
 	this->value = value;
 }

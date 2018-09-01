@@ -8,16 +8,16 @@
  */
 
 #include "setlogfilecommand.h"
+#include "commandparameters/booleanparameter.h"
+#include "commandparameters/outputfileparameter.h"
 
 
  //**********************************************************************************************************************
-vector<string> SetLogFileCommand::setParameters() {
+void SetLogFileCommand::setParameters() {
 	try {
-		nkParameters.add(new BooleanParameter("append", false));
-		nkParameters.add(new OutputFileParameter("name", true, true));
-		nkParameters.addStandardParameters();
-
-		return nkParameters.getNames();
+		parameters.add(new BooleanParameter(append, "append", false));
+		parameters.add(new OutputFileParameter(logFileName, "name", true, true));
+		parameters.addStandardParameters(inputDir, outputDir);
 	}
 	catch (exception& e) {
 		LOG(FATAL) << e.what() << " in SetLogFileCommand, setParameters";
@@ -43,18 +43,10 @@ string SetLogFileCommand::getHelpString() {
 
 int SetLogFileCommand::execute() {
 
-	if (abort == true) { if (calledHelp) { return 0; }  return 2; }
-
-	Settings& settings = Application::getApplication()->getSettings();
-
-	string directory = File::getPath(name);
-	if (directory == "") {
-		settings.setLogFileName(name, append);
+	string directory = File::getPath(logFileName);
+	if (directory == "" || File::dirCheck(directory)) {
+		settings.setLogFileName(logFileName, append);
 	}
-	else if (m->dirCheck(directory)) {
-		settings.setLogFileName(name, append);
-	}
-
 	return 0;
 }
 //**********************************************************************************************************************/

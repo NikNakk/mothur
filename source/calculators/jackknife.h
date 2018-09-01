@@ -1,5 +1,4 @@
-#ifndef JACKKNIFE_H
-#define JACKKNIFE_H
+#pragma once
 
 /*
  *  jacknife.h
@@ -35,4 +34,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

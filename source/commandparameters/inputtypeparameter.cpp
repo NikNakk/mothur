@@ -1,15 +1,15 @@
 #include "inputtypeparameter.h"
 #include "filehandling/file.h"
 
-void InputTypeParameter::validateAndSet(string newValue) {
+void InputTypeParameter::validateAndSet(std::string newValue) {
 	this->value = value;
 }
-
-string InputTypeParameter::getFullPath()
+
+std::string InputTypeParameter::getFullPath()
 {
-	string filePath = File::getPath(value);
+	std::string filePath = File::getPath(value);
 	if (filePath == "") {
-		return inputDir + value;
+		return settings.getInputDir() + value;
 	}
 	else {
 		return value;

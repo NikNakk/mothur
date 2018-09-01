@@ -1,5 +1,4 @@
-#ifndef MOTHURPERSEUS
-#define MOTHURPERSEUS
+#pragma once
 
 /*
  *  myPerseus.h
@@ -54,7 +53,7 @@ struct pwAlign {
 class Perseus {
 
 public:
-	Perseus() { m = MothurOut::getInstance(); }
+	Perseus() { }
 	~Perseus() {}
 
 	vector<vector<double> > binomial(int);
@@ -68,7 +67,6 @@ public:
 	double classifyChimera(double, double, double, double, double);
 
 private:
-	MothurOut* m;
 	int toInt(char);
 	double basicPairwiseAlignSeqs(string, string, string&, string&, pwModel);
 	int getDiffs(string, string, vector<int>&, vector<int>&, vector<int>&, vector<int>&);
@@ -79,6 +77,6 @@ private:
 
 };
 /**************************************************************************************************/
-#endif
+
 
 

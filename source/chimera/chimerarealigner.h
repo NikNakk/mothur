@@ -1,5 +1,4 @@
-#ifndef CHIMERAREALIGNER_H
-#define CHIMERAREALIGNER_H
+#pragma once
 
 /*
  *  chimerarealigner.h
@@ -50,10 +49,9 @@ private:
 	vector<bases> profile;
 	vector<vector<AlignCell> > alignMatrix;
 
-	MothurOut* m;
 };
 
 /***********************************************************/
 
-#endif
+
 

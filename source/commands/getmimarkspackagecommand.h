@@ -6,8 +6,7 @@
 //  Copyright (c) 2014 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_getmimarkspackagecommand_h
-#define Mothur_getmimarkspackagecommand_h
+#pragma once
 
 #include "command.hpp"
 #include "oligos.h"
@@ -52,4 +51,4 @@ private:
 
 
 
-#endif
+

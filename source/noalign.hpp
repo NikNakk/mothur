@@ -1,5 +1,4 @@
-#ifndef NOALIGN_HPP
-#define NOALIGN_HPP
+#pragma once
 
 /*
  *  noalign.hpp
@@ -27,4 +26,4 @@ private:
 /**************************************************************************************************/
 
 
-#endif
+

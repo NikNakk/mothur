@@ -1,5 +1,4 @@
-#ifndef FILTERSEQSCOMMAND_H
-#define FILTERSEQSCOMMAND_H
+#pragma once
 
 /*
  *  filterseqscommand.h
@@ -60,4 +59,3 @@ private:
 	int driverCreateFilter(Filters& F, string filename, linePair line);
 
 };
-#endif

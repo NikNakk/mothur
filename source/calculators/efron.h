@@ -1,5 +1,4 @@
-#ifndef EFRON_H
-#define EFRON_H
+#pragma once
 
 /*
  *  efron.h
@@ -31,4 +30,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

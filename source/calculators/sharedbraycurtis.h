@@ -1,5 +1,4 @@
-#ifndef BRAYCURTIS_H
-#define BRAYCURTIS_H
+#pragma once
 /*
  *  sharedbraycurtis.h
  *  Mothur
@@ -27,4 +26,4 @@ private:
 
 
 
-#endif
+

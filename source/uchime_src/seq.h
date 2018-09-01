@@ -1,5 +1,4 @@
-#ifndef seq_h
-#define seq_h
+#pragma once
 
 struct ORFData;
 
@@ -35,4 +34,4 @@ struct SeqData
 		}
 	};
 
-#endif // seq_h
+ // seq_h

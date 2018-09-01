@@ -1,5 +1,4 @@
-#ifndef CALCULATOR_H
-#define CALCULATOR_H
+#pragma once
 
 
 #include "mothur.h"
@@ -79,5 +78,5 @@ public:
 	double getConfLimit(int, int);
 };
 /**************************************************************************************************/
-#endif
+
 

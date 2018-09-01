@@ -1,5 +1,4 @@
-#ifndef MOTHUR_METASTATS
-#define MOTHUR_METASTATS
+#pragma once
 
 /*
  *  mothurmetastats.h
@@ -21,7 +20,6 @@ public:
 	int runMetastats(string, vector< vector<double> >&, int); //outputFileName, data, secondGroupingStart
 
 private:
-	MothurOut* m;
 	int row, column, numPermutations, secondGroupingStart;
 	double threshold;
 
@@ -40,5 +38,5 @@ private:
 
 };
 
-#endif
+
 

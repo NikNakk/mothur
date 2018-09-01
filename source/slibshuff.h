@@ -1,5 +1,4 @@
-#ifndef SLIBSHUFF
-#define SLIBSHUFF
+#pragma once
 
 /*
  *  slibshuff.h
@@ -24,4 +23,4 @@ private:
 	double sCalculate(int, int);
 };
 
-#endif
+

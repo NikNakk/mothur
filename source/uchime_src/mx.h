@@ -1,5 +1,4 @@
-#ifndef mx_h
-#define mx_h
+#pragma once
 
 #include <list>
 #include <limits.h>
@@ -451,4 +450,4 @@ template<class T> void ReserveMx(Mx<T> &Mxf, unsigned N = UINT_MAX)
 	Mxf.Alloc("(Reserved)", N, N);
 	}
 
-#endif // mx_h
+ // mx_h

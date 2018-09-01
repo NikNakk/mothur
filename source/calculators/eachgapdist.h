@@ -1,5 +1,4 @@
-#ifndef EACHGAPDIST_H
-#define EACHGAPDIST_H
+#pragma once
 /*
  *  eachgapdist.h
  *  Mothur
@@ -57,4 +56,4 @@ public:
 
 /**************************************************************************************************/
 
-#endif
+

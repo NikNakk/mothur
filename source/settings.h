@@ -1,35 +1,36 @@
-#ifndef settings_h
-#define settings_h
+#pragma once
 
 #include <string>
 #include <map>
 #include "filehandling/file.h"
-
-using namespace std;
+#include "mothurdefs.h"
 
 class Settings {
 public:
 	Settings() {};
 	~Settings() {};
 
-	string getDefaultPath() { return defaultPath; }
-	void setDefaultPath(string defaultPath) { this->defaultPath = defaultPath; }
-	string getOutputDir() { return outputDir; }
-	void setOutputDir(string) { this->outputDir = outputDir; }
-	string getInputDir() { return inputDir; }
-	void setInputDir(string inputDir) { this->inputDir = inputDir; }
-	string getLogFileName() { return logFileName; }
-	void setLogFileName(string logFileName, bool append) { this->logFileName = logFileName; this->append = append; }
+	std::string getDefaultPath() { return defaultPath; }
+	void setDefaultPath(std::string defaultPath) { this->defaultPath = defaultPath; }
+	std::string getOutputDir() { return outputDir; }
+	void setOutputDir(std::string) { this->outputDir = outputDir; }
+	std::string getInputDir() { return inputDir; }
+	void setInputDir(std::string inputDir) { this->inputDir = inputDir; }
+	std::string getLogFileName() { return logFileName; }
+	void setLogFileName(std::string logFileName, bool append) { this->logFileName = logFileName; this->append = append; }
 	bool getAppend() { return append; }
 
-	string getReleaseDate() { return releaseDate; }
-	void setReleaseDate(string r) { releaseDate = r; }
-	string getVersion() { return version; }
-	void setVersion(string r) { version = r; }
+	std::string getReleaseDate() { return releaseDate; }
+	void setReleaseDate(std::string r) { releaseDate = r; }
+	std::string getVersion() { return version; }
+	void setVersion(std::string r) { version = r; }
+	std::string getProgramPath(std::string path) { return programPath; }
+	void setProgramPath(std::string path) { programPath = path;  }
 
-	string getCurrent(string type) { return currentfiles[type]; }
-	void setCurrent(string type, string value);
-	string getAllCurrent();
+
+	std::string getCurrent(std::string type) { return currentfiles[type]; }
+	void setCurrent(std::string type, std::string value);
+	std::string getAllCurrent();
 	bool hasCurrentFiles() { return currentfiles.size() > 0 || processors > 1; }
 	void clearCurrentFiles() { currentfiles.clear(); }
 	int getProcessors() { return processors; }
@@ -40,39 +41,26 @@ public:
 	void setDebug(bool debug) { this->debug = debug; }
 	void setModifyNames(bool modifyNames) { this->modifyNames = modifyNames; }
 
-	void addGroup(string g) { Groups.push_back(g); }
-	void setGroups(vector<string>& g) { sort(g.begin(), g.end()); Groups = g; }
-	void clearGroups() { Groups.clear(); }
-	int getNumGroups() { return static_cast<int>(Groups.size()); }
-	vector<string> getGroups() { sort(Groups.begin(), Groups.end()); return Groups; }
-	void addAllGroup(string g) { namesOfGroups.push_back(g); }
-	void setAllGroups(vector<string>& g) { sort(g.begin(), g.end()); namesOfGroups = g; }
-	void clearAllGroups() { namesOfGroups.clear(); }
-	int getNumAllGroups() { return static_cast<int>(namesOfGroups.size()); }
+	bool getQuietMode() { return quietMode; }
+	void setQuietMode(bool quietMode) { this->quietMode = quietMode; }
 
-	vector<string> getAllGroups() { sort(namesOfGroups.begin(), namesOfGroups.end()); return namesOfGroups; }
-	vector<string> Treenames;
-	vector<string> sharedBinLabelsInFile;
-	vector<string> currentSharedBinLabels;
-	vector<string> listBinLabelsInFile;
-
-
+	bool getGui() { return gui; }
+	void setGui(bool gui) { this->gui = gui; }
 private:
-	string logFileName;
-	string defaultPath, outputDir, inputDir;
-	string releaseDate, version;
-	string groupMode = "group";
+	std::string logFileName;
+	std::string programPath;
+	std::string defaultPath, outputDir, inputDir;
+	std::string releaseDate, version;
+	std::string groupMode = "group";
 
 	int processors = 1;
 
 	bool gui = false, printedSharedHeaders = false, printedListHeaders = false;
 	bool mothurCalling = false, debug = false, quietMode = false, changedSeqNames = false, modifyNames = true, append = false;
 
-	vector<string> Groups;
-	vector<string> namesOfGroups;
-	string saveNextLabel, argv, sharedHeaderMode;
+	std::string saveNextLabel, argv, sharedHeaderMode;
 
-	map<string, string> currentfiles;
+	std::map<std::string, std::string> currentfiles;
 
 };
-#endif
+

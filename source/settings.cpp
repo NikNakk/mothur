@@ -2,7 +2,7 @@
 #include <sstream>
 #include <iterator>
 
-void Settings::setCurrent(string type, string value)
+void Settings::setCurrent(std::string type, std::string value)
 {
 	if (value == "") {
 		currentfiles.erase(type);
@@ -18,10 +18,10 @@ void Settings::setCurrent(string type, string value)
 	}
 }
 
-string Settings::getAllCurrent()
+std::string Settings::getAllCurrent()
 {
-	ostringstream os;
-	for (map<string, string>::iterator it = currentfiles.begin(); it != currentfiles.end(); it++) {
+	std::ostringstream os;
+	for (auto it = currentfiles.begin(); it != currentfiles.end(); ++it) {
 		os << it->first << '=' << it->second << '\n';
 	}
 	os << "processors=" << processors;

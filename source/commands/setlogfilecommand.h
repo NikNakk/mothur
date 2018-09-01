@@ -1,5 +1,4 @@
-#ifndef SETLOGFILECOMMAND_H
-#define SETLOGFILECOMMAND_H
+#pragma once
 
 /*
  *  setlogfilecommand.h
@@ -19,10 +18,10 @@ class SetLogFileCommand : public Command {
 
 public:
 	SetLogFileCommand(Settings& settings) : Command(settings) {}
-	SetLogFileCommand(Settings& settings, string option) : Command(settings, option) {}
+	SetLogFileCommand(Settings& settings, ParameterListToProcess ptp) : Command(settings, ptp) {}
 	~SetLogFileCommand() {}
 
-	vector<string> setParameters();
+	void setParameters();
 	string getCommandName() { return "set.logfile"; }
 	string getCommandCategory() { return "General"; }
 
@@ -32,11 +31,14 @@ public:
 	string getDescription() { return "set logfile name"; }
 
 	int execute();
-	void help() { LOG(INFO) << getHelpString(); }
+
+private:
+	std::string logFileName;
+	bool append;
 };
 
 /**********************************************************/
 
-#endif
+
 
 

@@ -1,5 +1,4 @@
-#ifndef GETLISTCOUNTCOMMAND_H
-#define GETLISTCOUNTCOMMAND_H
+#pragma once
 /*
  *  getlistcountcommand.h
  *  Mothur
@@ -50,4 +49,4 @@ private:
 };
 /**********************************************************/
 
-#endif
+

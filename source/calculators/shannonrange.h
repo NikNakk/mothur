@@ -13,8 +13,7 @@
  [4] Roesch, L. F., Fulthorpe, R. R., Riva, A., Casella, G., Hadwin, A. K., Kent, A. D., et al. (2007). Pyrosequencing enumerates and contrasts soil microbial diversity. The ISME Journal, 1(4), 283–290.
  */
 
-#ifndef Mothur_shannonrange_h
-#define Mothur_shannonrange_h
+#pragma once
 
 #include "calculator.h"
 
@@ -35,4 +34,4 @@ private:
 
 
 
-#endif
+

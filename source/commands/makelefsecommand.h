@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__makelefse__
-#define __Mothur__makelefse__
+#pragma once
 
 #include "command.hpp"
 #include "inputdata.h"
@@ -51,4 +50,4 @@ private:
 
 
 
-#endif /* defined(__Mothur__makelefse__) */
+ /* defined(__Mothur__makelefse__) */

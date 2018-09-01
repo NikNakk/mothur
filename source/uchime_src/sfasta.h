@@ -1,5 +1,4 @@
-#ifndef sfasta_h
-#define sfasta_h
+#pragma once
 
 #include "myutils.h"
 #include "seq.h"
@@ -90,4 +89,4 @@ private:
 	const byte *GetNextSeqLo();
 	};
 
-#endif // sfasta_h
+ // sfasta_h

@@ -1,5 +1,4 @@
-#ifndef OPTIONPARSER_H
-#define OPTIONPARSER_H
+#pragma once
 
 /*
  *  optionparser.h
@@ -26,9 +25,8 @@ public:
 	static bool getNameFile(vector<string>);
 private:
 	map<string, string> parameters;
-	MothurOut* m;
 };
 
 /***********************************************************************/
 
-#endif
+

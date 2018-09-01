@@ -1,5 +1,4 @@
-#ifndef READCLUSTER_H
-#define READCLUSTER_H
+#pragma once
 /*
  *  readcluster.h
  *  Mothur
@@ -34,7 +33,6 @@ private:
 	string OutPutFile, format;
 	ListVector* list;
 	float cutoff;
-	MothurOut* m;
 	bool sortWanted;
 
 	int convertPhylip2Column(NameAssignment*&);
@@ -43,5 +41,5 @@ private:
 
 /******************************************************/
 
-#endif
+
 

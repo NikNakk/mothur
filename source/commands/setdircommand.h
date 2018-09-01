@@ -1,5 +1,4 @@
-#ifndef SETDIRCOMMAND_H
-#define SETDIRCOMMAND_H
+#pragma once
 
 /*
  *  setoutdircommand.h
@@ -18,33 +17,27 @@
 class SetDirectoryCommand : public Command {
 
 public:
-	SetDirectoryCommand(Settings& settings, string option);
-	SetDirectoryCommand(Settings& settings) : Command(settings) { abort = true; calledHelp = true; setParameters(); }
+	SetDirectoryCommand(Settings& settings, ParameterListToProcess ptp) : Command(settings, ptp) {}
+	SetDirectoryCommand(Settings& settings) : Command(settings) {}
 	~SetDirectoryCommand() {}
 
-	vector<string> setParameters();
-	string getCommandName() { return "set.dir"; }
-	string getCommandCategory() { return "General"; }
+	void setParameters();
+	virtual string getCommandName() const override { return "set.dir"; }
+	virtual string getCommandCategory() const override { return "General"; }
 
-	string getHelpString();
-	string getOutputPattern(string) { return ""; }
-	string getCitation() { return "http://www.mothur.org/wiki/Set.dir"; }
-	string getDescription() { return "set input, output and default directories"; }
+	virtual string getHelpString() const override;
+	virtual string getDescription() const override { return "set input, output and default directories"; }
 
-	int execute();
-	void help() { LOG(INFO) << getHelpString(); }
+	virtual int execute() override;
 
 private:
-	CommandFactory* commandFactory;
 	string output, input, tempdefault;
-	bool abort, debugorSeedOnly, modifyNames;
+	bool abort, debugorSeedOnly, modifyNames, debug;
 	int random;
 	vector<string> outputNames;
-
-
 };
 
 /**********************************************************/
 
-#endif
+
 

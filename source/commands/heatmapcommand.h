@@ -1,5 +1,4 @@
-#ifndef HEATMAPCOMMAND_H
-#define HEATMAPCOMMAND_H
+#pragma once
 
 /*
  *  heatmapcommand.h
@@ -55,5 +54,5 @@ private:
 
 };
 
-#endif
+
 

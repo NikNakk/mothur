@@ -1,5 +1,4 @@
-#ifndef Mothur_subsample_h
-#define Mothur_subsample_h
+#pragma once
 
 //
 //  subsample.h
@@ -29,7 +28,7 @@ class SubSample {
 
 public:
 
-	SubSample() { m = MothurOut::getInstance(); }
+	SubSample() { }
 	~SubSample() {}
 
 	vector<string> getSample(vector<SharedRAbundVector*>&, int); //returns the bin labels for the subsample, mothurOuts binlabels are preserved so you can run this multiple times. Overwrites original vector passed in, if you need to preserve it deep copy first.
@@ -40,11 +39,10 @@ public:
 
 private:
 
-	MothurOut* m;
 	int eliminateZeroOTUS(vector<SharedRAbundVector*>&);
 	map<string, string> deconvolute(map<string, string> wholeSet, vector<string>& subsampleWanted); //returns new nameMap containing only subsampled names, and removes redundants from subsampled wanted because it makes the new nameMap.
 
 
 };
 
-#endif
+

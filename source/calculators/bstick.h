@@ -1,5 +1,4 @@
-#ifndef BSTICK_H
-#define BSTICK_H
+#pragma once
 /*
  *  bstick.h
  *  Mothur
@@ -30,4 +29,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef CHIMERAPERSEUSCOMMAND_H
-#define CHIMERAPERSEUSCOMMAND_H
+#pragma once
 
 
 /*
@@ -75,7 +74,6 @@ struct perseusData {
 	string outputFName;
 	string accnos;
 	string countlist;
-	MothurOut* m;
 	int start;
 	int end;
 	bool hasName, hasCount, dups;
@@ -410,6 +408,6 @@ static DWORD WINAPI MyPerseusThreadFunction(LPVOID lpParam) {
 
 #endif
 
-#endif
+
 
 

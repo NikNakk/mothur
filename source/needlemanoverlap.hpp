@@ -1,5 +1,4 @@
-#ifndef NEEDLEMAN_H
-#define NEEDLEMAN_H
+#pragma once
 
 /*
  *  needleman.h
@@ -43,4 +42,4 @@ private:
 
 /**************************************************************************************************/
 
-#endif
+

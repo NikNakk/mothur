@@ -1,5 +1,4 @@
-#ifndef EACHGAPIGNORE_H
-#define EACHGAPIGNORE_H
+#pragma once
 /*
  *  eachgapignore.h
  *  Mothur
@@ -72,6 +71,6 @@ public:
 
 /**************************************************************************************************/
 
-#endif
+
 
 

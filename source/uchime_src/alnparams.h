@@ -1,5 +1,4 @@
-#ifndef alnparams_h
-#define alnparams_h
+#pragma once
 
 struct HSPData;
 
@@ -56,4 +55,4 @@ struct AlnParams
 
 const float OBVIOUSLY_WRONG_PENALTY = 1000.0;
 
-#endif // alnparams_h
+ // alnparams_h

@@ -1,5 +1,4 @@
-#ifndef GETSEQSCOMMAND_H
-#define GETSEQSCOMMAND_H
+#pragma once
 
 /*
  *  getseqscommand.h
@@ -58,5 +57,5 @@ private:
 
 };
 
-#endif
+
 

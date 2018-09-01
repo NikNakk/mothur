@@ -1,5 +1,4 @@
-#ifndef GETSHAREDOTUCOMMAND_H
-#define GETSHAREDOTUCOMMAND_H
+#pragma once
 
 /*
  *  getsharedotucommand.h
@@ -61,5 +60,5 @@ private:
 };
 //**********************************************************************************************************************
 
-#endif
+
 

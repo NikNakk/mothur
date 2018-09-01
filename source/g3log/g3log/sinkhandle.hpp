@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
 
 
 namespace g3 {
@@ -31,6 +32,7 @@ namespace g3 {
 		std::weak_ptr<internal::Sink<T>> _sink;
 		std::mutex m_;
 		std::condition_variable cond_;
+		std::atomic<bool> waitOver_;
 
 	public:
 		SinkHandle(std::shared_ptr<internal::Sink<T>> sink)
@@ -55,15 +57,21 @@ namespace g3 {
 			}
 		}
 
+		void setWaitOver(bool waitOver) {
+			waitOver_ = waitOver;
+		}
+
 		void cinWaiting() {
 			std::unique_lock<std::mutex> lock(m_);
-			cond_.wait(lock);
-			waitUntilClear();
+			if (!waitOver_) {
+				cond_.wait(lock);
+			}
 		}
 
 		void notifyCinWaiting() {
 			std::unique_lock<std::mutex> lock(m_);
 			cond_.notify_one();
+			waitOver_ = true;
 		}
 
 		void waitUntilClear() {

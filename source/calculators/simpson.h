@@ -1,5 +1,4 @@
-#ifndef SIMPSON_H
-#define SIMPSON_H
+#pragma once
 /*
  *  simpson.h
  *  Dotur
@@ -28,4 +27,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

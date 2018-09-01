@@ -1,5 +1,4 @@
-#ifndef INPUTDATA_H
-#define INPUTDATA_H
+#pragma once
 
 #include "mothur.h"
 #include "ordervector.hpp"
@@ -45,8 +44,7 @@ private:
 	RAbundVector* rabund;
 	map<string,int> orderMap;
 	string filename;
-	MothurOut* m;
 };
 
 
-#endif
+

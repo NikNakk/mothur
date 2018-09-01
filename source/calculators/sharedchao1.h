@@ -1,5 +1,4 @@
-#ifndef SHAREDCHAO1_H
-#define SHAREDCHAO1_H
+#pragma once
 /*
  *  sharedchao1.h
  *  Dotur
@@ -46,4 +45,4 @@ class SharedChao1 : public Calculator  {
 
 /***********************************************************************/
 
-#endif
+

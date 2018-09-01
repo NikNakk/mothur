@@ -1,5 +1,4 @@
-#ifndef LIBSHUFF
-#define LIBSHUFF
+#pragma once
 
 /*
  *  libshuff.h
@@ -43,7 +42,6 @@ protected:
 	float stepSize;
 
 	int numGroups;
-	MothurOut* m;
 };
 
-#endif
+

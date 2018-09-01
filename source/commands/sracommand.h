@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_sracommand_h
-#define Mothur_sracommand_h
+#pragma once
 
 #include "command.hpp"
 #include "trimoligos.h"
@@ -83,4 +82,4 @@ private:
 
 
 
-#endif
+

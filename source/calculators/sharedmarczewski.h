@@ -1,5 +1,4 @@
-#ifndef SHAREDMARCZEWSKI_H
-#define SHAREDMARCZEWSKI_H
+#pragma once
 
 /*
  *  sharedmarczewski.h
@@ -26,4 +25,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

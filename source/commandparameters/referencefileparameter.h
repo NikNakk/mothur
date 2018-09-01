@@ -4,13 +4,13 @@
 
 class ReferenceFileParameter : public InputTypeParameter {
 public:
-	ReferenceFileParameter(Settings& settings, Ystring name = "reference", bool required = false, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
+	ReferenceFileParameter(Settings& settings, std::string name = "reference", bool required = false, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
 		InputTypeParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual string getValue() {
+	virtual std::string getValue() const override {
 		return value;
 	}
-	virtual void validateAndSet(string newValue);
+	virtual void validateAndSet(std::string newValue);
 private:
-	string value;
+	std::string value;
 };

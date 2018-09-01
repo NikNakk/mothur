@@ -1,5 +1,4 @@
-#ifndef CLUSTERFRAGMENTSCOMMAND_H
-#define CLUSTERFRAGMENTSCOMMAND_H
+#pragma once
 
 /*
  *  clusterfragmentscommand.h
@@ -67,5 +66,5 @@ private:
 
 /************************************************************/
 
-#endif
+
 

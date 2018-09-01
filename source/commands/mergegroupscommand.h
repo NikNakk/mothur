@@ -1,5 +1,4 @@
-#ifndef MERGEGROUPSCOMMAND_H
-#define MERGEGROUPSCOMMAND_H
+#pragma once
 
 /*
  *  mergegroupscommand.h
@@ -57,5 +56,5 @@ private:
 	int eliminateZeroOTUS(vector<SharedRAbundFloatVector*>&);
 };
 
-#endif
+
 

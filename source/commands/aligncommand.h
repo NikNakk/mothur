@@ -27,7 +27,7 @@
 class AlignCommand : public Command {
 
 public:
-	AlignCommand(Settings& settings, string option) : Command(settings, option) {};
+	AlignCommand(Settings& settings, ParameterListToProcess ptp) : Command(settings, ptp) {};
 	AlignCommand(Settings& settings) : Command(settings) {};
 
 	vector<string> setParameters();

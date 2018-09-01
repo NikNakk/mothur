@@ -1,28 +1,25 @@
-#ifndef booleanparameter_h
-#define booleanparameter_h
+#pragma once
 
 #include "commandparameterbase.h"
 
-using namespace std;
-
 class BooleanParameter : public CommandParameterBase {
 public:
-	explicit BooleanParameter(string name, bool defaultValue = false, bool required = false, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		CommandParameterBase(name, Boolean, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
-		defaultValue(defaultValue)
+	explicit BooleanParameter(bool & value, std::string name, bool defaultValue = false, bool required = false, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		CommandParameterBase(name, CommandParameterType::Boolean, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+		value(value), defaultValue(defaultValue)
 	{}
-	virtual string getValue() {
+	virtual std::string getValue() const override {
 		return std::to_string(value);
 	}
 	virtual bool hasValue() { return valueSet; }
 	bool getBooleanValue() {
 		return value;
 	}
-	virtual void validateAndSet(string newValue);
+	virtual void validateAndSet(std::string newValue);
 protected:
-	bool value = false;
+	bool & value;
 	bool defaultValue = false;
 	bool valueSet = false;
 };
-#endif
+

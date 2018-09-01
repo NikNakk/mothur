@@ -1,5 +1,4 @@
-#ifndef OTUHIERARCHYCOMMAND_H
-#define OTUHIERARCHYCOMMAND_H
+#pragma once
 /*
  *  otuhierarchycommand.h
  *  Mothur
@@ -48,6 +47,6 @@ private:
 
 //**********************************************************************************************************************
 
-#endif
+
 
 

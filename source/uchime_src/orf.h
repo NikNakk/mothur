@@ -1,5 +1,4 @@
-#ifndef orf_h
-#define orf_h
+#pragma once
 
 #include "alpha.h"
 
@@ -34,4 +33,4 @@ const byte ORFEND = '.';
 void GetORFs(const byte *NucSeq, unsigned NucL, vector<ORFData> &ORFs,
   unsigned ORFStyle, int FindFrame, int Sign);
 
-#endif // orf_h
+ // orf_h

@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_filtersharedcommand_h
-#define Mothur_filtersharedcommand_h
+#pragma once
 
 #include "command.hpp"
 #include "sharedrabundvector.h"
@@ -47,4 +46,4 @@ private:
 
 
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef SUBSAMPLECOMMAND_H
-#define SUBSAMPLECOMMAND_H
+#pragma once
 
 /*
  *  subsamplecommand.h
@@ -64,5 +63,5 @@ private:
 
 };
 
-#endif
+
 

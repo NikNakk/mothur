@@ -1,5 +1,4 @@
-#ifndef TAXONOMYNODE
-#define TAXONOMYNODE
+#pragma once
 
 /*
  *  taxonomynode.h
@@ -41,7 +40,6 @@ private:
 	int level;
 
 protected:
-	MothurOut* m;
 	int numSeqs;
 	int totalSeqs;
 	string name;
@@ -49,4 +47,4 @@ protected:
 
 /**************************************************************************************************/
 
-#endif
+

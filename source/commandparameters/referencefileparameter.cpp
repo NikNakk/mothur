@@ -1,5 +1,5 @@
 #include "referencefileparameter.h"
 
-void ReferenceFileParameter::validateAndSet(string newValue) {
+void ReferenceFileParameter::validateAndSet(std::string newValue) {
 	this->value = value;
 }

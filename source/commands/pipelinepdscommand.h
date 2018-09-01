@@ -1,5 +1,4 @@
-#ifndef PIPELINEPDSCOMMAND_H
-#define PIPELINEPDSCOMMAND_H
+#pragma once
 
 /*
  *  pipelinepdscommand.h
@@ -53,5 +52,5 @@ private:
 
 /****************************************************/
 
-#endif
+
 

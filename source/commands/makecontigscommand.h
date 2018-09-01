@@ -1,5 +1,4 @@
-#ifndef Mothur_makecontigscommand_h
-#define Mothur_makecontigscommand_h
+#pragma once
 
 //
 //  makecontigscommand.h
@@ -113,7 +112,6 @@ struct contigsData {
 	string align, group, oligosfile, format;
 	vector<string> inputFiles, qualOrIndexFiles, outputNames;
 	vector<vector<string> > fastaFileNames, qualFileNames;
-	MothurOut* m;
 	float match, misMatch, gapOpen, gapExtend;
 	int count, insert, threadID, pdiffs, bdiffs, tdiffs, deltaq, kmerSize;
 	bool allFiles, createOligosGroup, createFileGroup, done, trimOverlap, reorient, gz;
@@ -2816,4 +2814,4 @@ static DWORD WINAPI MyContigsThreadFunction(LPVOID lpParam) {
 #endif
 
 
-#endif
+

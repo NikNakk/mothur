@@ -1,5 +1,4 @@
-#ifndef HEATMAPSIM_H
-#define HEATMAPSIM_H
+#pragma once
 /*
  *  heatmapsim.h
  *  Mothur
@@ -31,11 +30,10 @@ private:
 	string format, groupComb, outputDir, inputfile;
 	int fontSize;
 	ofstream outsvg;
-	MothurOut* m;
 
 };
 
 /***********************************************************************/
 
-#endif
+
 

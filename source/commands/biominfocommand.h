@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__biominfocommand__
-#define __Mothur__biominfocommand__
+#pragma once
 
 #include "command.hpp"
 #include "inputdata.h"
@@ -56,4 +55,4 @@ private:
 };
 
 
-#endif /* defined(__Mothur__biominfocommand__) */
+ /* defined(__Mothur__biominfocommand__) */

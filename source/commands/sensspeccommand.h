@@ -1,5 +1,4 @@
-#ifndef SENSSPECCOMMAND_H
-#define SENSSPECCOMMAND_H
+#pragma once
 
 
 /*
@@ -56,4 +55,4 @@ private:
 	int process(map<string, int>&, ListVector*&, bool&, string&);
 };
 
-#endif
+

@@ -1,17 +1,17 @@
-#ifndef outputfileparameter_h
-#define outputfileparameter_h
+#pragma once
 
 #include "commandparameterbase.h"
 
 class OutputFileParameter : public CommandParameterBase {
 public:
-	OutputFileParameter(string name, bool required, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		CommandParameterBase(name, OutputFile, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual string getValue() { return value; }
-	virtual void validateAndSet(string value);
+	OutputFileParameter(std::string & value, std::string name, bool required, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		CommandParameterBase(name, CommandParameterType::OutputFile, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+		value(value) {}
+	virtual std::string getValue() const override { return value; }
+	virtual void validateAndSet(std::string value);
 protected:
-	string value;
+	std::string & value;
 };
 
-#endif
+

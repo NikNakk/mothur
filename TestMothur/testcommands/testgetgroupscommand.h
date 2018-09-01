@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__testgetgroupscommand__
-#define __Mothur__testgetgroupscommand__
+#pragma once
 
 #include "getgroupscommand.h"
 
@@ -31,4 +30,4 @@ public:
 };
 
 
-#endif /* defined(__Mothur__testgetgroupscommand__) */
+ /* defined(__Mothur__testgetgroupscommand__) */

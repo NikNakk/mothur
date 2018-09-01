@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_sharedjsd_h
-#define Mothur_sharedjsd_h
+#pragma once
 
 #include "calculator.h"
 
@@ -27,4 +26,4 @@ private:
 /***********************************************************************/
 
 
-#endif
+

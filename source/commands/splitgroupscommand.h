@@ -1,5 +1,4 @@
-#ifndef SPLITGROUPSCOMMAND_H
-#define SPLITGROUPSCOMMAND_H
+#pragma once
 
 /*
  *  splitgroupscommand.h
@@ -53,7 +52,7 @@ private:
 
 /***************************************************************************************/
 
-#endif
+
 
 
 

@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_kmeans_h
-#define Mothur_kmeans_h
+#pragma once
 
 #include "communitytype.h"
 
@@ -25,4 +24,4 @@ private:
 
 /**************************************************************************************************/
 
-#endif
+

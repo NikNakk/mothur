@@ -10,114 +10,106 @@
 #include <iterator>
 #include <sstream>
 
+void CommandParameterCollection::addToGroup(std::map<std::string, std::vector<std::string>>& parameterGroups, std::string & const groupNames, std::string & const parameterName)
+{
+	std::vector<std::string> groupNamesVec;
+	if (groupNames != "") {
+		groupNamesVec = Utility::split(groupNames, '-');
+		for (auto groupName : groupNamesVec) {
+			parameterGroups[groupName].push_back(parameterName);
+		}
+	}
+}
+
 void CommandParameterCollection::add(CommandParameterBase * newParameter)
 {
 	(*this)[newParameter->getName()] = unique_ptr<CommandParameterBase>(newParameter);
-	string group;
-	if ((group = newParameter->getChooseAtLeastOneGroup()) != "") {
-		chooseAtLeastOneGroups[group].push_back(newParameter->getName());
-	}
-	if ((group = newParameter->getChooseOnlyOneGroup()) != "") {
-		chooseOnlyOneGroups[group].push_back(newParameter->getName());
-	}
-	if ((group = newParameter->getLinkedGroup()) != "") {
-		linkedGroups[group].push_back(newParameter->getName());
-	}
+	std::string group;
+	addToGroup(chooseAtLeastOneGroups, newParameter->getChooseAtLeastOneGroup(), newParameter->getName());
+	addToGroup(chooseOnlyOneGroups, newParameter->getChooseOnlyOneGroup(), newParameter->getName());
+	addToGroup(linkedGroups, newParameter->getLinkedGroup(), newParameter->getName());
 }
 
-void CommandParameterCollection::addStandardParameters()
+void CommandParameterCollection::addStandardParameters(std::string & inputDir, std::string & outputDir)
 {
 	this->add(new SeedParameter());
-	Y	this->add(new OutputDirectoryParameter(settings));
-	this->add(new InputDirectoryParameter(settings));
+	this->add(new OutputDirectoryParameter(inputDir, settings));
+	this->add(new InputDirectoryParameter(outputDir, settings));
 }
 
-vector<string> CommandParameterCollection::getNames()
+
+std::vector<std::string> CommandParameterCollection::getNames()
 {
-	vector<string> names;
+	std::vector<std::string> names;
 	for (CommandParameterCollection::iterator it = this->begin(); it != this->end(); ++it) {
 		names.push_back(it->first);
 	}
 	return names;
 }
 
-void CommandParameterCollection::parseOptionString(string optionString)
+void CommandParameterCollection::validateAndSet(ParameterListToProcess ptp)
 {
-	vector<string> optionStrings;
-	bool abort = false;
-	try {
-		Utility::split(optionString, ',', optionStrings);
-		// Split option string into parameters
-		for (vector<string>::iterator it = optionStrings.begin(); it != optionStrings.end(); it++) {
-			vector<string> opt;
-			Utility::split(optionString, '=', opt);
-			if (opt.size() != 2) {
-				throw(invalid_argument(string("Invalid parameter provided: ") + *it));
-			}
-			if ((opt[0] == "candidate") || (opt[0] == "query")) {
-				opt[0] = "fasta";
-			}
-			else if (opt[0] == "template") {
-				opt[0] = "reference";
-			}
-			CommandParameterCollection::iterator paramIt = this->find(opt[0]);
-			if (paramIt == this->end()) {
-				throw(invalid_argument(opt[0] + " is not a valid parameter"));
-			}
-			else {
-				paramIt->second->validateAndSet(opt[1]);
-			}
+	for (ParameterListToProcess::iterator it = ptp.begin(); it != ptp.end(); ++it) {
+		if ((it->parameterName == "candidate") || (it->parameterName == "query")) {
+			it->parameterName = "fasta";
 		}
-		// Check required parameters provided
-		for (CommandParameterCollection::iterator paramIt = this->begin(); paramIt != this->end(); paramIt++) {
-			CommandParameterBase * param = paramIt->second.get();
-			if (param->validateRequiredMissing()) {
-				throw(invalid_argument(string("Parameter ") + param->getName() + " is required but was not provided"));
-			}
+		else if (it->parameterName == "template") {
+			it->parameterName = "reference";
 		}
-		for (ParameterGroup::iterator pgIt = chooseOnlyOneGroups.begin(); pgIt != chooseOnlyOneGroups.end(); pgIt++) {
-			bool oneSet = false;
-			for (vector<string>::iterator vIt = pgIt->second.begin(); vIt != pgIt->second.end(); vIt++) {
-				if ((*this)[*vIt]->hasValue()) {
-					if (oneSet) {
-						throw(invalid_argument(string("Only one of " + Utility::join(pgIt->second, ", ") + " should be provided")));
-					}
-					else {
-						oneSet = true;
-					}
-				}
-			}
+		CommandParameterCollection::iterator paramIt = this->find(it->parameterName);
+		if (paramIt == this->end()) {
+			throw(invalid_argument('\'' + it->parameterName + " is not a valid parameter"));
 		}
-		for (ParameterGroup::iterator pgIt = chooseAtLeastOneGroups.begin(); pgIt != chooseAtLeastOneGroups.end(); pgIt++) {
-			bool atLeastOneSet = false;
-			for (vector<string>::iterator vIt = pgIt->second.begin(); vIt != pgIt->second.end(); vIt++) {
-				if ((*this)[*vIt]->hasValue()) {
-					atLeastOneSet = true;
-					break;
-				}
-			}
-			if (!atLeastOneSet) {
-				throw(invalid_argument(string("At least one of " + Utility::join(pgIt->second, ", ") + " should be provided")));
-			}
+		else {
+			paramIt->second->validateAndSet(it->parameterValue);
 		}
-		for (ParameterGroup::iterator pgIt = chooseAtLeastOneGroups.begin(); pgIt != chooseAtLeastOneGroups.end(); pgIt++) {
-			bool anySet = false;
-			bool allSet = true;
-			for (vector<string>::iterator vIt = pgIt->second.begin(); vIt != pgIt->second.end(); vIt++) {
-				if ((*this)[*vIt]->hasValue()) {
-					anySet = true;
+	}
+	// Check required parameters provided
+	for (CommandParameterCollection::iterator paramIt = this->begin(); paramIt != this->end(); ++paramIt) {
+		CommandParameterBase * param = paramIt->second.get();
+		if (!(param->validateRequiredMissing())) {
+			throw(invalid_argument(std::string("Parameter '") + param->getName() + "' is required but was not provided"));
+		}
+	}
+	for (ParameterGroup::iterator pgIt = chooseOnlyOneGroups.begin(); pgIt != chooseOnlyOneGroups.end(); ++pgIt) {
+		bool oneSet = false;
+		for (std::vector<std::string>::iterator vIt = pgIt->second.begin(); vIt != pgIt->second.end(); ++vIt) {
+			if ((*this)[*vIt]->hasValue()) {
+				if (oneSet) {
+					throw(invalid_argument(std::string("Only one of " + Utility::join(pgIt->second, ", ") + " should be provided")));
 				}
 				else {
-					allSet = false;
-				}
-				if (anySet && !allSet) {
-					throw(invalid_argument(string("If any of " + Utility::join(pgIt->second, ", ") + " are provided, all should be")));
+					oneSet = true;
 				}
 			}
 		}
 	}
-	catch (exception& e)
-	{
-		throw;
+	for (ParameterGroup::iterator pgIt = chooseAtLeastOneGroups.begin(); pgIt != chooseAtLeastOneGroups.end(); ++pgIt) {
+		bool atLeastOneSet = false;
+		for (std::vector<std::string>::iterator vIt = pgIt->second.begin(); vIt != pgIt->second.end(); ++vIt) {
+			if ((*this)[*vIt]->hasValue()) {
+				atLeastOneSet = true;
+				break;
+			}
+		}
+		if (!atLeastOneSet) {
+			throw(invalid_argument(std::string("At least one of " + Utility::join(pgIt->second, ", ") + " should be provided")));
+		}
 	}
+	for (ParameterGroup::iterator pgIt = chooseAtLeastOneGroups.begin(); pgIt != chooseAtLeastOneGroups.end(); ++pgIt) {
+		bool anySet = false;
+		bool allSet = true;
+		for (std::vector<std::string>::iterator vIt = pgIt->second.begin(); vIt != pgIt->second.end(); ++vIt) {
+			if ((*this)[*vIt]->hasValue()) {
+				anySet = true;
+			}
+			else {
+				allSet = false;
+			}
+			if (anySet && !allSet) {
+				throw(invalid_argument(std::string("If any of " + Utility::join(pgIt->second, ", ") + " are provided, all should be")));
+			}
+		}
+	}
+
 }

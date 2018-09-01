@@ -1,5 +1,4 @@
-#ifndef Mothur_newcommandtemplate_h
-#define Mothur_newcommandtemplate_h
+#pragma once
 
 //
 //  newcommandtemplate.h
@@ -56,4 +55,4 @@ private:
 
 
 
-#endif
+

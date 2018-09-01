@@ -1,5 +1,4 @@
-#ifndef chime_h
-#define chime_h
+#pragma once
 
 #include "seq.h"
 
@@ -101,4 +100,4 @@ void WriteChimeHitCS(FILE *f, const ChimeHit2 &Hit);
 void WriteChimeHit(FILE *f, const ChimeHit2 &Hit);
 void WriteChimeFileHdr(FILE *f);
 
-#endif // chime_h
+ // chime_h

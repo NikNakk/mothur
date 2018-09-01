@@ -1,5 +1,4 @@
-#ifndef FORMATPHYLIP_H
-#define FORMATPHYLIP_H
+#pragma once
 
 /*
  *  formatphylip.h
@@ -29,5 +28,5 @@ private:
 
 /******************************************************/
 
-#endif
+
 

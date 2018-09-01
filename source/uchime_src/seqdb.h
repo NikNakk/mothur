@@ -1,5 +1,4 @@
-#ifndef seqdb_h
-#define seqdb_h
+#pragma once
 
 #include <vector>
 #include <map>
@@ -105,4 +104,4 @@ public:
 
 bool isgap(byte c);
 
-#endif
+

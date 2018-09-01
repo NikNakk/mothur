@@ -1,5 +1,4 @@
-#ifndef LIBSHUFFCOMMAND_H
-#define LIBSHUFFCOMMAND_H
+#pragma once
 
 /*
  *  libshuffcommand.h
@@ -57,4 +56,4 @@ private:
 	vector<string> Groups, outputNames; //holds groups to be used
 };
 
-#endif
+

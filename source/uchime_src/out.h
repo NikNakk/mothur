@@ -1,5 +1,4 @@
-#ifndef out_h
-#define out_h
+#pragma once
 
 #include "seq.h"
 #include "hsp.h"
@@ -131,4 +130,4 @@ static unsigned GetNDig(unsigned n)
 extern unsigned *g_UserFieldIndexes;
 extern unsigned g_UserFieldCount;
 
-#endif // out_h
+ // out_h

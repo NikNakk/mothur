@@ -1,22 +1,28 @@
 #include "seedparameter.h"
-#include "mothur.h"
+#include "mothurdefs.h"
+#include "utility.h"
+#include <stdexcept>
 
-void SeedParameter::validateAndSet(string newValue)
+void SeedParameter::validateAndSet(std::string newValue)
 {
-	int random = 0;
+	unsigned int random = 0;
 	bool seed = false;
 	if (newValue == "clear") {
-		int random = time(NULL);
+		random = static_cast<unsigned int>(time(NULL));
 		seed = true;
 	}
 	else {
-		NumberParameter::validateAndSet(newValue);
-		seed = true;
-		random = static_cast<unsigned int>(value);
+		if (Utility::isInteger(newValue)) {
+			random = static_cast<unsigned int>(std::stoul(newValue));
+			seed = true;
+		}
+		else {
+			throw(std::out_of_range("Seed must be an integer or 'clear'"));
+		}
 	}
 
 	if (seed) {
 		srand(random);
-		// TODO LOG(INFO) << "Setting random seed to " + toString(random) + ".\n\n";
+		LOG(INFO) << "Setting random seed to " << toString(random) << '.';
 	}
 }

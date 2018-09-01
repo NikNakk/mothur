@@ -1,5 +1,4 @@
-#ifndef LOGSD_H
-#define LOGSD_H
+#pragma once
 
 /*
  *  logsd.h
@@ -32,7 +31,7 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 
 

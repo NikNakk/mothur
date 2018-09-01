@@ -1,5 +1,4 @@
-#ifndef CHIMERAUCHIMECOMMAND_H
-#define CHIMERAUCHIMECOMMAND_H
+#pragma once
 
 
 /*
@@ -77,7 +76,6 @@ struct uchimeData {
 	string groupfile;
 	string outputFName;
 	string accnos, alns, filename, templatefile, uchimeLocation, countlist;
-	MothurOut* m;
 	int start;
 	int end;
 	int threadID, count, numChimeras;
@@ -149,6 +147,6 @@ struct uchimeData {
 
 /**************************************************************************************************/
 
-#endif
+
 
 

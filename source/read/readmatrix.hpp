@@ -1,5 +1,4 @@
-#ifndef READMATRIX_HPP
-#define READMATRIX_HPP
+#pragma once
 
 /*
  *  readmatrix.hpp
@@ -20,7 +19,7 @@
 class ReadMatrix {
 
 public:
-	ReadMatrix() { DMatrix = new SparseDistanceMatrix(); m = MothurOut::getInstance(); }
+	ReadMatrix() { DMatrix = new SparseDistanceMatrix(); }
 	virtual ~ReadMatrix() {}
 	virtual int read(NameAssignment*) { return 1; }
 	virtual int read(CountTable*) { return 1; }
@@ -35,10 +34,9 @@ protected:
 	SparseDistanceMatrix* DMatrix;
 	ListVector* list;
 	float cutoff;
-	MothurOut* m;
 	bool sim;
 };
 
 
 
-#endif
+

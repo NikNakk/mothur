@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_testsequence_h
-#define Mothur_testsequence_h
+#pragma once
 #include "sequence.hpp"
 
 class TestSequence : public Sequence {
@@ -20,4 +19,4 @@ class TestSequence : public Sequence {
 };
 
 
-#endif
+

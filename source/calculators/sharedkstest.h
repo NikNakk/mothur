@@ -1,5 +1,4 @@
-#ifndef KSTEST_H
-#define KSTEST_H
+#pragma once
 /*
  *  kstest.h
  *  Mothur
@@ -27,4 +26,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

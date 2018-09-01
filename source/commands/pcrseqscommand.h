@@ -1,5 +1,4 @@
-#ifndef Mothur_pcrseqscommand_h
-#define Mothur_pcrseqscommand_h
+#pragma once
 
 //
 //  pcrseqscommand.h
@@ -70,7 +69,6 @@ struct pcrData {
 	unsigned long long fstart;
 	unsigned long long fend;
 	int count, start, end, length, pdiffs, pstart, pend;
-	MothurOut* m;
 	set<string> badSeqNames;
 	bool keepprimer, keepdots, fileAligned, adjustNeeded;
 
@@ -382,4 +380,4 @@ static DWORD WINAPI MyPcrThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+

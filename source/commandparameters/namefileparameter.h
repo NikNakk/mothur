@@ -1,19 +1,20 @@
-#ifndef namefileparameter_h
-#define namefileparameter_h
+#pragma once
 
 #include "inputtypeparameter.h"
+#include "filehandling/namefileread.h"
 
 class NameFileParameter : public InputTypeParameter {
 public:
-	NameFileParameter(Settings& settings, string name, bool required, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		InputTypeParameter(settings, Yname, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual string getValue() {
+	NameFileParameter(std::string& namefile, Settings& settings, std::string name, bool required, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		InputTypeParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+		value(namefile) {}
+	virtual std::string getValue() const override {
 		return value;
 	}
-	virtual void validateAndSet(string newValue);
-	static bool getNameFile(Settings & settings, vector<string> files, string output);
+	virtual void validateAndSet(std::string newValue);
+	static std::string getNameFile(Settings & settings, std::vector<std::string> files);
 private:
-	string value;
+	std::string& value;
 };
-#endif
+

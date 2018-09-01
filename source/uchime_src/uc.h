@@ -1,5 +1,4 @@
-#ifndef uc_h
-#define uc_h
+#pragma once
 
 #include "seqdb.h"
 #include "seq.h"
@@ -57,4 +56,4 @@ public:
 	void WriteSeqX(FILE *f, const byte *Seq, unsigned L, const char *CompressedPath) const;
 	};
 
-#endif // uc_h
+ // uc_h

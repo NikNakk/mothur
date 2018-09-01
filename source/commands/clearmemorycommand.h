@@ -1,5 +1,4 @@
-#ifndef CLEARMEMORYCOMMAND_H
-#define CLEARMEMORYCOMMAND_H
+#pragma once
 
 /*
  *  clearmemorycommand.h
@@ -37,5 +36,5 @@ private:
 	vector<string> outputNames;
 };
 
-#endif
+
 

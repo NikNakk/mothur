@@ -1,5 +1,4 @@
-#ifndef Mothur_getcoremicrobiomcommand_h
-#define Mothur_getcoremicrobiomcommand_h
+#pragma once
 
 
 //
@@ -55,4 +54,4 @@ private:
 
 
 
-#endif
+

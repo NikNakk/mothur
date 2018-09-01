@@ -2,25 +2,23 @@
 
 #include "commandparameterbase.h"
 
-using namespace std;
-
 class IntegerParameter : public CommandParameterBase {
 public:
-	explicit IntegerParameter(string name, int minValue = LONG_MIN, int maxValue = LONG_MAX, int defaultValue = LONG_MIN,
+	explicit IntegerParameter(int& value, std::string name, int minValue = INT_MIN, int maxValue = INT_MAX, int defaultValue = INT_MAX,
 		bool required = false, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		CommandParameterBase(name, Number, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
-		minValue(minValue), maxValue(maxValue), defaultValue(defaultValue) {}
-	virtual string getValue() {
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		CommandParameterBase(name, CommandParameterType::Number, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+		value(value), minValue(minValue), maxValue(maxValue), defaultValue(defaultValue) {}
+	virtual std::string getValue() const override {
 		return std::to_string(value);
 	}
 	int getIntegerValue() {
 		return value;
 	}
-	virtual void validateAndSet(string newValue);
-protected:Y
-	int value = 0;
-		  int defaultValue = LONG_MIN;
-		  int minValue = LONG_MIN;
-		  int maxValue = LONG_MAX;
+	virtual void validateAndSet(std::string newValue) override;
+protected:
+	int& value;
+	int defaultValue = INT_MIN;
+	int minValue = INT_MIN;
+	int maxValue = INT_MAX;
 };

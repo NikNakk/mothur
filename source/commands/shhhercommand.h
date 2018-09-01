@@ -1,5 +1,4 @@
-#ifndef SHHHER_H
-#define SHHHER_H
+#pragma once
 
 /*
  *  shhher.h
@@ -93,5 +92,5 @@ private:
 	void getJointLookUp();
 	double getProbIntensity(int);
 };
-#endif
+
 

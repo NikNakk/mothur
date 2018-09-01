@@ -42,27 +42,21 @@ vector<string> SeqErrorCommand::setParameters() {
 
 //**********************************************************************************************************************
 
-string SeqErrorCommand::getHelpString() {
-	try {
-		string helpString = "The seq.error command reads a query alignment file and a reference alignment file and creates .....\n"
-			"The fasta parameter...\n"
-			"The reference parameter...\n"
-			"The qfile parameter...\n"
-			"The report parameter...\n"
-			"The name parameter allows you to provide a name file associated with the fasta file.\n"
-			"The count parameter allows you to provide a count file associated with the fasta file.\n"
-			"The ignorechimeras parameter...\n"
-			"The threshold parameter...\n"
-			"The processors parameter...\n"
-			"Example seq.error(...).\n"
-			"Note: No spaces between parameter labels (i.e. fasta), '=' and parameters (i.e.yourFasta).\n"
-			"For more details please check out the wiki http://www.mothur.org/wiki/seq.error .\n";
-		return helpString;
-	}
-	catch (exception& e) {
-		LOG(FATAL) << e.what() << " in SeqErrorCommand, getHelpString";
-		exit(1);
-	}
+string SeqErrorCommand::getHelpString() const {
+	string helpString = "The seq.error command reads a query alignment file and a reference alignment file and creates .....\n"
+		"The fasta parameter...\n"
+		"The reference parameter...\n"
+		"The qfile parameter...\n"
+		"The report parameter...\n"
+		"The name parameter allows you to provide a name file associated with the fasta file.\n"
+		"The count parameter allows you to provide a count file associated with the fasta file.\n"
+		"The ignorechimeras parameter...\n"
+		"The threshold parameter...\n"
+		"The processors parameter...\n"
+		"Example seq.error(...).\n"
+		"Note: No spaces between parameter labels (i.e. fasta), '=' and parameters (i.e.yourFasta).\n"
+		"For more details please check out the wiki http://www.mothur.org/wiki/seq.error .\n";
+	return helpString;
 }
 
 //**********************************************************************************************************************
@@ -89,26 +83,20 @@ string SeqErrorCommand::getOutputPattern(string type) {
 //**********************************************************************************************************************
 
 SeqErrorCommand::SeqErrorCommand(Settings& settings) : Command(settings) {
-	try {
-		abort = true; calledHelp = true;
-		setParameters();
-		vector<string> tempOutNames;
-		outputTypes["errorsummary"] = tempOutNames;
-		outputTypes["errorseq"] = tempOutNames;
-		outputTypes["errorquality"] = tempOutNames;
-		outputTypes["errorqualforward"] = tempOutNames;
-		outputTypes["errorqualreverse"] = tempOutNames;
-		outputTypes["errorforward"] = tempOutNames;
-		outputTypes["errorreverse"] = tempOutNames;
-		outputTypes["errorcount"] = tempOutNames;
-		outputTypes["errormatrix"] = tempOutNames;
-		outputTypes["errorchimera"] = tempOutNames;
-		outputTypes["errorref-query"] = tempOutNames;
-	}
-	catch (exception& e) {
-		LOG(FATAL) << e.what() << " in SeqErrorCommand, SeqErrorCommand";
-		exit(1);
-	}
+	abort = true; calledHelp = true;
+	setParameters();
+	vector<string> tempOutNames;
+	outputTypes["errorsummary"] = tempOutNames;
+	outputTypes["errorseq"] = tempOutNames;
+	outputTypes["errorquality"] = tempOutNames;
+	outputTypes["errorqualforward"] = tempOutNames;
+	outputTypes["errorqualreverse"] = tempOutNames;
+	outputTypes["errorforward"] = tempOutNames;
+	outputTypes["errorreverse"] = tempOutNames;
+	outputTypes["errorcount"] = tempOutNames;
+	outputTypes["errormatrix"] = tempOutNames;
+	outputTypes["errorchimera"] = tempOutNames;
+	outputTypes["errorref-query"] = tempOutNames;
 }
 
 //***************************************************************************************************************

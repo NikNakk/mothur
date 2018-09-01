@@ -1,5 +1,4 @@
-#ifndef PHYLOTYPECOMMAND_H
-#define PHYLOTYPECOMMAND_H
+#pragma once
 
 
 /*
@@ -55,7 +54,7 @@ private:
 /*************************************************************************/
 
 
-#endif
+
 
 
 

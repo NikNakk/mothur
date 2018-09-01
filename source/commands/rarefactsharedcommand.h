@@ -1,5 +1,4 @@
-#ifndef RAREFACTSHAREDCOMMAND_H
-#define RAREFACTSHAREDCOMMAND_H
+#pragma once
 /*
  *  rarefactsharedcommand.h
  *  Dotur
@@ -55,4 +54,4 @@ private:
 
 };
 
-#endif
+

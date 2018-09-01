@@ -1,5 +1,4 @@
-#ifndef CLUSTER_H
-#define CLUSTER_H
+#pragma once
 
 //test change
 
@@ -40,7 +39,6 @@ protected:
 
 	ull nRowCells;
 	ull nColCells;
-	MothurOut* m;
 };
 
 /***********************************************************************/
@@ -102,4 +100,4 @@ private:
 
 
 
-#endif
+

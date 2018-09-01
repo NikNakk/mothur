@@ -27,7 +27,7 @@ namespace g3 {
 
 		std::string file_name = createLogFileName(_log_prefix_backup);
 		_log_file_with_path = pathSanityFix(_log_file_with_path, file_name);
-		_outptr = createLogFileY(_log_file_with_path);
+		_outptr = createLogFile(_log_file_with_path);
 
 		if (!_outptr) {
 			std::cerr << "Cannot write log file to location, attempting current directory" << std::endl;

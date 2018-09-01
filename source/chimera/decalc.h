@@ -1,5 +1,4 @@
-#ifndef DECALC_H
-#define DECALC_H
+#pragma once
 /*
  *  decalc.h
  *  Mothur
@@ -36,7 +35,7 @@ class DeCalculator {
 
 public:
 
-	DeCalculator() { m = MothurOut::getInstance(); }
+	DeCalculator() { }
 	~DeCalculator() {};
 
 	vector<Sequence> findClosest(Sequence, vector<Sequence*>&, vector<Sequence*>&, int, int);  //takes querySeq, a reference db, filteredRefDB, numWanted, minSim 
@@ -71,10 +70,9 @@ private:
 	set<int> h;
 	int alignLength;
 	map<int, int> maskMap;
-	MothurOut* m;
 
 };
 
 /***********************************************************************/
 
-#endif
+

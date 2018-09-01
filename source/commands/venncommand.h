@@ -1,5 +1,4 @@
-#ifndef VENNCOMMAND_H
-#define VENNCOMMAND_H
+#pragma once
 /*
  *  venncommand.h
  *  Mothur
@@ -57,4 +56,4 @@ private:
 
 
 
-#endif
+

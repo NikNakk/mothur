@@ -1,5 +1,4 @@
-#ifndef PROGRESS_H
-#define PROGRESS_H
+#pragma once
 
 #include "mothur.h"
 
@@ -15,7 +14,6 @@ public:
 private:
 	int nTicks;
 	int finalPos;
-	MothurOut* m;
 };
 
-#endif
+

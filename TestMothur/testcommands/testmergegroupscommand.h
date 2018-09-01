@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__testmergegroupscommand__
-#define __Mothur__testmergegroupscommand__
+#pragma once
 
 #include "mergegroupscommand.h"
 
@@ -23,4 +22,4 @@ public:
     
 };
 
-#endif /* defined(__Mothur__testmergegroupscommand__) */
+ /* defined(__Mothur__testmergegroupscommand__) */

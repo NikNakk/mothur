@@ -1,5 +1,4 @@
-#ifndef EACHGAPDISTIGNORENS_H
-#define EACHGAPDISTIGNORENS_H
+#pragma once
 
 /*
  *  eachgapdistignorens.h
@@ -55,4 +54,4 @@ public:
 
 /**************************************************************************************************/
 
-#endif
+

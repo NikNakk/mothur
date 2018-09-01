@@ -1,5 +1,4 @@
-#ifndef path_h
-#define path_h
+#pragma once
 
 struct PathData
 	{
@@ -60,4 +59,4 @@ public:
 		}
 	};
 
-#endif // path_h
+ // path_h

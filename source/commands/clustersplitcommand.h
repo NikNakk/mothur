@@ -1,5 +1,4 @@
-#ifndef CLUSTERSPLITCOMMAND_H
-#define CLUSTERSPLITCOMMAND_H
+#pragma once
 
 /*
  *  clustersplitcommand.h
@@ -88,7 +87,6 @@ struct clusterData {
 	set<string> labels;
 	vector < map<string, string> > distNames;
 	string method;
-	MothurOut* m;
 	double cutoff, precision;
 	string tag, outputDir;
 	vector<string> listFiles;
@@ -265,5 +263,5 @@ static DWORD WINAPI MyClusterThreadFunction(LPVOID lpParam){
 */
 
 
-#endif
+
 

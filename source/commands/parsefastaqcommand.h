@@ -1,5 +1,4 @@
-#ifndef PARSEFASTAQCOMMAND_H
-#define PARSEFASTAQCOMMAND_H
+#pragma once
 
 /*
  *  parsefastaqcommand.h
@@ -83,6 +82,6 @@ private:
 
 };
 
-#endif
+
 
 

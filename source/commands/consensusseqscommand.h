@@ -1,5 +1,4 @@
-#ifndef CONSENSUSSEQSCOMMAND_H
-#define CONSENSUSSEQSCOMMAND_H
+#pragma once
 //test
 /*
  *  consensusseqscommand.h
@@ -54,7 +53,7 @@ private:
 	char getBase(vector<int>, int);
 };
 
-#endif
+
 
 
 

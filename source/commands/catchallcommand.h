@@ -1,5 +1,4 @@
-#ifndef CATCHALLCOMMAND_H
-#define CATCHALLCOMMAND_H
+#pragma once
 
 /*
  *  catchallcommand.h
@@ -55,6 +54,6 @@ private:
 
 /****************************************************************************/
 
-#endif
+
 
 

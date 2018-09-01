@@ -1,5 +1,4 @@
-#ifndef SEQERRORCOMMAND
-#define SEQERRORCOMMAND
+#pragma once
 
 /*
  *  seqerrorcommand.h
@@ -78,4 +77,4 @@ private:
 
 };
 
-#endif
+

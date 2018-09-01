@@ -1,5 +1,4 @@
-#ifndef SETCURRENTCOMMAND_H
-#define SETCURRENTCOMMAND_H
+#pragma once
 
 /*
  *  setcurrentcommand.h
@@ -46,6 +45,6 @@ private:
 
 };
 
-#endif
+
 
 

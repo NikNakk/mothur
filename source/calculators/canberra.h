@@ -1,5 +1,4 @@
-#ifndef CANBERRA_H
-#define CANBERRA_H
+#pragma once
 
 /*
  *  canberra.h
@@ -29,5 +28,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

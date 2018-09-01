@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__makefilecommand__
-#define __Mothur__makefilecommand__
+#pragma once
 
 #include "command.hpp"
 
@@ -39,4 +38,4 @@ private:
 };
 
 
-#endif /* defined(__Mothur__makefilecommand__) */
+ /* defined(__Mothur__makefilecommand__) */

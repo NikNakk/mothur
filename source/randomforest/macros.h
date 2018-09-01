@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef RF_MACROS_H
-#define RF_MACROS_H
+#pragma once
 
 #include "mothurout.h" 
 
@@ -29,4 +28,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

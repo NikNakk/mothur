@@ -1,5 +1,4 @@
-#ifndef TRIMFLOWSCOMMAND_H
-#define TRIMFLOWSCOMMAND_H
+#pragma once
 
 /*
  *  trimflowscommand.h
@@ -83,7 +82,6 @@ struct trimFlowData {
 	bool fasta, allFiles;
 	unsigned long long start;
 	unsigned long long end;
-	MothurOut* m;
 	float signal, noise;
 	int numFlows, maxFlows, minFlows, maxHomoP, tdiffs, bdiffs, pdiffs, threadID, count;
 
@@ -246,4 +244,4 @@ static DWORD WINAPI MyTrimFlowThreadFunction(LPVOID lpParam){
 #endif
 */
 
-#endif
+

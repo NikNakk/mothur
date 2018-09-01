@@ -1,5 +1,4 @@
-#ifndef Mothur_sffmultiplecommand_h
-#define Mothur_sffmultiplecommand_h
+#pragma once
 
 //
 //  sffmultiplecommand.h
@@ -54,4 +53,4 @@ private:
 
 };
 
-#endif
+

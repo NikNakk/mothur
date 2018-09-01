@@ -8,63 +8,52 @@
  *
  */
 
-
-
-#include "mothur.h"
-#include "commandoptionparser.hpp"
+#include "mothurdefs.h"
 #include "command.hpp"
 #include "commandfactory.hpp"
 #include "settings.h"
 #include "logsinks.h"
-#include "g3log\sinkhandle.hpp"
+#include "g3log/sinkhandle.hpp"
+#include "commandtoprocess.h"
+#include "filehandling/textfileread.h"
 
 class Engine {
 public:
-	Engine(Settings& settings);
-	virtual ~Engine() {}
-	virtual bool getInput() = 0;
-
-	vector<string> getOptions() { return options; }
+	Engine(Settings& settings, std::string path);
+	virtual ~Engine() = default;
+	void processCommands();
+	virtual std::string getCommands() = 0;
 protected:
-	vector<string> options;
 	CommandFactory cFactory;
 	Settings& settings;
+	bool interactive = false;
+private:
+	CommandListToProcess parseCommands(string & input);
 };
-
-
 
 class BatchEngine : public Engine {
 public:
-	BatchEngine(Settings& settings, string, string);
-	~BatchEngine();
-	virtual bool getInput();
-	int openedBatch;
+	BatchEngine(Settings& settings, std::string path, string);
+	virtual std::string getCommands();
 private:
-	ifstream inputBatchFile;
-	string getNextCommand(ifstream&);
+	int openedBatch;
+	TextFileRead batchFile;
 };
-
-
 
 class InteractEngine : public Engine {
 public:
-	InteractEngine(Settings& settings, string path, g3::SinkHandle<LogScreen>&);
-	~InteractEngine();
-	bool getInput();
-	string getCommand();
-private:
+	InteractEngine::InteractEngine(Settings& settings, string path, g3::SinkHandle<LogScreen>& screenLogHandle) :
+		Engine(settings, path), screenLogHandle(screenLogHandle) {interactive = true; }
+	virtual std::string getCommands();
+protected:
 	g3::SinkHandle<LogScreen> & screenLogHandle;
 };
 
 
 class ScriptEngine : public Engine {
 public:
-	ScriptEngine(Settings& settings, string, string);
-	~ScriptEngine();
-	virtual bool getInput();
-	int openedBatch;
+	ScriptEngine(Settings& settings, std::string path, string);
+	virtual std::string getCommands();
 private:
-	string listOfCommands;
-	string getNextCommand(string&);
-
+	std::string script;
 };

@@ -1,5 +1,4 @@
-#ifndef STRUCTCHORD_H
-#define STRUCTCHORD_H
+#pragma once
 
 /*
  *  structchord.h
@@ -28,7 +27,7 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 
 

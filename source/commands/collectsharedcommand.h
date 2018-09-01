@@ -1,5 +1,4 @@
-#ifndef COLLECTSHAREDCOMMAND_H
-#define COLLECTSHAREDCOMMAND_H
+#pragma once
 /*
  *  collectsharedcommand.h
  *  Dotur
@@ -52,4 +51,4 @@ private:
 	vector<string>  Estimators, Groups, outputNames;
 };
 
-#endif
+

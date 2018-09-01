@@ -1,16 +1,15 @@
 #pragma once
-#include "numberparameter.h"
+#include "integerparameter.h"
 #include "settings.h"
-
-using namespace std;
 
 class ProcessorsParameter : public IntegerParameter {
 public:
-	explicit ProcessorsParameter(Settings& settings, bool required = false, bool important = true) :
-		IntegerParameter("processors", 0, LONG_MAX, LONG_YMIN, required, important),
+	explicit ProcessorsParameter(int& value, Settings& settings, bool required = false, bool important = true) :
+		IntegerParameter(value, "processors", 0, LONG_MAX, 1, required, important),
 		settings(settings)
 	{}
-	virtual void validateAndSet(string newValue);
+	virtual void validateAndSet(std::string newValue);
+	virtual bool validateRequiredMissing() override;
 private:
 	Settings& settings;
 };

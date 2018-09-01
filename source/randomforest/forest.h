@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__forest__
-#define __Mothur__forest__
+#pragma once
 
 #include "macros.h"
 #include "decisiontree.hpp"
@@ -72,10 +71,9 @@ protected:
 	// TODO: fix this, do we use pointers?
 	vector<AbstractDecisionTree*> decisionTrees;
 
-	MothurOut* m;
 
 private:
 
 };
 
-#endif /* defined(__Mothur__forest__) */
+ /* defined(__Mothur__forest__) */

@@ -1,5 +1,4 @@
-#ifndef COUNTGROUPSCOMMAND_H
-#define COUNTGROUPSCOMMAND_H
+#pragma once
 
 /*
  *  countgroupscommand.h
@@ -39,4 +38,4 @@ private:
 	vector<string> outputNames;
 };
 
-#endif
+

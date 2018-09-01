@@ -1,5 +1,4 @@
-#ifndef INVSIMPSON
-#define INVSIMPSON
+#pragma once
 
 /*
  *  invsimpson.h
@@ -27,4 +26,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

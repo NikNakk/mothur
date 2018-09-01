@@ -1,5 +1,4 @@
-#ifndef THETAYC_H
-#define THETAYC_H
+#pragma once
 /*
  *  sharedthetayc.h
  *  Dotur
@@ -30,5 +29,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

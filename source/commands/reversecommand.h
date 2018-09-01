@@ -1,5 +1,4 @@
-#ifndef REVERSECOMMAND_H
-#define REVERSECOMMAND_H
+#pragma once
 
 /*
  *  reversecommand.h
@@ -39,4 +38,4 @@ private:
 
 };
 
-#endif
+

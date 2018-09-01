@@ -1,5 +1,4 @@
-#ifndef SPEARMAN_H
-#define SPEARMAN_H
+#pragma once
 
 /*
  *  spearman.h
@@ -29,7 +28,7 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 
 

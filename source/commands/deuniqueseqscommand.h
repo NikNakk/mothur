@@ -1,5 +1,4 @@
-#ifndef DEUNIQUESEQSCOMMAND_H
-#define DEUNIQUESEQSCOMMAND_H
+#pragma once
 /*
  *  deuniqueseqscommand.h
  *  Mothur
@@ -43,5 +42,5 @@ private:
 
 };
 
-#endif
+
 

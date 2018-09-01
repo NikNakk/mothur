@@ -1,5 +1,4 @@
-#ifndef REMOVEOTUSCOMMAND_H
-#define REMOVEOTUSCOMMAND_H
+#pragma once
 
 /*
  *  removeotuscommand.h
@@ -45,7 +44,7 @@ private:
 
 };
 
-#endif
+
 
 
 

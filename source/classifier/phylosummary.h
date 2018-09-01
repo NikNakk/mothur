@@ -1,5 +1,4 @@
-#ifndef RAWTRAININGDATAMAKER_H
-#define RAWTRAININGDATAMAKER_H
+#pragma once
 
 /*
  *  rawTrainingDataMaker.h
@@ -58,11 +57,10 @@ private:
 	int numNodes;
 	int numSeqs;
 	int maxLevel;
-	MothurOut* m;
 };
 
 /**************************************************************************************************/
 
-#endif
+
 
 

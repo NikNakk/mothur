@@ -1,5 +1,4 @@
-#ifndef COLLECTORSCURVEDATA_H
-#define COLLECTORSCURVEDATA_H
+#pragma once
 
 #include "sabundvector.hpp"
 #include "sharedrabundvector.h"
@@ -76,5 +75,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

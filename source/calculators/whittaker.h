@@ -1,5 +1,4 @@
-#ifndef WHITTAKER_H
-#define WHITTAKER_H
+#pragma once
 /*
  *  whittaker.h
  *  Mothur
@@ -27,4 +26,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef CHIMERABELLEROPHONCOMMAND_H
-#define CHIMERABELLEROPHONCOMMAND_H
+#pragma once
 
 /*
  *  chimerabellerophoncommand.h
@@ -48,6 +47,6 @@ private:
 
 /***********************************************************/
 
-#endif
+
 
 

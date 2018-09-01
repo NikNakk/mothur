@@ -1,5 +1,4 @@
-#ifndef MATRIXOUTPUTCOMMAND_H
-#define MATRIXOUTPUTCOMMAND_H
+#pragma once
 
 /*
  *  matrixoutputcommand.h
@@ -118,7 +117,6 @@ struct distSharedData {
 	vector<string>  Estimators;
 	unsigned long long start;
 	unsigned long long end;
-	MothurOut* m;
 	int count;
 
 	distSharedData() {}
@@ -316,5 +314,5 @@ static DWORD WINAPI MyDistSharedThreadFunction(LPVOID lpParam) {
 }
 #endif
 
-#endif
+
 

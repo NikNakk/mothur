@@ -1,6 +1,5 @@
 #define TIMING 0
-#ifndef timing_h
-#define timing_h
+#pragma once
 
 #define BG_TIMING	0
 
@@ -235,4 +234,4 @@ void LogAllocs();
 #define AddBytes(x, n)	/* empty */
 #define SubBytes(x, n)	/* empty */
 
-#endif	// if timing_h
+	// if timing_h

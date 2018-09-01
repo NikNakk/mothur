@@ -1,42 +1,30 @@
-#include "file.h"
 #include <fstream>
+#include <string>
 #include "mothur.h"
+#include "file.h"
 #include "utility.h"
+#include <stdlib.h>
 
-using namespace std;
+#if defined (UNIX)
+#include <unistd.h>
+#else
+#include <direct.h>
+#endif
 
-bool File::FileExists(const string& name)
+bool File::FileExists(const std::string& name)
 {
-	ifstream f(name.c_str());
+	std::ifstream f(name.c_str());
 	bool isGood = f.good();
 	f.close();
 	return isGood;
 }
 
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-inline bool endsWith(string s, const char * suffix) {
-	size_t suffixLength = strlen(suffix);
-	return s.size() >= suffixLength && s.substr(s.size() - suffixLength, suffixLength).compare(suffix) == 0;
-}
-#endif
-#endif
+std::string File::getRootName(std::string longName) {
 
-string File::getRootName(string longName) {
+	std::string rootName = longName;
 
-	string rootName = longName;
-
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-	if (endsWith(rootName, ".gz") || endsWith(rootName, ".bz2")) {
-		int pos = rootName.find_last_of('.');
-		rootName = rootName.substr(0, pos);
-		cerr << "shortening " << longName << " to " << rootName << "\n";
-	}
-#endif
-#endif
 	if (rootName.find_last_of(".") != rootName.npos) {
-		int pos = rootName.find_last_of('.') + 1;
+		size_t pos = rootName.find_last_of('.') + 1;
 		rootName = rootName.substr(0, pos);
 	}
 
@@ -44,8 +32,8 @@ string File::getRootName(string longName) {
 }
 /***********************************************************************/
 
-string File::getSimpleName(string longName) {
-	string simpleName = longName;
+std::string File::getSimpleName(std::string longName) {
+	std::string simpleName = longName;
 
 	size_t found;
 	found = longName.find_last_of("/\\");
@@ -57,8 +45,8 @@ string File::getSimpleName(string longName) {
 	return simpleName;
 }
 
-string File::getPath(string longName) {
-	string path = "";
+std::string File::getPath(std::string longName) {
+	std::string path = "";
 
 	size_t found;
 	found = longName.find_last_of("~/\\");
@@ -75,65 +63,64 @@ string File::getPath(string longName) {
 /***********************************************************************/
 
 
-string File::getFullPathName(string fileName) {
+std::string File::getFullPathName(std::string fileName) {
 
-	string path = getPath(fileName);
-	string newFileName;
-	int pos;
+	std::string path = getPath(fileName);
+	std::string newFileName;
+	size_t pos;
 
 	if (path == "") { return fileName; } //its a simple name
 	else { //we need to complete the pathname
 		   // ex. ../../../filename 
 		   // cwd = /user/work/desktop
 
-		string cwd;
+		std::string cwd;
 		//get current working directory 
-#if defined (UNIX)	
-
 		if (path.find("~") != -1) { //go to home directory
-			string homeDir;
+			std::string homeDir;
 
 			char *homepath = NULL;
+#if defined (UNIX)
 			homepath = getenv("HOME");
+#else
+			homepath = getenv("HOMEPATH");
+#endif
 			if (homepath != NULL) { homeDir = homepath; }
 			else { homeDir = ""; }
+			free(homepath);
 
 			newFileName = homeDir + fileName.substr(fileName.find("~") + 1);
 			return newFileName;
 		}
 		else { //find path
-			if (path.rfind("./") == string::npos) { return fileName; } //already complete name
-			else { newFileName = fileName.substr(fileName.rfind("./") + 2); } //save the complete part of the name
-
-																			  //char* cwdpath = new char[1024];
-																			  //size_t size;
-																			  //cwdpath=getcwd(cwdpath,size);
-																			  //cwd = cwdpath;
+			if (path.rfind("." + path_delimiter) == std::string::npos) { return fileName; } //already complete name
+			else { newFileName = fileName.substr(fileName.rfind("." + path_delimiter) + 2); } //save the complete part of the name
 
 			char *cwdpath = NULL;
 			cwdpath = getcwd(NULL, 0); // or _getcwd
 			if (cwdpath != NULL) { cwd = cwdpath; }
 			else { cwd = ""; }
+			free(cwdpath);
 
-
+#if defined (UNIX)
 			//rip off first '/'
-			string simpleCWD;
-			if (cwd.length() > 0) { simpleCWD = cwd.substr(1); }
+			if (cwd.length() > 0) { cwd = cwd.substr(1); }
+#endif
 
 			//break apart the current working directory
-			vector<string> dirs;
-			while (simpleCWD.find_first_of('/') != string::npos) {
-				string dir = simpleCWD.substr(0, simpleCWD.find_first_of('/'));
-				simpleCWD = simpleCWD.substr(simpleCWD.find_first_of('/') + 1, simpleCWD.length());
+			std::vector<std::string> dirs;
+			while (cwd.find_first_of(path_delimiter) != std::string::npos) {
+				std::string dir = cwd.substr(0, cwd.find_first_of(path_delimiter));
+				cwd = cwd.substr(cwd.find_first_of(path_delimiter) + 1, cwd.length());
 				dirs.push_back(dir);
 			}
 			//get last one              // ex. ../../../filename = /user/work/desktop/filename
-			dirs.push_back(simpleCWD);  //ex. dirs[0] = user, dirs[1] = work, dirs[2] = desktop
+			dirs.push_back(cwd);  //ex. dirs[0] = user, dirs[1] = work, dirs[2] = desktop
 
 
 			int index = dirs.size() - 1;
 
-			while ((pos = path.rfind("./")) != string::npos) { //while you don't have a complete path
+			while ((pos = path.rfind("." + path_delimiter)) != std::string::npos) { //while you don't have a complete path
 				if (pos == 0) {
 					break;  //you are at the end
 				}
@@ -142,7 +129,7 @@ string File::getFullPathName(string fileName) {
 					index--;
 					if (index == 0) { break; }
 				}
-				else if (path[(pos - 1)] == '/') { //you want the current working dir ./
+				else if (path[(pos - 1)] == path_delimiter) { //you want the current working dir ./
 					path = path.substr(0, pos);
 				}
 				else if (pos == 1) {
@@ -152,114 +139,33 @@ string File::getFullPathName(string fileName) {
 			}
 
 			for (int i = index; i >= 0; i--) {
-				newFileName = dirs[i] + "/" + newFileName;
+				newFileName = dirs[i] + path_delimiter + newFileName;
 			}
 
+#if defined (UNIX)
 			newFileName = "/" + newFileName;
-			return newFileName;
-		}
-#else
-		if (path.find("~") != string::npos) { //go to home directory
-			string homeDir = getenv("HOMEPATH");
-			newFileName = homeDir + fileName.substr(fileName.find("~") + 1);
-			return newFileName;
-		}
-		else { //find path
-			if (path.rfind(".\\") == string::npos) { return fileName; } //already complete name
-			else { newFileName = fileName.substr(fileName.rfind(".\\") + 2); } //save the complete part of the name
-
-			char *cwdpath = NULL;
-			cwdpath = getcwd(NULL, 0); // or _getcwd
-			if (cwdpath != NULL) { cwd = cwdpath; }
-			else { cwd = ""; }
-
-			//break apart the current working directory
-			vector<string> dirs;
-			while (cwd.find_first_of('\\') != -1) {
-				string dir = cwd.substr(0, cwd.find_first_of('\\'));
-				cwd = cwd.substr(cwd.find_first_of('\\') + 1, cwd.length());
-				dirs.push_back(dir);
-
-			}
-			//get last one
-			dirs.push_back(cwd);  //ex. dirs[0] = user, dirs[1] = work, dirs[2] = desktop
-
-			int index = dirs.size() - 1;
-
-			while ((pos = path.rfind(".\\")) != string::npos) { //while you don't have a complete path
-				if (pos == 0) {
-					break;  //you are at the end
-				}
-				else if (path[(pos - 1)] == '.') { //you want your parent directory ../
-					path = path.substr(0, pos - 1);
-					index--;
-					if (index == 0) { break; }
-				}
-				else if (path[(pos - 1)] == '\\') { //you want the current working dir ./
-					path = path.substr(0, pos);
-				}
-				else if (pos == 1) {
-					break;  //you are at the end
-				}
-				else {
-					throw invalid_argument("cannot resolve path for " + fileName + "\n");
-					//File("cannot resolve path for " + fileName + "\n"); return fileName; }
-				}
-			}
-
-			for (int i = index; i >= 0; i--) {
-				newFileName = dirs[i] + "\\" + newFileName;
-			}
-
-			return newFileName;
-		}
-
 #endif
+			return newFileName;
+		}
 	}
 }
 
-int File::remove(string filename) {
+int File::remove(std::string filename) {
 	filename = getFullPathName(filename);
-	int error = remove(filename.c_str());
+	int error = std::remove(filename.c_str());
 	LOG(DEBUG) << "removed " + filename;
 	//if (error != 0) { 
 	//	if (errno != ENOENT) { //ENOENT == file does not exist
-	//		string message = "Error deleting file " + filename;
+	//		std::string message = "Error deleting file " + filename;
 	//		perror(message.c_str()); 
 	//	}
 	//}
 	return error;
 }
 
-int File::openInputFile(string fileName, ifstream& fileHandle, string m) {
+int File::openInputFile(std::string fileName, std::ifstream& fileHandle, std::string m) {
 	//get full path name
-	string completeFileName = getFullPathName(fileName);
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-	// check for gzipped or bzipped file
-	if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
-		string tempName = string(tmpnam(0));
-		mkfifo(tempName.c_str(), 0666);
-		int fork_result = fork();
-		if (fork_result < 0) {
-			cerr << "Error forking.\n";
-			exit(1);
-		}
-		else if (fork_result == 0) {
-			string command = (endsWith(completeFileName, ".gz") ? "zcat " : "bzcat ") + completeFileName + string(" > ") + tempName;
-			cerr << "Decompressing " << completeFileName << " via temporary named pipe " << tempName << "\n";
-			system(command.c_str());
-			cerr << "Done decompressing " << completeFileName << "\n";
-			mothurRemove(tempName);
-			exit(EXIT_SUCCESS);
-		}
-		else {
-			cerr << "waiting on child process " << fork_result << "\n";
-			completeFileName = tempName;
-		}
-	}
-#endif
-#endif
+	std::string completeFileName = getFullPathName(fileName);
 	fileHandle.open(completeFileName.c_str());
 	if (!fileHandle) {
 		//LOG(LOGERROR) << "Could not open " + completeFileName;
@@ -274,37 +180,10 @@ int File::openInputFile(string fileName, ifstream& fileHandle, string m) {
 }
 /***********************************************************************/
 
-int File::openInputFile(string fileName, ifstream& fileHandle) {
+int File::openInputFile(std::string fileName, std::ifstream& fileHandle) {
 
 	//get full path name
-	string completeFileName = getFullPathName(fileName);
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-	// check for gzipped or bzipped file
-	if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
-		string tempName = string(tmpnam(0));
-		mkfifo(tempName.c_str(), 0666);
-		int fork_result = fork();
-		if (fork_result < 0) {
-			cerr << "Error forking.\n";
-			exit(1);
-		}
-		else if (fork_result == 0) {
-			string command = (endsWith(completeFileName, ".gz") ? "zcat " : "bzcat ") + completeFileName + string(" > ") + tempName;
-			cerr << "Decompressing " << completeFileName << " via temporary named pipe " << tempName << "\n";
-			system(command.c_str());
-			cerr << "Done decompressing " << completeFileName << "\n";
-			mothurRemove(tempName);
-			exit(EXIT_SUCCESS);
-		}
-		else {
-			cerr << "waiting on child process " << fork_result << "\n";
-			completeFileName = tempName;
-		}
-	}
-#endif
-#endif
-
+	std::string completeFileName = getFullPathName(fileName);
 	fileHandle.open(completeFileName.c_str());
 	if (!fileHandle) {
 		LOG(LOGERROR) << "Could not open " + completeFileName;
@@ -320,38 +199,11 @@ int File::openInputFile(string fileName, ifstream& fileHandle) {
 	}
 }
 /***********************************************************************/
-int File::openInputFileBinary(string fileName, ifstream& fileHandle) {
+int File::openInputFileBinary(std::string fileName, std::ifstream& fileHandle) {
 
 	//get full path name
-	string completeFileName = getFullPathName(fileName);
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-	// check for gzipped or bzipped file
-	if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
-		string tempName = string(tmpnam(0));
-		mkfifo(tempName.c_str(), 0666);
-		int fork_result = fork();
-		if (fork_result < 0) {
-			cerr << "Error forking.\n";
-			exit(1);
-		}
-		else if (fork_result == 0) {
-			string command = (endsWith(completeFileName, ".gz") ? "zcat " : "bzcat ") + completeFileName + string(" > ") + tempName;
-			cerr << "Decompressing " << completeFileName << " via temporary named pipe " << tempName << "\n";
-			system(command.c_str());
-			cerr << "Done decompressing " << completeFileName << "\n";
-			mothurRemove(tempName);
-			exit(EXIT_SUCCESS);
-		}
-		else {
-			cerr << "waiting on child process " << fork_result << "\n";
-			completeFileName = tempName;
-		}
-	}
-#endif
-#endif
-
-	fileHandle.open(completeFileName.c_str(), ios::binary);
+	std::string completeFileName = getFullPathName(fileName);
+	fileHandle.open(completeFileName.c_str(), std::ios::binary);
 	if (!fileHandle) {
 		LOG(LOGERROR) << "Could not open " + completeFileName;
 		return 1;
@@ -366,38 +218,11 @@ int File::openInputFileBinary(string fileName, ifstream& fileHandle) {
 	}
 }
 /***********************************************************************/
-int File::openInputFileBinary(string fileName, ifstream& fileHandle, string noerror) {
+int File::openInputFileBinary(std::string fileName, std::ifstream& fileHandle, std::string noerror) {
 
 	//get full path name
-	string completeFileName = getFullPathName(fileName);
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-	// check for gzipped or bzipped file
-	if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
-		string tempName = string(tmpnam(0));
-		mkfifo(tempName.c_str(), 0666);
-		int fork_result = fork();
-		if (fork_result < 0) {
-			cerr << "Error forking.\n";
-			exit(1);
-		}
-		else if (fork_result == 0) {
-			string command = (endsWith(completeFileName, ".gz") ? "zcat " : "bzcat ") + completeFileName + string(" > ") + tempName;
-			cerr << "Decompressing " << completeFileName << " via temporary named pipe " << tempName << "\n";
-			system(command.c_str());
-			cerr << "Done decompressing " << completeFileName << "\n";
-			mothurRemove(tempName);
-			exit(EXIT_SUCCESS);
-		}
-		else {
-			cerr << "waiting on child process " << fork_result << "\n";
-			completeFileName = tempName;
-		}
-	}
-#endif
-#endif
-
-	fileHandle.open(completeFileName.c_str(), ios::binary);
+	std::string completeFileName = getFullPathName(fileName);
+	fileHandle.open(completeFileName.c_str(), std::ios::binary);
 	if (!fileHandle) {
 		//LOG(LOGERROR) << "Could not open " + completeFileName;
 		return 1;
@@ -413,10 +238,10 @@ int File::openInputFileBinary(string fileName, ifstream& fileHandle, string noer
 }
 /***********************************************************************/
 #ifdef USE_BOOST
-int File::openInputFileBinary(string fileName, ifstream& file, boost::iostreams::filtering_istream& in) {
+int File::openInputFileBinary(std::string fileName, std::ifstream& file, boost::iostreams::filtering_istream& in) {
 
 	//get full path name
-	string completeFileName = getFullPathName(fileName);
+	std::string completeFileName = getFullPathName(fileName);
 
 	file.open(completeFileName.c_str(), ios_base::in | ios_base::binary);
 
@@ -434,10 +259,10 @@ int File::openInputFileBinary(string fileName, ifstream& file, boost::iostreams:
 	}
 }
 /***********************************************************************/
-int File::openInputFileBinary(string fileName, ifstream& file, boost::iostreams::filtering_istream& in, string noerror) {
+int File::openInputFileBinary(std::string fileName, std::ifstream& file, boost::iostreams::filtering_istream& in, std::string noerror) {
 
 	//get full path name
-	string completeFileName = getFullPathName(fileName);
+	std::string completeFileName = getFullPathName(fileName);
 
 	file.open(completeFileName.c_str(), ios_base::in | ios_base::binary);
 
@@ -454,8 +279,8 @@ int File::openInputFileBinary(string fileName, ifstream& file, boost::iostreams:
 #endif
 /***********************************************************************/
 //results[0] = allGZ, results[1] = allNotGZ
-vector<bool> File::allGZFiles(vector<string> & files) {
-	vector<bool> results;
+std::vector<bool> File::allGZFiles(std::vector<std::string> & files) {
+	std::vector<bool> results;
 	bool allGZ = true;
 	bool allNOTGZ = true;
 
@@ -480,10 +305,10 @@ vector<bool> File::allGZFiles(vector<string> & files) {
 }
 
 /***********************************************************************/
-vector<bool> File::isGZ(string filename) {
-	vector<bool> results; results.resize(2, false);
+std::vector<bool> File::isGZ(std::string filename) {
+	std::vector<bool> results; results.resize(2, false);
 #ifdef USE_BOOST
-	ifstream fileHandle;
+	std::ifstream fileHandle;
 	boost::iostreams::filtering_istream gzin;
 
 	if (getExtension(filename) != ".gz") { return results; } // results[0] = false; results[1] = false;
@@ -514,21 +339,21 @@ vector<bool> File::isGZ(string filename) {
 
 /***********************************************************************/
 
-int File::renameFile(string oldName, string newName) {
+int File::renameFile(std::string oldName, std::string newName) {
 
 	if (oldName == newName) { return 0; }
 
-	ifstream inTest;
+	std::ifstream inTest;
 	int exist = openInputFile(newName, inTest, "");
 	inTest.close();
 
 #if defined (UNIX)		
 	if (exist == 0) { //you could open it so you want to delete it
-		string command = "rm " + newName;
+		std::string command = "rm " + newName;
 		system(command.c_str());
 	}
 
-	string command = "mv " + oldName + " " + newName;
+	std::string command = "mv " + oldName + " " + newName;
 	system(command.c_str());
 #else
 	File::remove(newName);
@@ -540,33 +365,10 @@ int File::renameFile(string oldName, string newName) {
 
 /***********************************************************************/
 
-int File::openOutputFile(string fileName, ofstream& fileHandle) {
+int File::openOutputFile(std::string fileName, std::ofstream& fileHandle) {
 
-	string completeFileName = getFullPathName(fileName);
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-	// check for gzipped file
-	if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
-		string tempName = string(tmpnam(0));
-		mkfifo(tempName.c_str(), 0666);
-		cerr << "Compressing " << completeFileName << " via temporary named pipe " << tempName << "\n";
-		int fork_result = fork();
-		if (fork_result < 0) {
-			cerr << "Error forking.\n";
-			exit(1);
-		}
-		else if (fork_result == 0) {
-			string command = string(endsWith(completeFileName, ".gz") ? "gzip" : "bzip2") + " -v > " + completeFileName + string(" < ") + tempName;
-			system(command.c_str());
-			exit(0);
-		}
-		else {
-			completeFileName = tempName;
-		}
-	}
-#endif
-#endif
-	fileHandle.open(completeFileName.c_str(), ios::trunc);
+	std::string completeFileName = getFullPathName(fileName);
+	fileHandle.open(completeFileName.c_str(), std::ios::trunc);
 	if (!fileHandle) {
 		LOG(LOGERROR) << "Could not open " + completeFileName;
 		return 1;
@@ -578,33 +380,10 @@ int File::openOutputFile(string fileName, ofstream& fileHandle) {
 }
 /***********************************************************************/
 
-int File::openOutputFileBinary(string fileName, ofstream& fileHandle) {
+int File::openOutputFileBinary(std::string fileName, std::ofstream& fileHandle) {
 
-	string completeFileName = getFullPathName(fileName);
-#if defined (UNIX)
-#ifdef USE_COMPRESSION
-	// check for gzipped file
-	if (endsWith(completeFileName, ".gz") || endsWith(completeFileName, ".bz2")) {
-		string tempName = string(tmpnam(0));
-		mkfifo(tempName.c_str(), 0666);
-		cerr << "Compressing " << completeFileName << " via temporary named pipe " << tempName << "\n";
-		int fork_result = fork();
-		if (fork_result < 0) {
-			cerr << "Error forking.\n";
-			exit(1);
-		}
-		else if (fork_result == 0) {
-			string command = string(endsWith(completeFileName, ".gz") ? "gzip" : "bzip2") + " -v > " + completeFileName + string(" < ") + tempName;
-			system(command.c_str());
-			exit(0);
-		}
-		else {
-			completeFileName = tempName;
-		}
-	}
-#endif
-#endif
-	fileHandle.open(completeFileName.c_str(), ios::trunc | ios::binary);
+	std::string completeFileName = getFullPathName(fileName);
+	fileHandle.open(completeFileName.c_str(), std::ios::trunc | std::ios::binary);
 	if (!fileHandle) {
 		LOG(LOGERROR) << "Could not open " + completeFileName;
 		return 1;
@@ -615,9 +394,9 @@ int File::openOutputFileBinary(string fileName, ofstream& fileHandle) {
 
 }
 /**************************************************************************************************/
-int File::appendFiles(string temp, string filename) {
-	ofstream output;
-	ifstream input;
+int File::appendFiles(std::string temp, std::string filename) {
+	std::ofstream output;
+	std::ifstream input;
 
 	//open output file in append mode
 	openOutputFileBinaryAppend(filename, output);
@@ -641,10 +420,16 @@ int File::appendFiles(string temp, string filename) {
 
 	return numLines;
 }
+int File::appendFilesAndRemove(std::string temp, std::string filename)
+{
+	int numLines = appendFiles(temp, filename);
+	File::remove(temp);
+	return numLines;
+}
 /**************************************************************************************************/
-int File::appendBinaryFiles(string temp, string filename) {
-	ofstream output;
-	ifstream input;
+int File::appendBinaryFiles(std::string temp, std::string filename) {
+	std::ofstream output;
+	std::ifstream input;
 
 	//open output file in append mode
 	openOutputFileBinaryAppend(filename, output);
@@ -665,24 +450,24 @@ int File::appendBinaryFiles(string temp, string filename) {
 	return ableToOpen;
 }
 /**************************************************************************************************/
-int File::appendSFFFiles(string temp, string filename) {
-	ofstream output;
-	ifstream input;
+int File::appendSFFFiles(std::string temp, std::string filename) {
+	std::ofstream output;
+	std::ifstream input;
 	int ableToOpen = 0;
 
 	//open output file in append mode
-	string fullFileName = getFullPathName(filename);
+	std::string fullFileName = getFullPathName(filename);
 
-	output.open(fullFileName.c_str(), ios::app | ios::binary);
+	output.open(fullFileName.c_str(), std::ios::app | std::ios::binary);
 	if (!output) {
 		LOG(LOGERROR) << "Could not open " + fullFileName;
 		return 1;
 	}
 	else {
 		//get full path name
-		string completeFileName = getFullPathName(temp);
+		std::string completeFileName = getFullPathName(temp);
 
-		input.open(completeFileName.c_str(), ios::binary);
+		input.open(completeFileName.c_str(), std::ios::binary);
 		if (!input) {
 			//LOG(LOGERROR) << "Could not open " + completeFileName;
 			return 1;
@@ -701,9 +486,9 @@ int File::appendSFFFiles(string temp, string filename) {
 	return ableToOpen;
 }
 /**************************************************************************************************/
-int File::appendFilesWithoutHeaders(string temp, string filename) {
-	ofstream output;
-	ifstream input;
+int File::appendFilesWithoutHeaders(std::string temp, std::string filename) {
+	std::ofstream output;
+	std::ifstream input;
 
 	//open output file in append mode
 	openOutputFileAppend(filename, output);
@@ -713,7 +498,7 @@ int File::appendFilesWithoutHeaders(string temp, string filename) {
 	int numLines = 0;
 	if (ableToOpen == 0) { //you opened it
 
-		string headers = getline(input); gobble(input);
+		std::string headers = getline(input); gobble(input);
 		LOG(DEBUG) << " skipping headers " + headers + '\n';
 
 		char buffer[4096];
@@ -731,15 +516,15 @@ int File::appendFilesWithoutHeaders(string temp, string filename) {
 	return numLines;
 }
 /**************************************************************************************************/
-string File::sortFile(string distFile, string outputDir) {
+std::string File::sortFile(std::string distFile, std::string outputDir) {
 
 	//if (outputDir == "") {  outputDir += hasPath(distFile);  }
-	string outfile = getRootName(distFile) + "sorted.dist";
+	std::string outfile = getRootName(distFile) + "sorted.dist";
 
 
 	//if you can, use the unix sort since its been optimized for years
 #if defined (UNIX)
-	string command = "sort -n -k +3 " + distFile + " -o " + outfile;
+	std::string command = "sort -n -k +3 " + distFile + " -o " + outfile;
 	system(command.c_str());
 #else //you are stuck with my best attempt...
 		//windows sort does not have a way to specify a column, only a character in the line
@@ -747,17 +532,17 @@ string File::sortFile(string distFile, string outputDir) {
 		//due to variable sequence name lengths, I chose to force the distance into first position, then sort and then put it back.
 
 		//read in file line by file and put distance first
-	string tempDistFile = distFile + ".temp";
-	ifstream input;
-	ofstream output;
+	std::string tempDistFile = distFile + ".temp";
+	std::ifstream input;
+	std::ofstream output;
 	openInputFile(distFile, input);
 	openOutputFile(tempDistFile, output);
 
-	string firstName, secondName;
+	std::string firstName, secondName;
 	float dist;
 	while (!input.eof()) {
 		input >> firstName >> secondName >> dist;
-		output << dist << '\t' << firstName << '\t' << secondName << endl;
+		output << dist << '\t' << firstName << '\t' << secondName << std::endl;
 		gobble(input);
 	}
 	input.close();
@@ -765,19 +550,19 @@ string File::sortFile(string distFile, string outputDir) {
 
 
 	//sort using windows sort
-	string tempOutfile = outfile + ".temp";
-	string command = "sort " + tempDistFile + " /O " + tempOutfile;
+	std::string tempOutfile = outfile + ".temp";
+	std::string command = "sort " + tempDistFile + " /O " + tempOutfile;
 	system(command.c_str());
 
 	//read in sorted file and put distance at end again
-	ifstream input2;
-	ofstream output2;
+	std::ifstream input2;
+	std::ofstream output2;
 	openInputFile(tempOutfile, input2);
 	openOutputFile(outfile, output2);
 
 	while (!input2.eof()) {
 		input2 >> dist >> firstName >> secondName;
-		output2 << firstName << '\t' << secondName << '\t' << dist << endl;
+		output2 << firstName << '\t' << secondName << '\t' << dist << std::endl;
 		gobble(input2);
 	}
 	input2.close();
@@ -791,14 +576,14 @@ string File::sortFile(string distFile, string outputDir) {
 	return outfile;
 }
 /**************************************************************************************************/
-vector<unsigned long long> File::setFilePosFasta(string filename, long long& num) {
-	vector<unsigned long long> positions;
-	ifstream inFASTA;
+std::vector<unsigned long long> File::setFilePosFasta(std::string filename, long long& num) {
+	std::vector<unsigned long long> positions;
+	std::ifstream inFASTA;
 	//openInputFileBinary(filename, inFASTA);
-	string completeFileName = getFullPathName(filename);
-	inFASTA.open(completeFileName.c_str(), ios::binary);
+	std::string completeFileName = getFullPathName(filename);
+	inFASTA.open(completeFileName.c_str(), std::ios::binary);
 
-	string input;
+	std::string input;
 	unsigned long long count = 0;
 	while (!inFASTA.eof()) {
 		//input = getline(inFASTA); 
@@ -830,7 +615,7 @@ vector<unsigned long long> File::setFilePosFasta(string filename, long long& num
 	}
 
 	/*unsigned long long size = positions[(positions.size()-1)];
-	ifstream in;
+	std::ifstream in;
 	openInputFile(filename, in);
 
 	in.seekg(size);
@@ -849,11 +634,11 @@ vector<unsigned long long> File::setFilePosFasta(string filename, long long& num
 	return positions;
 }
 /**************************************************************************************************/
-vector<unsigned long long> File::setFilePosFasta(string filename, long long& num, char delim) {
-	vector<unsigned long long> positions;
-	ifstream inFASTA;
-	string completeFileName = getFullPathName(filename);
-	inFASTA.open(completeFileName.c_str(), ios::binary);
+std::vector<unsigned long long> File::setFilePosFasta(std::string filename, long long& num, char delim) {
+	std::vector<unsigned long long> positions;
+	std::ifstream inFASTA;
+	std::string completeFileName = getFullPathName(filename);
+	inFASTA.open(completeFileName.c_str(), std::ios::binary);
 	int nameLine = 2;
 	if (delim == '@') { nameLine = 4; }
 	else if (delim == '>') { nameLine = 2; }
@@ -863,7 +648,7 @@ vector<unsigned long long> File::setFilePosFasta(string filename, long long& num
 	long long numLines = 0;
 	while (!inFASTA.eof()) {
 		char c = inFASTA.get(); count++;
-		string input = ""; input += c;
+		std::string input = ""; input += c;
 		while ((c != '\n') && (c != '\r') && (c != '\f') && (c != EOF)) {
 			c = inFASTA.get(); count++;
 			input += c;
@@ -910,14 +695,14 @@ vector<unsigned long long> File::setFilePosFasta(string filename, long long& num
 	return positions;
 }
 /**************************************************************************************************/
-vector<unsigned long long> File::setFilePosFasta(string filename, int& num) {
-	vector<unsigned long long> positions;
-	ifstream inFASTA;
+std::vector<unsigned long long> File::setFilePosFasta(std::string filename, int& num) {
+	std::vector<unsigned long long> positions;
+	std::ifstream inFASTA;
 	//openInputFile(filename, inFASTA);
-	string completeFileName = getFullPathName(filename);
-	inFASTA.open(completeFileName.c_str(), ios::binary);
+	std::string completeFileName = getFullPathName(filename);
+	inFASTA.open(completeFileName.c_str(), std::ios::binary);
 
-	string input;
+	std::string input;
 	unsigned long long count = 0;
 	while (!inFASTA.eof()) {
 		//input = getline(inFASTA);
@@ -949,7 +734,7 @@ vector<unsigned long long> File::setFilePosFasta(string filename, int& num) {
 	}
 
 	/*unsigned long long size = positions[(positions.size()-1)];
-	ifstream in;
+	std::ifstream in;
 	openInputFile(filename, in);
 
 	in.seekg(size);
@@ -969,76 +754,76 @@ vector<unsigned long long> File::setFilePosFasta(string filename, int& num) {
 }
 
 //**********************************************************************************************************************
-vector<consTax> File::readConsTax(string inputfile) {
-
-	vector<consTax> taxes;
-
-	ifstream in;
-	openInputFile(inputfile, in);
-
-	//read headers
-	getline(in);
-
-	while (!in.eof()) {
-
-		if (ctrlc_pressed) { break; }
-
-		string otu = ""; string tax = "unknown";
-		int size = 0;
-
-		in >> otu >> size >> tax; gobble(in);
-		consTax temp(otu, tax, size);
-		taxes.push_back(temp);
-	}
-	in.close();
-
-	return taxes;
-}
+//std::vector<consTax> File::readConsTax(std::string inputfile) {
+//
+//	std::vector<consTax> taxes;
+//
+//	std::ifstream in;
+//	openInputFile(inputfile, in);
+//
+//	//read headers
+//	getline(in);
+//
+//	while (!in.eof()) {
+//
+//		if (ctrlc_pressed) { break; }
+//
+//		std::string otu = ""; std::string tax = "unknown";
+//		int size = 0;
+//
+//		in >> otu >> size >> tax; gobble(in);
+//		consTax temp(otu, tax, size);
+//		taxes.push_back(temp);
+//	}
+//	in.close();
+//
+//	return taxes;
+//}
 //**********************************************************************************************************************
-int File::readConsTax(string inputfile, map<int, consTax2>& taxes) {
-	ifstream in;
-	openInputFile(inputfile, in);
-
-	//read headers
-	getline(in);
-
-	MothurOut* m = MothurOut::getInstance();
-
-	while (!in.eof()) {
-
-		if (ctrlc_pressed) { break; }
-
-		string otu = ""; string tax = "unknown";
-		int size = 0;
-
-		in >> otu >> size >> tax; gobble(in);
-		consTax2 temp(otu, tax, size);
-		string simpleBin = m->getSimpleLabel(otu);
-		int bin;
-		convert(simpleBin, bin);
-		taxes[bin] = temp;
-	}
-	in.close();
-
-	return 0;
-}
+//int File::readConsTax(std::string inputfile, map<int, consTax2>& taxes) {
+///*	std::ifstream in;
+//	openInputFile(inputfile, in);
+//
+//	//read headers
+//	getline(in);
+//
+//	while (!in.eof()) {
+//
+//		if (ctrlc_pressed) { break; }
+//
+//		std::string otu = ""; std::string tax = "unknown";
+//		int size = 0;
+//
+//		in >> otu >> size >> tax; gobble(in);
+//		consTax2 temp(otu, tax, size);
+//		std::string simpleBin = m->getSimpleLabel(otu);
+//		int bin;
+//		convert(simpleBin, bin);
+//		taxes[bin] = temp;
+//	}
+//	in.close();
+//
+//	*/
+//	return 0;
+//	
+//}
 /**************************************************************************************************/
-vector<unsigned long long> File::setFilePosEachLine(string filename, int& num) {
+std::vector<unsigned long long> File::setFilePosEachLine(std::string filename, int& num) {
 	filename = getFullPathName(filename);
 
-	vector<unsigned long long> positions;
-	ifstream in;
+	std::vector<unsigned long long> positions;
+	std::ifstream in;
 	//openInputFile(filename, in);
 	openInputFileBinary(filename, in);
 
-	string input;
+	std::string input;
 	unsigned long long count = 0;
 	positions.push_back(0);
 
 	while (!in.eof()) {
 		//getline counting reads
 		char d = in.get(); count++;
-		while ((d != '\n') && (d != '\r') && (d != '\f') && (d != in.eof())) {
+		while ((d != '\n') && (d != '\r') && (d != '\f') && (!in.eof())) {
 			//get next character
 			d = in.get();
 			count++;
@@ -1046,7 +831,56 @@ vector<unsigned long long> File::setFilePosEachLine(string filename, int& num) {
 
 		if (!in.eof()) {
 			d = in.get(); count++;
-			while (isspace(d) && (d != in.eof())) { d = in.get(); count++; }
+			while (isspace(d) && (!in.eof())) { d = in.get(); count++; }
+		}
+		positions.push_back(count - 1);
+		//cout << count-1 << endl;
+	}
+	in.close();
+
+	num = static_cast<int>(positions.size() - 1);
+
+	FILE * pFile;
+	unsigned long long size;
+
+	//get num bytes in file
+	pFile = fopen(filename.c_str(), "rb");
+	if (pFile == NULL) perror("Error opening file");
+	else {
+		fseek(pFile, 0, SEEK_END);
+		size = ftell(pFile);
+		fclose(pFile);
+	}
+
+	positions[(positions.size() - 1)] = size;
+
+	return positions;
+}
+/**************************************************************************************************/
+std::vector<unsigned long long> File::setFilePosEachLine(std::string filename, unsigned long long& num) {
+	filename = getFullPathName(filename);
+
+	std::vector<unsigned long long> positions;
+	std::ifstream in;
+	//openInputFile(filename, in);
+	openInputFileBinary(filename, in);
+
+	std::string input;
+	unsigned long long count = 0;
+	positions.push_back(0);
+
+	while (!in.eof()) {
+		//getline counting reads
+		char d = in.get(); count++;
+		while ((d != '\n') && (d != '\r') && (d != '\f') && (!in.eof())) {
+			//get next character
+			d = in.get();
+			count++;
+		}
+
+		if (!in.eof()) {
+			d = in.get(); count++;
+			while (isspace(d) && (!in.eof())) { d = in.get(); count++; }
 		}
 		positions.push_back(count - 1);
 		//cout << count-1 << endl;
@@ -1071,60 +905,11 @@ vector<unsigned long long> File::setFilePosEachLine(string filename, int& num) {
 
 	return positions;
 }
-/**************************************************************************************************/
-vector<unsigned long long> File::setFilePosEachLine(string filename, unsigned long long& num) {
-	filename = getFullPathName(filename);
-
-	vector<unsigned long long> positions;
-	ifstream in;
-	//openInputFile(filename, in);
-	openInputFileBinary(filename, in);
-
-	string input;
-	unsigned long long count = 0;
-	positions.push_back(0);
-
-	while (!in.eof()) {
-		//getline counting reads
-		char d = in.get(); count++;
-		while ((d != '\n') && (d != '\r') && (d != '\f') && (d != in.eof())) {
-			//get next character
-			d = in.get();
-			count++;
-		}
-
-		if (!in.eof()) {
-			d = in.get(); count++;
-			while (isspace(d) && (d != in.eof())) { d = in.get(); count++; }
-		}
-		positions.push_back(count - 1);
-		//cout << count-1 << endl;
-	}
-	in.close();
-
-	num = positions.size() - 1;
-
-	FILE * pFile;
-	unsigned long long size;
-
-	//get num bytes in file
-	pFile = fopen(filename.c_str(), "rb");
-	if (pFile == NULL) perror("Error opening file");
-	else {
-		fseek(pFile, 0, SEEK_END);
-		size = ftell(pFile);
-		fclose(pFile);
-	}
-
-	positions[(positions.size() - 1)] = size;
-
-	return positions;
-}
 
 /**************************************************************************************************/
 
-vector<unsigned long long> File::divideFile(string filename, int& proc) {
-	vector<unsigned long long> filePos;
+std::vector<unsigned long long> File::divideFile(std::string filename, int& proc) {
+	std::vector<unsigned long long> filePos;
 	filePos.push_back(0);
 
 	FILE * pFile;
@@ -1153,7 +938,7 @@ vector<unsigned long long> File::divideFile(string filename, int& proc) {
 		for (int i = 0; i < proc; i++) {
 			unsigned long long spot = (i + 1) * chunkSize;
 
-			ifstream in;
+			std::ifstream in;
 			openInputFile(filename, in);
 			in.seekg(spot);
 
@@ -1184,13 +969,13 @@ vector<unsigned long long> File::divideFile(string filename, int& proc) {
 		if (filePos[(i + 1)] <= filePos[i]) { filePos.erase(filePos.begin() + (i + 1)); i--; }
 	}
 
-	proc = (filePos.size() - 1);
+	proc = static_cast<int>(filePos.size() - 1);
 	return filePos;
 }
 /**************************************************************************************************/
 
-vector<unsigned long long> File::divideFile(string filename, int& proc, char delimChar) {
-	vector<unsigned long long> filePos;
+std::vector<unsigned long long> File::divideFile(std::string filename, int& proc, char delimChar) {
+	std::vector<unsigned long long> filePos;
 	filePos.push_back(0);
 
 	FILE * pFile;
@@ -1221,7 +1006,7 @@ vector<unsigned long long> File::divideFile(string filename, int& proc, char del
 	for (int i = 0; i < proc; i++) {
 		unsigned long long spot = (i + 1) * chunkSize;
 
-		ifstream in;
+		std::ifstream in;
 		openInputFile(filename, in);
 		in.seekg(spot);
 
@@ -1231,7 +1016,7 @@ vector<unsigned long long> File::divideFile(string filename, int& proc, char del
 		unsigned long long newSpot = spot;
 		while (!in.eof()) {
 			char c = in.get();
-			string input = ""; input += c;
+			std::string input = ""; input += c;
 			while ((c != '\n') && (c != '\r') && (c != '\f') && (c != EOF)) {
 				c = in.get();
 				input += c;
@@ -1245,7 +1030,7 @@ vector<unsigned long long> File::divideFile(string filename, int& proc, char del
 					//inf a fasta file this would be a new sequence, in fastq it will be the + line, if this was a nameline.
 					getline(in); gobble(in);
 					if (!in.eof()) {
-						string secondInput = getline(in); gobble(in);
+						std::string secondInput = getline(in); gobble(in);
 						LOG(DEBUG) << " input= " + input + "\n secondaryInput = " + secondInput + "\n";
 						if (secondInput[0] == secondaryDelim) { break; } //yes, it was a nameline so stop
 						else { input = ""; gobble(in); } //nope it was a delim at the beginning of a non nameline, keep looking.
@@ -1279,8 +1064,8 @@ vector<unsigned long long> File::divideFile(string filename, int& proc, char del
 
 /**************************************************************************************************/
 
-vector<unsigned long long> File::divideFilePerLine(string filename, int& proc) {
-	vector<unsigned long long> filePos;
+std::vector<unsigned long long> File::divideFilePerLine(std::string filename, int& proc) {
+	std::vector<unsigned long long> filePos;
 	filePos.push_back(0);
 
 	FILE * pFile;
@@ -1308,7 +1093,7 @@ vector<unsigned long long> File::divideFilePerLine(string filename, int& proc) {
 	for (int i = 0; i < proc; i++) {
 		unsigned long long spot = (i + 1) * chunkSize;
 
-		ifstream in;
+		std::ifstream in;
 		openInputFile(filename, in);
 		in.seekg(spot);
 
@@ -1342,14 +1127,14 @@ vector<unsigned long long> File::divideFilePerLine(string filename, int& proc) {
 	return filePos;
 }
 /**************************************************************************************************/
-int File::divideFile(string filename, int& proc, vector<string>& files) {
+int File::divideFile(std::string filename, int& proc, std::vector<std::string>& files) {
 
-	vector<unsigned long long> filePos = divideFile(filename, proc);
+	std::vector<unsigned long long> filePos = divideFile(filename, proc);
 
 	for (int i = 0; i < (filePos.size() - 1); i++) {
 
 		//read file chunk
-		ifstream in;
+		std::ifstream in;
 		openInputFile(filename, in);
 		in.seekg(filePos[i]);
 		unsigned long long size = filePos[(i + 1)] - filePos[i];
@@ -1358,11 +1143,11 @@ int File::divideFile(string filename, int& proc, vector<string>& files) {
 		in.close();
 
 		//open new file
-		string fileChunkName = filename + "." + toString(i) + ".tmp";
-		ofstream out;
+		std::string fileChunkName = filename + "." + toString(i) + ".tmp";
+		std::ofstream out;
 		openOutputFile(fileChunkName, out);
 
-		out << chunk << endl;
+		out << chunk << std::endl;
 		out.close();
 		delete[] chunk;
 
@@ -1373,11 +1158,11 @@ int File::divideFile(string filename, int& proc, vector<string>& files) {
 	return 0;
 }
 /***********************************************************************/
-bool File::isBlank(string fileName) {
+bool File::isBlank(std::string fileName) {
 
 	fileName = getFullPathName(fileName);
 
-	ifstream fileHandle;
+	std::ifstream fileHandle;
 	fileHandle.open(fileName.c_str());
 	if (!fileHandle) {
 		LOG(LOGERROR) << "Could not open " + fileName;
@@ -1394,10 +1179,10 @@ bool File::isBlank(string fileName) {
 }
 
 /***********************************************************************/
-int File::openOutputFileAppend(string fileName, ofstream& fileHandle) {
+int File::openOutputFileAppend(std::string fileName, std::ofstream& fileHandle) {
 	fileName = getFullPathName(fileName);
 
-	fileHandle.open(fileName.c_str(), ios::app);
+	fileHandle.open(fileName.c_str(), std::ios::app);
 	if (!fileHandle) {
 		LOG(LOGERROR) << "Could not open " + fileName;
 		return 1;
@@ -1407,10 +1192,10 @@ int File::openOutputFileAppend(string fileName, ofstream& fileHandle) {
 	}
 }
 /***********************************************************************/
-int File::openOutputFileBinaryAppend(string fileName, ofstream& fileHandle) {
+int File::openOutputFileBinaryAppend(std::string fileName, std::ofstream& fileHandle) {
 	fileName = getFullPathName(fileName);
 
-	fileHandle.open(fileName.c_str(), ios::app | ios::binary);
+	fileHandle.open(fileName.c_str(), std::ios::app | std::ios::binary);
 	if (!fileHandle) {
 		LOG(LOGERROR) << "Could not open " + fileName;
 		return 1;
@@ -1421,27 +1206,27 @@ int File::openOutputFileBinaryAppend(string fileName, ofstream& fileHandle) {
 }
 
 /***********************************************************************/
-void File::gobble(istream& f) {
+void File::gobble(std::istream& f) {
 
 	char d;
 	while (isspace(d = f.get())) { ; }
 	if (!f.eof()) { f.putback(d); }
 }
 /***********************************************************************/
-void File::gobble(istringstream& f) {
+void File::gobble(std::istringstream& f) {
 	char d;
 	while (isspace(d = f.get())) { ; }
 	if (!f.eof()) { f.putback(d); }
 }
 /***********************************************************************/
-void File::zapGremlins(istream& f) {
+void File::zapGremlins(std::istream& f) {
 
 	char d;
 	while ('\0' == (d = f.get())) { ; }
 	if (!f.eof()) { f.putback(d); }
 }
 /***********************************************************************/
-void File::zapGremlins(istringstream& f) {
+void File::zapGremlins(std::istringstream& f) {
 	char d;
 	while ('\0' == (d = f.get())) { ; }
 	if (!f.eof()) { f.putback(d); }
@@ -1449,9 +1234,9 @@ void File::zapGremlins(istringstream& f) {
 
 /***********************************************************************/
 
-string File::getline(istringstream& fileHandle) {
+std::string File::getline(std::istringstream& fileHandle) {
 
-	string line = "";
+	std::string line = "";
 
 	while (!fileHandle.eof()) {
 		//get next character
@@ -1467,9 +1252,9 @@ string File::getline(istringstream& fileHandle) {
 }
 /***********************************************************************/
 
-string File::getline(ifstream& fileHandle) {
+std::string File::getline(std::ifstream& fileHandle) {
 
-	string line = "";
+	std::string line = "";
 
 	while (fileHandle) {
 		//get next character
@@ -1484,14 +1269,14 @@ string File::getline(ifstream& fileHandle) {
 
 }
 /***********************************************************************/
-int File::getNumSeqs(ifstream& file) {
-	int numSeqs = count(istreambuf_iterator<char>(file), istreambuf_iterator<char>(), '>');
+int File::getNumSeqs(std::ifstream& file) {
+	int numSeqs = count(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>(), '>');
 	file.seekg(0);
 	return numSeqs;
 }
 /***********************************************************************/
-void File::getNumSeqs(ifstream& file, int& numSeqs) {
-	string input;
+void File::getNumSeqs(std::ifstream& file, int& numSeqs) {
+	std::string input;
 	numSeqs = 0;
 	while (!file.eof()) {
 		input = getline(file);
@@ -1501,21 +1286,22 @@ void File::getNumSeqs(ifstream& file, int& numSeqs) {
 	}
 }
 /***********************************************************************/
-string File::findProgramPath(string programName) {
-	string pPath = "";
+std::string File::findProgramPath(std::string programName) {
+	std::string pPath = "";
 
 	//look in ./
 	//is this the programs path?
-	ifstream in5;
-	string tempIn = ".";
+	std::ifstream in5;
+	std::string tempIn = ".";
 	tempIn += path_delimiter + programName;
 	openInputFile(tempIn, in5, "");
 
 	//if this file exists
 	if (in5) { in5.close(); pPath = getFullPathName(tempIn); LOG(DEBUG) << "found it, programPath = " + pPath + "\n"; return pPath; }
 
-	string envPath = getenv("PATH");
-
+	char* cEnvPath = getenv("PATH");
+	std::string envPath = cEnvPath;
+	free(cEnvPath);
 	//delimiting path char
 	char delim;
 #if defined (UNIX)
@@ -1525,8 +1311,7 @@ string File::findProgramPath(string programName) {
 #endif
 
 	//break apart path variable by ':'
-	vector<string> dirs;
-	Utility::split(envPath, delim, dirs);
+	std::vector<std::string> dirs = Utility::split(envPath, delim);
 
 	LOG(DEBUG) << "dir's in path: \n";
 
@@ -1536,7 +1321,7 @@ string File::findProgramPath(string programName) {
 		LOG(DEBUG) << "" + dirs[i] + "\n";
 
 		//to lower so we can find it
-		string tempLower = "";
+		std::string tempLower = "";
 		for (int j = 0; j < dirs[i].length(); j++) { tempLower += tolower(dirs[i][j]); }
 
 		//is this mothurs path?
@@ -1559,8 +1344,8 @@ string File::findProgramPath(string programName) {
 			LOG(DEBUG) << "looking in " + dirs[i] + " for " + programName + " \n";
 
 			//is this the programs path?
-			ifstream in;
-			string tempIn = dirs[i];
+			std::ifstream in;
+			std::string tempIn = dirs[i];
 			tempIn += path_delimiter + programName;
 			openInputFile(tempIn, in, "");
 
@@ -1571,4 +1356,42 @@ string File::findProgramPath(string programName) {
 
 	return pPath;
 
+}
+
+bool File::dirCheck(std::string& dirName, bool reportError) {
+
+	if (dirName == "") { return false; }
+
+	std::string tag = "";
+
+	//add / to name if needed
+	if (dirName[dirName.length() - 1] != path_delimiter) { dirName += path_delimiter; }
+
+	//test to make sure directory exists
+	dirName = getFullPathName(dirName);
+	std::string outTemp = dirName + tag + "temp" + toString(time(NULL));
+	std::ofstream out;
+	out.open(outTemp.c_str(), std::ios::trunc);
+	if (!out && reportError) {
+		LOG(LOGERROR) << dirName << " directory does not exist or is not writable.";
+	}
+	else {
+		out.close();
+		File::remove(outTemp);
+		return true;
+	}
+
+	return false;
+
+}
+/***********************************************************************/
+std::string File::getExtension(std::string longName) {
+	std::string extension = "";
+
+	if (longName.find_last_of('.') != longName.npos) {
+		int pos = longName.find_last_of('.');
+		extension = longName.substr(pos, longName.length());
+	}
+
+	return extension;
 }

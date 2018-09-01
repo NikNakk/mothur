@@ -1,5 +1,4 @@
-#ifndef PARSIMONYCOMMAND_H
-#define PARSIMONYCOMMAND_H
+#pragma once
 /*
  *  parsimonycommand.h
  *  Mothur
@@ -21,7 +20,7 @@
 class ParsimonyCommand : public Command {
 
 public:
-	ParsimonyCommand::ParsimonyCommand(Settings& settings, string option) : Command(settings, option) {}
+	ParsimonyCommand::ParsimonyCommand(Settings& settings, ParameterListToProcess ptp) : Command(settings, ptp) {}
 	ParsimonyCommand(Settings& settings) : Command(setings) {}
 	~ParsimonyCommand() {}
 
@@ -72,4 +71,4 @@ private:
 };
 
 
-#endif
+

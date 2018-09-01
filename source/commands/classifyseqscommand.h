@@ -1,5 +1,4 @@
-#ifndef CLASSIFYSEQSCOMMAND_H
-#define CLASSIFYSEQSCOMMAND_H
+#pragma once
 
 /*
  *  classifyseqscommand.h
@@ -91,7 +90,6 @@ struct classifyData {
 	string search, taxonomyFileName, templateFileName, method, accnos;
 	unsigned long long start;
 	unsigned long long end;
-	MothurOut* m;
 	float match, misMatch, gapOpen, gapExtend;
 	int count, kmerSize, threadID, cutoff, iters, numWanted;
 	bool probs, flip, writeShortcuts;
@@ -227,5 +225,5 @@ static DWORD WINAPI MyClassThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+
 

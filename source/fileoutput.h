@@ -1,5 +1,4 @@
-#ifndef FILEOUTPUT_H
-#define FILEOUTPUT_H
+#pragma once
 
 #include "mothur.h"
 
@@ -8,7 +7,7 @@
 class FileOutput {
 
 public:
-	FileOutput() { m = MothurOut::getInstance(); }
+	FileOutput() { }
 	virtual ~FileOutput() {};
 
 	virtual void initFile(string) = 0;
@@ -20,7 +19,6 @@ public:
 
 protected:
 	int renameOk;
-	MothurOut* m;
 
 };
 
@@ -148,4 +146,4 @@ private:
 
 
 
-#endif
+

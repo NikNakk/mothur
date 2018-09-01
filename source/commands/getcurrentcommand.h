@@ -1,5 +1,4 @@
-#ifndef GETCURRENTCOMMAND_H
-#define GETCURRENTCOMMAND_H
+#pragma once
 
 /*
  *  getcurrentcommand.h
@@ -31,5 +30,5 @@ public:
 	virtual int execute();
 };
 
-#endif
+
 

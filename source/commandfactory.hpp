@@ -1,5 +1,4 @@
-#ifndef COMMANDFACTORY_HPP
-#define COMMANDFACTORY_HPP
+#pragma once
 
 /*
  *  commandfactory.h
@@ -13,34 +12,32 @@
 #include "mothur.h"
 #include "g3log/g3log.hpp"
 #include "commandmaker.h"
+#include "commandtoprocess.h"
 #include "settings.h"
+#include <stdexcept>
 
 typedef map<string, unique_ptr<CommandMakerBase>> TMapCommands;
 
 class CommandFactory {
 public:
-	CommandFactoYry(Settings& settings);
-	unique_ptr<Command> getCommand(string commandName, string optionString, string mode);
-	unique_ptr<Command> getCommand(string commandName, string optionString);
+	CommandFactory(Settings& settings);
+	unique_ptr<Command> getCommand(CommandToProcess& cmd, string mode);
 	unique_ptr<Command> getCommand(string commandName);
+	unique_ptr<Command> getCommand(CommandToProcess& cmd);
 	/*bool isValidCommand(string option);
 	bool isValidCommand(string, string);*/
 	string getValidCommands();
 	void getCommandsCategories();
 	void Register(string command, unique_ptr<CommandMakerBase> creator);
-	unique_ptr<Command> Create(string command, string optionString);
+	unique_ptr<Command> Create(CommandToProcess& cmd);
 	unique_ptr<Command> Create(string command);
 
-	vector<string> getListCommands();
-	vector<string>& getListCommands(vector<string>& commandList);
+	std::vector<std::string> getListCommands();
 
 private:
 	Settings& settings;
 	TMapCommands commandMakers;
 
-	CommandFactory(const CommandFactory&); // Disable copy constructor
-	void operator=(const CommandFactory&); // Disable assignment operator
+	CommandFactory(const CommandFactory&) = delete; // Disable copy constructor
+	void operator=(const CommandFactory&) = delete; // Disable assignment operator
 };
-
-
-#endif

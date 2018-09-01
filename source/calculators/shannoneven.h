@@ -1,5 +1,4 @@
-#ifndef SHANNONEVEN
-#define SHANNONEVEN
+#pragma once
 
 /*
  *  shannoneven.h
@@ -25,4 +24,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

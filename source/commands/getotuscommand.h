@@ -1,5 +1,4 @@
-#ifndef GETOTUSCOMMAND_H
-#define GETOTUSCOMMAND_H
+#pragma once
 
 /*
  *  getotuscommand.h
@@ -49,7 +48,7 @@ private:
 
 };
 
-#endif
+
 
 
 

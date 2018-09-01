@@ -1,5 +1,4 @@
-#ifndef diagbox_h
-#define diagbox_h
+#pragma once
 
 struct DiagBox;
 
@@ -190,4 +189,4 @@ typedef const char *(*NWDIAG)(const byte *A, unsigned LA, const byte *B, unsigne
 const char *NWBandWrap(NWDIAG NW, const byte *A, unsigned LA, const byte *B, unsigned LB,
   unsigned DiagLo, unsigned DiagHi, bool LeftTerm, bool RightTerm);
 
-#endif // diagbox_h
+ // diagbox_h

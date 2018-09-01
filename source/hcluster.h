@@ -1,5 +1,4 @@
-#ifndef HCLUSTER_H
-#define HCLUSTER_H
+#pragma once
 
 /*
  *  hcluster.h
@@ -68,7 +67,6 @@ protected:
 
 	vector<seqDist> mergedMin;
 	string partialDist;
-	MothurOut* m;
 
 
 };
@@ -81,6 +79,6 @@ protected:
 
 
 
-#endif
+
 
 

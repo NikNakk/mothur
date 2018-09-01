@@ -1,5 +1,4 @@
-#ifndef READTREE_H
-#define READTREE_H
+#pragma once
 /*
  *  readtree.h
  *  Mothur
@@ -37,7 +36,6 @@ protected:
 	vector<Tree*> Trees;
 	CountTable* ct;
 	int numNodes, numLeaves;
-	MothurOut* m;
 
 
 };
@@ -65,4 +63,4 @@ private:
 
 /****************************************************************************/
 
-#endif
+

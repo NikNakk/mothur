@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_mergetaxsummarycommand_h
-#define Mothur_mergetaxsummarycommand_h
+#pragma once
 
 #include "mothur.h"
 #include "command.hpp"
@@ -44,4 +43,4 @@ private:
 };
 
 
-#endif
+

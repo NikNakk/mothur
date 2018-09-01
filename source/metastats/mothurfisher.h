@@ -1,5 +1,4 @@
-#ifndef MOTHUR_FISHER
-#define MOTHUR_FISHER
+#pragma once
 
 /*
  *  mothurfisher.h
@@ -15,13 +14,12 @@
 class MothurFisher {
 
 public:
-	MothurFisher() { otuLabel = ""; m = MothurOut::getInstance(); }
+	MothurFisher() { otuLabel = ""; }
 	~MothurFisher() {}
 
 	double fexact(double, double, double, double, string);
 
 private:
-	MothurOut* m;
 	double sleft, sright, sless, slarg;
 	double sn11, sn1_, sn_1, sn, sprob;
 	double lngamm(double);
@@ -35,5 +33,5 @@ private:
 };
 
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef CHIMERACCODECOMMAND_H
-#define CHIMERACCODECOMMAND_H
+#pragma once
 
 /*
  *  chimeraccodecommand.h
@@ -53,5 +52,5 @@ private:
 
 /***********************************************************/
 
-#endif
+
 

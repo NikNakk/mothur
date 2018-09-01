@@ -1,5 +1,4 @@
-#ifndef SFFINFOCOMMAND_H
-#define SFFINFOCOMMAND_H
+#pragma once
 
 /*
  *  sffinfocommand.h
@@ -82,6 +81,6 @@ private:
 
 /**********************************************************/
 
-#endif
+
 
 

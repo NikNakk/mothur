@@ -1,5 +1,4 @@
-#ifndef Mothur_makebiomcommand_h
-#define Mothur_makebiomcommand_h
+#pragma once
 
 //
 //  makebiomcommand.h
@@ -56,4 +55,4 @@ private:
 };
 
 
-#endif
+

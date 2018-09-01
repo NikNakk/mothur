@@ -1,5 +1,4 @@
-#ifndef JEST_H
-#define JEST_H
+#pragma once
 /*
  *  sharedjest.h
  *  Dotur
@@ -30,4 +29,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

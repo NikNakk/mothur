@@ -1,5 +1,4 @@
-#ifndef SHAREDACE_H
-#define SHAREDACE_H
+#pragma once
 /*
  *  sharedace.h
  *  Dotur
@@ -29,4 +28,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef RF_RFTREENODE_HPP
-#define RF_RFTREENODE_HPP
+#pragma once
 
 #include "macros.h"
 
@@ -92,11 +91,10 @@ private:
 	RFTreeNode* rightChildNode;
 	RFTreeNode* parentNode;
 
-	MothurOut* m;
 
 	int createLocalDiscardedFeatureList();
 	int updateNodeEntropy();
 
 };
 
-#endif
+

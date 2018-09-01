@@ -1,18 +1,22 @@
-#ifndef fastafileparameter_h
-#define fastafileparameter_h
+#pragma once
 
 #include "inputtypeparameter.h"
+#include <memory>
+#include "filehandling/fastafileread.h"
+#include "mothurdefs.h"
 
 class FastaFileParameter : public InputTypeParameter {
 public:
-	FastaFileParameter(Settings& settings, string name, bool required, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		InputTypeParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual string getValue() {
+	FastaFileParameter(std::string& fasta, Settings& settings, std::string name, bool required, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		InputTypeParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+		value(fasta) {}
+	virtual std::string getValue() const override {
 		return value;
 	}
-	virtual void validateAndSet(string newValue);
+	virtual void validateAndSet(std::string newValue) override;
+	virtual bool validateRequiredMissing() override;
 private:
-	string value;
+	std::string & value;
 };
-#endif
+

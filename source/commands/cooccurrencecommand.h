@@ -1,5 +1,4 @@
-#ifndef COOCCURRENCECOMMAND_H
-#define COOCCURRENCECOMMAND_H
+#pragma once
 
 /*
  *  COOCCURRENCE.h
@@ -50,6 +49,6 @@ private:
 
 };
 
-#endif
+
 
 

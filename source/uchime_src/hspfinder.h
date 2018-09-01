@@ -1,5 +1,4 @@
-#ifndef hspfinder_h
-#define hspfinder_h
+#pragma once
 
 #include "seq.h"
 
@@ -10,4 +9,4 @@ public:
 	void SetB(const SeqData &/*SD*/) {}
 	};
 
-#endif // hspfinder_h
+ // hspfinder_h

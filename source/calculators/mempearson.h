@@ -1,5 +1,4 @@
-#ifndef MEMPEARSON_H
-#define MEMPEARSON_H
+#pragma once
 
 /*
  *  mempearson.h
@@ -29,4 +28,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

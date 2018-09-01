@@ -1,5 +1,4 @@
-#ifndef STRUCTPEARSON_H
-#define STRUCTPEARSON_H
+#pragma once
 
 /*
  *  structpearson.h
@@ -29,6 +28,6 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 

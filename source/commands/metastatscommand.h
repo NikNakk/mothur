@@ -1,5 +1,4 @@
-#ifndef METASTATSCOMMAND_H
-#define METASTATSCOMMAND_H
+#pragma once
 
 /*
  *  metastatscommand.h
@@ -70,7 +69,6 @@ struct metastatsData {
 	int start;
 	int num, iters, count;
 	float threshold;
-	MothurOut* m;
 	string sharedfile;
 	string outputDir;
 
@@ -161,5 +159,5 @@ static DWORD WINAPI MyMetastatsThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+
 

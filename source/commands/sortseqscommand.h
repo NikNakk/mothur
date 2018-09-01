@@ -1,5 +1,4 @@
-#ifndef Mothur_sortseqscommand_h
-#define Mothur_sortseqscommand_h
+#pragma once
 
 
 //
@@ -51,6 +50,6 @@ private:
 
 };
 
-#endif
+
 
 

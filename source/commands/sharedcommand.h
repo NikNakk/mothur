@@ -1,5 +1,4 @@
-#ifndef SHAREDCOMMAND_H
-#define SHAREDCOMMAND_H
+#pragma once
 /*
  *  sharedcommand.h
  *  Dotur
@@ -59,4 +58,4 @@ private:
 
 };
 
-#endif
+

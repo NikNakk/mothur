@@ -1,5 +1,4 @@
-#ifndef GETLINEAGECOMMAND_H
-#define GETLINEAGECOMMAND_H
+#pragma once
 
 /*
  *  getlineagecommand.h
@@ -59,5 +58,5 @@ private:
 	vector< map<string, float> > getTaxons(string);
 };
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef CHAO1_H
-#define CHAO1_H
+#pragma once
 /*
  *  chao1.h
  *  Dotur
@@ -28,4 +27,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

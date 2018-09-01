@@ -1,5 +1,4 @@
-#ifndef DOTAXONOMY_H
-#define DOTAXONOMY_H
+#pragma once
 
 /*
  * phylotree.h
@@ -71,11 +70,10 @@ private:
 	int numSeqs;
 	int maxLevel;
 	bool calcTotals;
-	MothurOut* m;
 };
 
 /**************************************************************************************************/
 
-#endif
+
 
 

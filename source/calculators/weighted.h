@@ -1,5 +1,4 @@
-#ifndef WEIGHTED_H
-#define WEIGHTED_H
+#pragma once
 
 
 /*
@@ -51,7 +50,6 @@ private:
 struct weightedData {
 	int start;
 	int num;
-	MothurOut* m;
 	EstOutput results;
 	vector< vector<string> > namesOfGroupCombos;
 	Tree* t;
@@ -340,4 +338,4 @@ static DWORD WINAPI MyWeightedThreadFunction(LPVOID lpParam) {
 #endif
 
 
-#endif
+

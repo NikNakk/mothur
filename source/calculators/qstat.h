@@ -1,5 +1,4 @@
-#ifndef QSTAT_H
-#define QSTAT_H
+#pragma once
 /*
  *  qstat.h
  *  Mothur
@@ -30,5 +29,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef CHIMERASLAYERCOMMAND_H
-#define CHIMERASLAYERCOMMAND_H
+#pragma once
 
 /*
  *  chimeraslayercommand.h
@@ -89,7 +88,6 @@ struct slayerData {
 	unsigned long long start;
 	unsigned long long end;
 	int ksize, match, mismatch, window, minSimilarity, minCoverage, minBS, minSNP, parents, iters, increment, numwanted;
-	MothurOut* m;
 	float divR;
 	map<string, int> priority;
 	int count;
@@ -594,6 +592,6 @@ static DWORD WINAPI MySlayerGroupThreadFunction(LPVOID lpParam) {
 /**************************************************************************************************/
 
 
-#endif
+
 
 

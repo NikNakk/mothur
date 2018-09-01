@@ -1,5 +1,4 @@
-#ifndef SORABUND_H
-#define SORABUND_H
+#pragma once
 /*
  *  sharedsorabund.h
  *  Dotur
@@ -30,4 +29,4 @@ private:
 };
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef PCACOMMAND_H
-#define PCACOMMAND_H
+#pragma once
 
 /*
  *  pcacommand.h
@@ -51,6 +50,6 @@ private:
 
 /*****************************************************************/
 
-#endif
+
 
 

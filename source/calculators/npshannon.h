@@ -1,5 +1,4 @@
-#ifndef NPSHANNON_H
-#define NPSHANNON_H
+#pragma once
 
 /*
  *  npshannon.h
@@ -30,4 +29,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef LISTSEQSCOMMAND_H
-#define LISTSEQSCOMMAND_H
+#pragma once
 
 /*
  *  listseqscommand.h
@@ -48,5 +47,5 @@ private:
 	int readFastq();
 };
 
-#endif
+
 

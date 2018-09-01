@@ -1,5 +1,4 @@
-#ifndef MALIGNER_H
-#define MALIGNER_H
+#pragma once
 /*
  *  maligner.h
  *  Mothur
@@ -49,11 +48,10 @@ private:
 	string constructAntiChimericSeq(vector<trace_struct>, vector<Sequence>);
 	float computePercentID(string, string);
 	string chimeraMaligner(int, DeCalculator);
-	MothurOut* m;
 
 };
 
 /***********************************************************************/
 
-#endif
+
 

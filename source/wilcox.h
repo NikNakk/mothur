@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_wilcox_h
-#define Mothur_wilcox_h
+#pragma once
 
 
 class PWilcox {
@@ -26,4 +25,4 @@ private:
 	double cwilcox(int k, int m, int n, double*** w);
 };
 
-#endif
+

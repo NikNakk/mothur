@@ -1,5 +1,4 @@
-#ifndef Mothur_listotucommand_h
-#define Mothur_listotucommand_h
+#pragma once
 
 //
 //  listotucommand.h
@@ -55,4 +54,4 @@ private:
 
 
 
-#endif
+

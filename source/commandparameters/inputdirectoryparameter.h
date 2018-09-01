@@ -5,11 +5,11 @@
 
 class InputDirectoryParameter : public DirectoryParameter {
 public:
-	explicit InputDirectoryParameter(Settings& settings, string name = "inputdir", bool required = false, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		DirectoryParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual void validateAndSet(string value);
+	InputDirectoryParameter(std::string & value, Settings& settings, std::string name = "inputdir", bool required = false, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		DirectoryParameter(value, settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
+	virtual void validateAndSet(std::string value) override;
 private:
-	string value;
+	std::string value;
 };
 #endif

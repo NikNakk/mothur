@@ -6,8 +6,7 @@
 //  Copyright (c) 2014 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_mergesfffilecommand_h
-#define Mothur_mergesfffilecommand_h
+#pragma once
 
 #include "command.hpp"
 
@@ -55,4 +54,4 @@ private:
 
 /**********************************************************/
 
-#endif
+

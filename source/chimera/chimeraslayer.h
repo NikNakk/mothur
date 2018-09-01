@@ -1,5 +1,4 @@
-#ifndef CHIMERASLAYER_H
-#define CHIMERASLAYER_H
+#pragma once
 
 /*
  *  chimeraslayer.h
@@ -69,6 +68,6 @@ private:
 
 /************************************************************************/
 
-#endif
+
 
 

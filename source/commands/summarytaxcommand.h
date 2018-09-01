@@ -1,5 +1,4 @@
-#ifndef SUMMARYTAXCOMMAND_H
-#define SUMMARYTAXCOMMAND_H
+#pragma once
 
 /*
  *  summarytaxcommand.h
@@ -43,4 +42,4 @@ private:
 /**************************************************************************************************/
 
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef STRUCTEUCLIDEAN_H
-#define STRUCTEUCLIDEAN_H
+#pragma once
 
 /*
  *  structeuclidean.h
@@ -29,6 +28,6 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 

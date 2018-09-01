@@ -1,5 +1,4 @@
-#ifndef GETGROUPCOMMAND_H
-#define GETGROUPCOMMAND_H
+#pragma once
 
 /*
  *  getgroupcommand.h
@@ -41,4 +40,4 @@ private:
 
 };
 
-#endif
+

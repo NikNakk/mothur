@@ -1,5 +1,4 @@
-#ifndef SECONDARYSTRUCTURECHECKERCOMMAND_H
-#define SECONDARYSTRUCTURECHECKERCOMMAND_H
+#pragma once
 
 /*
  *  secondarystructurecommand.h
@@ -62,5 +61,5 @@ private:
 };
 
 /**************************************************************************************************/
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef COLLECTDISPLAY_H
-#define COLLECTDISPLAY_H
+#pragma once
 
 #include "sabundvector.hpp"
 #include "sharedsabundvector.h"
@@ -109,4 +108,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

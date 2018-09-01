@@ -1,5 +1,4 @@
-#ifndef Mothur_removeotulabelscommand_h
-#define Mothur_removeotulabelscommand_h
+#pragma once
 
 
 //
@@ -61,4 +60,4 @@ private:
 
 
 
-#endif
+

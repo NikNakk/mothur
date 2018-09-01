@@ -1,5 +1,4 @@
-#ifndef myutils_h
-#define myutils_h
+#pragma once
 
 #define RCE_MALLOC	0
 
@@ -272,4 +271,4 @@ extern bool opt_quiet;
 extern bool opt_version;
 extern FILE *g_fLog;
 
-#endif	// myutils_h
+	// myutils_h

@@ -1,5 +1,4 @@
-#ifndef SIMPSONEVEN_H
-#define SIMPSONEVEN_H
+#pragma once
 
 /*
  *  simpsoneven.h
@@ -25,5 +24,5 @@ public:
 
 /***********************************************************************/
 
-#endif
+
 

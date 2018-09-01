@@ -1,5 +1,4 @@
-#ifndef SLAYER_H
-#define SLAYER_H
+#pragma once
 /*
  *  slayer.h
  *  Mothur
@@ -53,12 +52,11 @@ class Slayer {
 		float snpQA(vector<snps>);
 		float snpQB(vector<snps>);
 		float snpAB(vector<snps>);
-		MothurOut* m;
-				
+					
 };
 
 /***********************************************************************/
 
-#endif
+
 
 

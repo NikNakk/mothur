@@ -1,5 +1,4 @@
-#ifndef LINEARALGEBRA
-#define LINEARALGEBRA
+#pragma once
 
 /*
  *  linearalgebra.h
@@ -15,7 +14,7 @@
 class LinearAlgebra {
 
 public:
-	LinearAlgebra() { m = MothurOut::getInstance(); }
+	LinearAlgebra() { }
 	~LinearAlgebra() {}
 
 	vector<vector<double> > matrix_mult(vector<vector<double> >, vector<vector<double> >);
@@ -50,7 +49,6 @@ public:
 	vector< vector<double> > lda(vector< vector<double> >& a, vector<string> groups, vector< vector<double> >& means, bool&); //Linear discriminant analysis - a is [features][valuesFromGroups] groups indicates which group each sampling comes from. For example if groups = early, late, mid, early, early. a[0][0] = value for feature0 from groupEarly.
 	int svd(vector< vector<double> >& a, vector<double>& w, vector< vector<double> >& v); //Singular value decomposition
 private:
-	MothurOut* m;
 
 	double pythag(double, double);
 	double betacf(const double, const double, const double);
@@ -78,5 +76,5 @@ private:
 
 };
 
-#endif
+
 

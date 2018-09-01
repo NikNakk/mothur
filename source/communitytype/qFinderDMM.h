@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 University of Michigan. All rights reserved.
 //
 
-#ifndef pds_dmm_qFinderDMM_h
-#define pds_dmm_qFinderDMM_h
+#pragma once
 
 #include "communitytype.h"
 
@@ -41,4 +40,4 @@ private:
 
 /**************************************************************************************************/
 
-#endif
+

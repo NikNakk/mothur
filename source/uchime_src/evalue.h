@@ -1,5 +1,4 @@
-#ifndef evalue_h
-#define evalue_h
+#pragma once
 
 #include <float.h>
 
@@ -22,4 +21,4 @@ double ComputeMinScoreGivenEvalueQGapped(double Evalue, unsigned QueryLength);
 double ComputeMinScoreGivenEvalueQUngapped(double Evalue, unsigned QueryLength);
 double ComputeEvalueGappedFromBitScore(double BitScore, unsigned QueryLength);
 
-#endif // evalue_h
+ // evalue_h

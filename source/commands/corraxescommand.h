@@ -1,5 +1,4 @@
-#ifndef CORRAXESCOMMAND_H
-#define CORRAXESCOMMAND_H
+#pragma once
 
 /*
  *  corraxescommand.h
@@ -54,6 +53,6 @@ private:
 };
 
 
-#endif
+
 
 

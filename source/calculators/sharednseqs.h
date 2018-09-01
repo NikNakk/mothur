@@ -1,5 +1,4 @@
-#ifndef SHAREDNSEQS_H
-#define SHAREDNSEQS_H
+#pragma once
 
 /*
  *  sharednseqs.h
@@ -28,4 +27,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

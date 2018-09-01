@@ -1,5 +1,4 @@
-#ifndef SCREENSEQSCOMMAND_H
-#define SCREENSEQSCOMMAND_H
+#pragma once
 
 /*
  *  screenseqscommand.h
@@ -11,7 +10,11 @@
  */
 #include "mothur.h"
 #include "command.hpp"
-#include "sequence.hpp"
+#include "datastructures/sequence.h"
+#include "datastructures/namemap.h"
+#include "commands/seqsummarycommand.h"
+#include "filehandling/fastafileread.h"
+#include <unordered_set>
 
  /**************************************************************************************************/
  //custom data structure for threads to use.
@@ -44,38 +47,23 @@ struct sumScreenData {
 	int numSeqs;
 };
 
-struct sumData {
-	vector<int> startPosition;
-	vector<int> endPosition;
-	vector<int> seqLength;
-	vector<int> ambigBases;
-	vector<int> longHomoPolymer;
-	vector<int> numNs;
-	int numSeqs;
-
-	sumData() :
-		numSeqs(0)
-	{}
-};
-
 class ScreenSeqsCommand : public Command {
 
 public:
-	ScreenSeqsCommand(Settings& settings, string option);
-	ScreenSeqsCommand(Settings& settings);
-	~ScreenSeqsCommand() {}
+	ScreenSeqsCommand(Settings& settings, ParameterListToProcess ptp);
+	ScreenSeqsCommand(Settings& settings) : Command(settings) {}
+	~ScreenSeqsCommand() = default;
 
-	vector<string> setParameters();
-	string getCommandName() { return "screen.seqs"; }
-	string getCommandCategory() { return "Sequence Processing"; }
+	virtual string getCommandName() const override { return "screen.seqs"; }
+	virtual string getCommandCategory() const override { return "Sequence Processing"; }
 
-	string getHelpString();
-	string getOutputPattern(string);
-	string getCitation() { return "http://www.mothur.org/wiki/Screen.seqs"; }
-	string getDescription() { return "enables you to keep sequences that fulfill certain user defined criteria"; }
+	virtual void setParameters() override;
+	virtual void setOutputTypes() override;
 
-	int execute();
-	void help() { LOG(INFO) << getHelpString(); }
+	virtual string getHelpString() const override;
+	virtual string getDescription() const override { return "enables you to keep sequences that fulfill certain user defined criteria"; }
+
+	virtual int execute() override;
 
 
 private:
@@ -90,22 +78,22 @@ private:
 
 	int optimizeContigs();
 	int optimizeAlign();
-	int driver(linePair, string, string, string, map<string, string>&);
-	void driverWithCount(linePair filePos, string goodFName, string badAccnosFName, string filename, sumScreenData& ssData);
 	int createProcesses(string, string, string, map<string, string>&);
 	int screenSummary(map<string, string>&);
 	int screenContigs(map<string, string>&);
-	int runFastaScreening(map<string, string>&);
 	int screenFasta(map<string, string>&);
-	int screenReports(map<string, string>&);
-	int getSummary(vector<unsigned long long>&);
+	int runFastaScreening(std::vector<FastaFileRead> fastaSplit, std::map<std::string, std::string> & badSeqNames);
+	sumScreenData driver(FastaFileRead & fasta, string goodFName, string badAccnosFName, const std::map<std::string, std::string>& badSeqNames);
+	int optimizeParameter(const std::string & parameterName, const std::map<int, long long>& mapData, double centile, long long numSeqs);
+	void optimizeFromFasta(std::vector<FastaFileRead> fastaSplit);
+	void optimizeFromSummaryData(const SummaryData & sumData);
+	void optimizeFromSummaryFile(std::string summaryfile);
+	SummaryData driverReadSummary(SummaryFileRead & summary);
 	int createProcessesCreateSummary(vector<int>&, vector<int>&, vector<int>&, vector<int>&, vector<int>&, vector<int>&, string);
-	int driverCreateSummary(vector<int>&, vector<int>&, vector<int>&, vector<int>&, vector<int>&, vector<int>&, string, linePair);
-	int getSummaryReport();
+	SummaryData driverCreateSummary(FastaFileRead & fasta);
 	int driverContigsSummary(vector<int>&, vector<int>&, vector<int>&, vector<int>&, vector<int>&, linePair);
 	void driverContigsSummaryWithData(contigsSumData & csData, linePair filePos);
 	int createProcessesContigsSummary(vector<int>&, vector<int>&, vector<int>&, vector<int>&, vector<int>&, vector<linePair>);
-	void driverCreateSummaryWithData(sumData& sData, string filename, linePair filePos);
 	int driverAlignSummary(vector<float>&, vector<float>&, vector<int>&, linePair);
 	void driverAlignSummaryWithData(alignsData& aData, linePair filePos);
 	int createProcessesAlignSummary(vector<float>&, vector<float>&, vector<int>&, vector<linePair>);
@@ -113,10 +101,9 @@ private:
 	bool abort;
 	string fastafile, namefile, groupfile, alignreport, outputDir, qualfile, taxonomy, countfile, contigsreport, summaryfile;
 	int startPos, endPos, maxAmbig, maxHomoP, minLength, maxLength, processors, minOverlap, oStart, oEnd, mismatches, maxN, maxInsert;
-	float minSim, minScore, criteria;
+	double minSim, minScore, criteria;
 	vector<string> outputNames;
 	vector<string> optimize;
-	map<string, int> nameMap;
+	NamesWithTotals nwt;
 };
 
-#endif

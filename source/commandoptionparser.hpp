@@ -1,5 +1,4 @@
-#ifndef COMMANDOPTIONPARSER_HPP
-#define COMMANDOPTIONPARSER_HPP
+#pragma once
 
 #include "mothur.h"
 
@@ -13,9 +12,8 @@ public:
 
 private:
 	string commandString, optionString;
-	MothurOut* m;
 };
 
 //**********************************************************************************************************************
 
-#endif
+

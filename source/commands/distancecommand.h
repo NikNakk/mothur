@@ -1,5 +1,4 @@
-#ifndef DISTANCECOMMAND_H
-#define DISTANCECOMMAND_H
+#pragma once
 
 /*
  *  distancecommand.h
@@ -32,7 +31,6 @@ struct distanceData {
 	float cutoff;
 	SequenceDB alignDB;
 	vector<string> Estimators;
-	MothurOut* m;
 	string output;
 	int numNewFasta, count;
 	string countends;
@@ -213,7 +211,7 @@ private:
 	bool sanityCheck();
 };
 
-#endif
+
 
 /**************************************************************************************************/
 

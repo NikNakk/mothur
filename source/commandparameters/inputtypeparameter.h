@@ -1,25 +1,20 @@
-#ifndef inputtypeparameter_h
-#define inputtypeparameter_h
+#pragma once
 
 #include "commandparameterbase.h"
 #include "settings.h"
 
 class InputTypeParameter : public CommandParameterBase {
 public:
-	InputTypeParameter(Settings& settings, string name, bool required, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		CommandParameterBase(name, InputType, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+	InputTypeParameter(Settings& settings, std::string name, bool required, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		CommandParameterBase(name, CommandParameterType::InputType, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
 		settings(settings) {}
-	virtual string getValue() {
-		return value;
-	}
-	virtual void validateAndSet(string value);
-	string setInputDir(string newInputDir) { inputDir = newInputDir; }
-	string getFullPath();
+	virtual std::string getValue() const override { return value; }
+	virtual void validateAndSet(std::string value) override;
+	std::string getFullPath();
 
 protected:
 	Settings& settings;
-	string value;
-	string inputDir;
+	std::string value;
 };
-#endif
+

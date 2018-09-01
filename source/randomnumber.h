@@ -1,5 +1,4 @@
-#ifndef RANDOMNUMBER
-#define RANDOMNUMBER
+#pragma once
 
 /*
  *  randomnumber.h
@@ -31,4 +30,4 @@ public:
 
 /**************************************************************************************************/
 
-#endif
+

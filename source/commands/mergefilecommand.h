@@ -1,5 +1,4 @@
-#ifndef MERGEFILECOMMAND_H
-#define MERGEFILECOMMAND_H
+#pragma once
 
 /*
  *  mergefilecommand.h
@@ -38,4 +37,4 @@ private:
 	bool abort;
 };
 
-#endif
+

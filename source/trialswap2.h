@@ -1,5 +1,4 @@
-#ifndef TRIALSWAP2
-#define TRIALSWAP2
+#pragma once
 
 /*
  *  trialswap2.h
@@ -15,7 +14,7 @@
 class TrialSwap2 {
 
 public:
-	TrialSwap2() { m = MothurOut::getInstance(); };
+	TrialSwap2() { };
 	~TrialSwap2() {};
 
 	double calc_pvalue_lessthan(vector<double>, double);
@@ -30,7 +29,6 @@ public:
 
 
 private:
-	MothurOut* m;
 
 	double t_test(double, int, double, vector<double>);
 	int print_matrix(vector<vector<int> > &, int, int);
@@ -38,6 +36,6 @@ private:
 
 
 };
-#endif
+
 
 

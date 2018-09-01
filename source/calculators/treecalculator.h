@@ -1,5 +1,4 @@
-#ifndef TREECALCULATOR_H
-#define TREECALCULATOR_H
+#pragma once
 
 /*
  *  treecalculator.h
@@ -41,4 +40,4 @@ protected:
 
 /***********************************************************************/
 
-#endif
+

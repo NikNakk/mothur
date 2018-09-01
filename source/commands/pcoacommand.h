@@ -1,5 +1,4 @@
-#ifndef PCOACOMMAND_H
-#define PCOACOMMAND_H
+#pragma once
 
 /*
  *  pcoacommand.h
@@ -48,5 +47,5 @@ private:
 
 /*****************************************************************/
 
-#endif
+
 

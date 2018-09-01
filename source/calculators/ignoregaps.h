@@ -1,5 +1,4 @@
-#ifndef IGNOREGAPS_H
-#define IGNOREGAPS_H
+#pragma once
 /*
  *  ignoregaps.h
  *  Mothur
@@ -63,5 +62,5 @@ public:
 };
 
 /**************************************************************************************************/
-#endif
+
 

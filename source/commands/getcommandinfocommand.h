@@ -1,5 +1,4 @@
-#ifndef GETCOMMANDINFOCOMMAND_H
-#define GETCOMMANDINFOCOMMAND_H
+#pragma once
 
 /*
  *  getcommandinfo.h
@@ -50,5 +49,5 @@ private:
 
 /**********************************************************/
 
-#endif
+
 

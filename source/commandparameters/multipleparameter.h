@@ -1,22 +1,24 @@
-#ifndef multipleparameter_h
-#define multipleparameter_h
+#pragma once
 
 #include "commandparameterbase.h"
+#include <unordered_set>
+#include "utility.h"
 
 class MultipleParameter : public CommandParameterBase {
 public:
-	explicit MultipleParameter(string name, vector<string> options, string defaultOption, bool chooseMultiple = false, bool required = false, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		CommandParameterBase(name, Multiple, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
-		options(options), defaultOption(defaultOption), chooseMultiple(chooseMultiple) {}
-	virtual string getValue() {
-		return "";
+	explicit MultipleParameter(std::vector<std::string> & values, std::string name, std::vector<std::string> options, std::string defaultOption, bool chooseMultiple = false, bool required = false, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		CommandParameterBase(name, CommandParameterType::Multiple, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+		values(values), options(options), defaultOption(defaultOption), chooseMultiple(chooseMultiple) {}
+	virtual std::string getValue() const override {
+		return Utility::join(values.begin(), values.end(), std::string("-"));
 	}
-	virtual void validateAndSet(string newValue);
+	virtual void validateAndSet(std::string newValue) override;
+	virtual bool validateRequiredMissing();
 private:
-	vector<string> values;
-	vector<string> options;
-	string defaultOption;
+	std::vector<std::string> & values;
+	std::vector<std::string> options;
+	std::string defaultOption;
 	bool chooseMultiple;
 };
-#endif
+

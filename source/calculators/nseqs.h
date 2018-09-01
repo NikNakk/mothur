@@ -1,5 +1,4 @@
-#ifndef NSEQS_H
-#define NSEQS_H
+#pragma once
 
 /*
  *  nseqs.h
@@ -49,4 +48,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

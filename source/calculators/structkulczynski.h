@@ -1,5 +1,4 @@
-#ifndef STRUCTKULCZYNSKI_H
-#define STRUCTKULCZYNSKI_H
+#pragma once
 
 /*
  *  structkulczynski.h
@@ -28,7 +27,7 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 
 

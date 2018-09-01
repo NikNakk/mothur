@@ -1,6 +1,5 @@
 
-#ifndef edit_EXPORT_H
-#define edit_EXPORT_H
+#pragma once
 
 #ifdef edit_BUILT_AS_STATIC
 #  define edit_EXPORT
@@ -38,4 +37,4 @@
 # define EDIT_NO_DEPRECATED
 #endif
 
-#endif
+

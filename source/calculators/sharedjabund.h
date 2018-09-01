@@ -1,5 +1,4 @@
-#ifndef JABUND_H
-#define JABUND_H
+#pragma once
 /*
  *  sharedjabund.h
  *  Dotur
@@ -31,4 +30,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef NOCOMMAND_H
-#define NOCOMMAND_H
+#pragma once
 /*
  *  nocommand.h
  *  Dotur
@@ -17,26 +16,19 @@
 class NoCommand : public Command {
 
 public:
-	NoCommand(Settings& settings, string option) : Command(settings, option) {};
+	NoCommand(Settings& settings, ParameterListToProcess ptp) : Command(settings, ptp) {};
 	NoCommand(Settings& settings) : Command(settings) {}
 	~NoCommand() {}
 
-	vector<string> setParameters() { return vector<string>(); } //dummy, doesn't really do anything	
-	string getCommandName() { return "NoCommand"; }
-	string getCommandCategory() { return "Hidden"; }
-	string getHelpString() { return "No Command"; }
-	string getOutputPattern(string) { return ""; }
-	string getCitation() { return "no citation"; }
-	string getDescription() { return "no description"; }
+	virtual string getCommandName() const override { return "NoCommand"; }
+	virtual string getCommandCategory() const override { return "Hidden"; }
+	virtual string getHelpString() const override { return "No Command"; }
+	virtual string getCitation() const override { return "no citation"; }
+	virtual string getDescription() const override { return "no description"; }
 
-
-	int execute();
-	void help() { LOG(INFO) << getHelpString(); }
-
-
+	virtual int execute() override;
 private:
 	vector<string> outputNames;
-
 };
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef ONEGAPDIST_H
-#define ONEGAPDIST_H
+#pragma once
 /*
  *  onegapdist.h
  *  Mothur
@@ -83,4 +82,4 @@ public:
 
 /**************************************************************************************************/
 
-#endif
+

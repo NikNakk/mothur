@@ -1,5 +1,4 @@
-#ifndef MEMEUCLIDEAN_H
-#define MEMEUCLIDEAN_H
+#pragma once
 
 /*
  *  memeuclidean.h
@@ -28,4 +27,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

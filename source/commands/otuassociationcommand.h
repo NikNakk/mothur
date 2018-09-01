@@ -1,5 +1,4 @@
-#ifndef OTUASSOCIATIONCOMMAND_H
-#define OTUASSOCIATIONCOMMAND_H
+#pragma once
 
 /*
  *  otuassociationcommand.h
@@ -53,7 +52,7 @@ private:
 };
 
 
-#endif
+
 
 
 

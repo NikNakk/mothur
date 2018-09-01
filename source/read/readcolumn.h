@@ -1,5 +1,4 @@
-#ifndef READCOLUMN_H
-#define READCOLUMN_H
+#pragma once
 /*
  *  readcolumn.h
  *  Mothur
@@ -29,4 +28,4 @@ private:
 
 /******************************************************/
 
-#endif
+

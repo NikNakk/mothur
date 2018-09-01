@@ -1,5 +1,4 @@
-#ifndef VALIDCALCULATOR_H
-#define VALIDCALCULATOR_H
+#pragma once
 
 /*
  *  validcalculator.h
@@ -57,7 +56,6 @@ private:
 	void initialDistance();
 	void initialHeat();
 
-	MothurOut* m;
 };
 
-#endif
+

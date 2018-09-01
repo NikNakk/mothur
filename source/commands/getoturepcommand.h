@@ -1,5 +1,4 @@
-#ifndef GETOTUREPCOMMAND_H
-#define GETOTUREPCOMMAND_H
+#pragma once
 /*
  *  getoturepcommand.h
  *  Mothur
@@ -88,5 +87,5 @@ private:
 	int readDist();
 };
 
-#endif
+
 

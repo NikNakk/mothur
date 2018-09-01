@@ -1,5 +1,4 @@
-#ifndef CLUSTERCOMMAND_H
-#define CLUSTERCOMMAND_H
+#pragma once
 /*
  *  clustercommand.h
  *  Dotur
@@ -71,4 +70,4 @@ private:
 	int createRabund(CountTable*&, ListVector*&, RAbundVector*&);
 };
 
-#endif
+

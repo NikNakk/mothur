@@ -1,5 +1,4 @@
-#ifndef chainer_h
-#define chainer_h
+#pragma once
 
 #include "hsp.h"
 #include "seq.h"
@@ -76,4 +75,4 @@ private:
 	unsigned FindBestChainLT(unsigned Ahi, unsigned Bhi);
 	};
 
-#endif // chainer_h
+ // chainer_h

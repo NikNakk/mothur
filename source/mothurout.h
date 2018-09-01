@@ -1,5 +1,4 @@
-#ifndef MOTHUROUT_H
-#define MOTHUROUT_H
+#pragma once
 
 /*
  *  mothurOut.h
@@ -238,5 +237,5 @@ private:
 };
 /***********************************************/
 
-#endif
+
 

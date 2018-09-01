@@ -1,5 +1,4 @@
-#ifndef UVEST_H
-#define UVEST_H
+#pragma once
 /*
  *  uvest.h
  *  Dotur
@@ -21,11 +20,10 @@ typedef vector<double> EstOutput;
 /***********************************************************************/
 class UVEst {
 	public:
-		UVEst() { m = MothurOut::getInstance(); }
+		UVEst() { }
 		EstOutput getUVest(vector<SharedRAbundVector*>);	
 	private:
-		MothurOut* m;
-};
+	};
 /***********************************************************************/
 
-#endif
+

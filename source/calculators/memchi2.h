@@ -1,5 +1,4 @@
-#ifndef MEMCHI2_H
-#define MEMCHI2_H
+#pragma once
 
 /*
  *  memchi2.h
@@ -29,4 +28,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

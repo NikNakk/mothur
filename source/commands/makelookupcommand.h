@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_makelookupcommand_h
-#define Mothur_makelookupcommand_h
+#pragma once
 
 #include "command.hpp"
 #include "sequence.hpp"
@@ -48,4 +47,4 @@ private:
 
 
 
-#endif
+

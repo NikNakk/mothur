@@ -1,5 +1,4 @@
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#pragma once
 
 #include "sabundvector.hpp"
 #include "sharedsabundvector.h"
@@ -26,13 +25,12 @@ public:
 	virtual bool calcNeedsAll()    { bool a; return a;	}
 	virtual string getName() { return ""; };
 	virtual ~Display() {}
-	Display() {  m = MothurOut::getInstance();  }
+	Display() {   }
 	
 protected:
-	MothurOut* m;
 	
 };
 
 /***********************************************************************/
 
-#endif
+

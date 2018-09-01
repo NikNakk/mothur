@@ -1,5 +1,4 @@
-#ifndef SMITHWILSON
-#define SMITHWILSON
+#pragma once
 
 /*
  *  smithwilson.h
@@ -25,4 +24,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

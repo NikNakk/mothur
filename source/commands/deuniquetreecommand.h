@@ -1,5 +1,4 @@
-#ifndef DEUNIQUETREECOMMAND_H
-#define DEUNIQUETREECOMMAND_H
+#pragma once
 
 /*
  *  deuniquetreecommand.h
@@ -45,4 +44,4 @@ private:
 	int readNamesFile();
 };
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef GETRABUNDCOMMAND_H
-#define GETRABUNDCOMMAND_H
+#pragma once
 
 /*
  *  getrabundcommand.h
@@ -50,5 +49,5 @@ private:
 	int createRabund(CountTable& ct, ListVector*& list, RAbundVector*& rabund);
 };
 
-#endif
+
 

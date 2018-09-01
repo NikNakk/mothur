@@ -1,5 +1,4 @@
-#ifndef GOODSCOVERAGE_H
-#define GOODSCOVERAGE_H
+#pragma once
 
 /*
  *  goodscoverage.h
@@ -29,4 +28,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef VENN_H
-#define VENN_H
+#pragma once
 /*
  *  venn.h
  *  Mothur
@@ -29,12 +28,11 @@ private:
 	Calculator* singleCalc;
 	string groupComb, outputDir, inputfile;
 	ofstream outsvg;
-	MothurOut* m;
 	bool nseqs, sharedOtus;
 	int fontSize;
 };
 
 /***********************************************************************/
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef COuNTSEQSCOMMAND_H
-#define COuNTSEQSCOMMAND_H
+#pragma once
 
 /*
  *  countseqscommand.h
@@ -61,7 +60,6 @@ private:
 struct countData {
 	unsigned long long start;
 	unsigned long long end;
-	MothurOut* m;
 	string outputFileName, namefile, groupfile;
 	GroupMap* groupMap;
 	int total;
@@ -81,6 +79,6 @@ struct countData {
 	}
 };
 
-#endif
+
 
 

@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_communitytype_h
-#define Mothur_communitytype_h
+#pragma once
 
 #define EPSILON numeric_limits<double>::epsilon()
 
@@ -18,7 +17,7 @@
 class CommunityTypeFinder {
 
 public:
-	CommunityTypeFinder() { m = MothurOut::getInstance(); }
+	CommunityTypeFinder() { }
 	virtual ~CommunityTypeFinder() {};
 
 	virtual void printZMatrix(string, vector<string>);
@@ -49,7 +48,6 @@ protected:
 	vector<vector<double> > calcCenters(vector<vector<double> >&, map<int, int>, vector<vector<double> >&);
 
 
-	MothurOut* m;
 	vector<vector<double> > zMatrix;
 	vector<vector<double> > lambdaMatrix;
 	vector<vector<double> > error;
@@ -73,4 +71,4 @@ protected:
 
 
 
-#endif
+

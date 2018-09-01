@@ -1,5 +1,4 @@
-#ifndef SUMMARYCOMMAND_H
-#define SUMMARYCOMMAND_H
+#pragma once
 /*
  *  summarycommand.h
  *  Dotur
@@ -54,4 +53,4 @@ private:
 
 
 };
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef BONEH_H
-#define BONEH_H
+#pragma once
 
 /*
  *  boneh.h
@@ -32,4 +31,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

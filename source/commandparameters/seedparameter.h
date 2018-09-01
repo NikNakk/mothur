@@ -1,15 +1,13 @@
-#ifndef seedparameter_h
-#define seedparameter_h
+#pragma once
 
-#include "numberparameter.h"
+#include "commandparameterbase.h"
 
-using namespace std;
-
-class SeedParameter : public NumberParameter {
+class SeedParameter : public CommandParameterBase {
 public:
 	explicit SeedParameter(bool required = false, bool important = false) :
-		NumberParameter("seed", 0, ULONG_MAX, NAN, required, important)
+		CommandParameterBase("seed", CommandParameterType::Number, required, important, "", "", "")
 	{}
-	virtual void validateAndSet(string newValue);
+	virtual std::string getValue() const override { return ""; }
+	virtual void validateAndSet(std::string newValue) override;
 };
-#endif
+

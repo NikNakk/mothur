@@ -1,15 +1,14 @@
-#ifndef outputdirectoryparameter_h
-#define outputdirectoryparameter_h
+#pragma once
 
 #include "directoryparameter.h"
 
 class OutputDirectoryParameter : public DirectoryParameter {
 public:
-	explicit OutputDirectoryParameter(Settings& settings, string name = "outputdir", bool required = false, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		DirectoryParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual void validateAndSet(string value);Y
+	explicit OutputDirectoryParameter(std::string & value, Settings& settings, std::string name = "outputdir", bool required = false, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		DirectoryParameter(value, settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
+	virtual void validateAndSet(std::string value);
 private:
-	string value;
+	std::string value;
 };
-#endif
+

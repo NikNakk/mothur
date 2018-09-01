@@ -1,5 +1,4 @@
-#ifndef HEATMAPSIMCOMMAND_H
-#define HEATMAPSIMCOMMAND_H
+#pragma once
 
 /*
  *  heatmapsimcommand.h
@@ -54,5 +53,5 @@ private:
 
 };
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef SHAREDSOBSCOLLECTSUMMARY_H
-#define SHAREDSOBSCOLLECTSUMMARY_H
+#pragma once
 
 /*
  *  sharedsobscollectsummary.h
@@ -27,4 +26,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

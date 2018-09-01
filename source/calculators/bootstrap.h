@@ -1,5 +1,4 @@
-#ifndef BOOTSTRAP_H
-#define BOOTSTRAP_H
+#pragma once
 /*
  *  bootstrap.h
  *  Dotur
@@ -29,4 +28,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

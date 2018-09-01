@@ -1,5 +1,4 @@
-#ifndef INDICATORCOMMAND_H
-#define INDICATORCOMMAND_H
+#pragma once
 
 /*
  *  indicatorcommand.h
@@ -73,7 +72,6 @@ private:
 
 struct indicatorData {
 	vector< vector<SharedRAbundFloatVector*> > groupings;
-	MothurOut* m;
 	int iters, num;
 	vector<float> indicatorValues;
 	vector<float> pvalues;
@@ -200,5 +198,5 @@ static DWORD WINAPI MyIndicatorThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+
 

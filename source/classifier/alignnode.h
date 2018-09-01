@@ -1,5 +1,4 @@
-#ifndef ALIGNNODE
-#define ALIGNNODE
+#pragma once
 
 /*
  *  alignNode.h
@@ -45,5 +44,5 @@ private:
 
 /**************************************************************************************************/
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef ONEIGNOREGAPS_H
-#define ONEIGNOREGAPS_H
+#pragma once
 /*
  *  onegapignore.h
  *  Mothur
@@ -91,5 +90,5 @@ public:
 
 /**************************************************************************************************/
 
-#endif
+
 

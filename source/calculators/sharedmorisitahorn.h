@@ -1,5 +1,4 @@
-#ifndef MORHORN_H
-#define MORHORN_H
+#pragma once
 /*
  *  sharedmorisitahorn.h
  *  Mothur
@@ -27,5 +26,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

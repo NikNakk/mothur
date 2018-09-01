@@ -1,28 +1,25 @@
-#ifndef commandparametercollection_h
-#define commandparametercollection_h
+#pragma once
 
-#include "commandparameterbase.h"
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+#include "commandparameterbase.h"
 #include "settings.h"
+#include "commandtoprocess.h"
 
-using namespace std;
-
-class CommandParameterCollection : public map<string, unique_ptr<CommandParameterBase>> {
+class CommandParameterCollection : public map<std::string, unique_ptr<CommandParameterBase>> {
 public:
 	CommandParameterCollection(Settings& settings) : settings(settings) {};
 	void add(CommandParameterBase * newParameter);
-	void addStandardParameters();
-	vector<string> getNames();
-	void parseOptionString(string optionString);
+	void addStandardParameters(std::string & inputDir, std::string & outputDir);
+	std::vector<std::string> getNames();
+	void validateAndSet(ParameterListToProcess ptp);
 private:
-	typedef map<string, vector<string>> ParameterGroup;
+	void addToGroup(std::map<std::string, std::vector<std::string>> & parameterGroups, const std::string& groupNames, const std::string& parameterName);
+	typedef map<std::string, std::vector<std::string>> ParameterGroup;
 	ParameterGroup chooseOnlyOneGroups;
 	ParameterGroup chooseAtLeastOneGroups;
 	ParameterGroup linkedGroups;
 	Settings& settings;
 };
-
-#endif

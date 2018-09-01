@@ -1,5 +1,4 @@
-#ifndef GOWER_H
-#define GOWER_H
+#pragma once
 
 /*
  *  gower.h
@@ -28,5 +27,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

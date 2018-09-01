@@ -1,5 +1,4 @@
-#ifndef PINTAIL_H
-#define PINTAIL_H
+#pragma once
 
 /*
  *  pintail.h
@@ -78,5 +77,5 @@ private:
 
 /***********************************************************/
 
-#endif
+
 

@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_renameseqscommand_h
-#define Mothur_renameseqscommand_h
+#pragma once
 
 #include "command.hpp"
 
@@ -43,4 +42,4 @@ private:
 
 
 
-#endif
+

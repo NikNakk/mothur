@@ -1,5 +1,4 @@
-#ifndef SHAREDJACKKNIFE_H
-#define SHAREDJACKKNIFE_H
+#pragma once
 
 /*
  *  sharedjackknife.h
@@ -35,5 +34,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

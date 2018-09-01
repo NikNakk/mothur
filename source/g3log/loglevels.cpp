@@ -41,7 +41,8 @@ namespace g3 {
 		}
 
 #ifdef G3_DYNAMIC_LOGGING
-		std::map<int, atomicbool> g_log_level_status = { {g3::kDebugVaulue, true}, {INFO.value, true}, {WARNING.value, true}, {FATAL.value, true} };
+		std::map<int, atomicbool> g_log_level_status = { {g3::kDebugVaulue, true}, {INFO.value, true}, {WARNING.value, true},
+		{ LOGERROR.value, true },{ SCREENONLY.value, true },{ FILEONLY.value, true }, {FATAL.value, true} };
 #endif
 	} // internal
 
@@ -62,7 +63,8 @@ namespace g3 {
 
 		void reset() {
 			internal::g_log_level_status.clear();
-			internal::g_log_level_status = { {g3::kDebugVaulue, true}, {INFO.value, true}, {WARNING.value, true}, {FATAL.value, true} };
+			internal::g_log_level_status = { {g3::kDebugVaulue, true}, {INFO.value, true}, {WARNING.value, true},
+			{LOGERROR.value, true}, {SCREENONLY.value, true}, {FILEONLY.value, true}, {FATAL.value, true} };
 		}
 	} // only_change_at_initialization
 #endif

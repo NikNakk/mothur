@@ -8,34 +8,31 @@
  */
 
 #include "deconvolutecommand.h"
-#include "sequence.hpp"
+#include "sequence.h"
+#include "commandparameters/fastafileparameter.h"
+#include "commandparameters/namefileparameter.h"
+#include "commandparameters/countfileparameter.h"
+#include "commandparameters/multipleexclusiveparameter.h"
+#include "datastructures/counttable.h"
+#include "filehandling/fastafilewrite.h"
+#include <unordered_set>
 
  //**********************************************************************************************************************
-vector<string> DeconvoluteCommand::setParameters() {
-	try {
-		nkParameters.add(new FastaFileParameter("fasta", true, true));
-		nkParameters.add(new NameFileParameter("name", false, true, "namecount"));
-		nkParameters.add(new CountFileParameter("count", false, true, "namecount"));
-		nkParameters.add(new MultipleParameter("format", vector<string> {"count", "name"}, "name"));
-		nkParameters.addStandardParameters();
-		return nkParameters.getNames();
-	}
-	catch (exception& e) {
-		LOG(FATAL) << e.what() << " in DeconvoluteCommand, setParameters";
-		exit(1);
-	}
+void DeconvoluteCommand::setParameters() {
+	parameters.add(new FastaFileParameter(fastafile, settings, "fasta", true, true));
+	parameters.add(new NameFileParameter(namefile, settings, "name", false, true, "namecount"));
+	parameters.add(new CountFileParameter(countfile, settings, "count", false, true, "namecount"));
+	parameters.add(new MultipleExclusiveParameter(format, "format", vector<string> {"count", "name"}, "name"));
+	parameters.addStandardParameters(inputDir, outputDir);
 }
 
 void DeconvoluteCommand::setOutputTypes() {
-	outputTypes["fasta"] = vector<string>();
-	outputTypes["name"] = vector<string>();
-	outputTypes["count"] = vector<string>();
-	nkOutputTypes.add("fasta", "[filename],unique,[extension]");
-	nkOutputTypes.add("name", "[filename],names-[filename],[tag],names");
-	nkOutputTypes.add("count", "[filename],count_table-[filename],[tag],count_table");
+	outputTypes.add("fasta", "[filename],unique,[extension]");
+	outputTypes.add("name", "[filename],names-[filename],[tag],names");
+	outputTypes.add("count", "[filename],count_table-[filename],[tag],count_table");
 }
 //**********************************************************************************************************************
-string DeconvoluteCommand::getHelpString() {
+string DeconvoluteCommand::getHelpString() const {
 	string helpString = "The unique.seqs command reads a fastafile and creates a name or count file.\n"
 		"The unique.seqs command parameters are fasta, name, count and format.  fasta is required, unless there is a valid current fasta file.\n"
 		"The name parameter is used to provide an existing name file associated with the fasta file. \n"
@@ -45,259 +42,180 @@ string DeconvoluteCommand::getHelpString() {
 		"unique.seqs(fasta=yourFastaFile) \n";
 	return helpString;
 }
-//**********************************************************************************************************************
-string DeconvoluteCommand::getOutputPattern(string type) {
-	string pattern = "";
-
-	if (type == "fasta") { pattern = "[filename],unique,[extension]"; }
-	else if (type == "name") { pattern = "[filename],names-[filename],[tag],names"; }
-	else if (type == "count") { pattern = "[filename],count_table-[filename],[tag],count_table"; }
-	else { LOG(LOGERROR) << "No definition for type " + type + " output pattern.\n"; ctrlc_pressed = true; }
-
-	return pattern;
-}
-
-//**********************************************************************************************************************
-DeconvoluteCommand::DeconvoluteCommand(Settings& settings) : Command(settings) {
-}
 /**************************************************************************************/
-DeconvoluteCommand::DeconvoluteCommand(Settings& settings, string option) : Command(settings, option) {
-	try {
-		if (!abort) {
-			if (!(nkParameters["format"]->hasValue()) && nkParameters["count"]->hasValue()) {
-				nkParameters["format"]->validateAndSet("count");
-			}
-			fastafile = nkParameters["fasta"]->getValue();
-			countfile = nkParameters["count"]->getValue();
-			namefile = nkParameters["name"]->getValue();
-
-			if (countfile == "") {
-				if (namefile == "") {
-					vector<string> files; files.push_back(fastafile);
-					string warn;
-					if (NameFileParameter::getNameFile(files, warn)) {
-						LOG(INFO) << warn;
-					}
-				}
-			}
-		}
-	}
-	catch (exception& e) {
-		LOG(FATAL) << e.what() << " in DeconvoluteCommand, DeconvoluteCommand";
-		exit(1);
-	}
-}
+DeconvoluteCommand::DeconvoluteCommand(Settings& settings, ParameterListToProcess& ptp) : Command(settings, ptp) {}
 /**************************************************************************************/
 int DeconvoluteCommand::execute() {
-	try {
+	//prepare filenames and open files
+	map<string, string> variables;
+	variables["[filename]"] = outputDir + File::getSimpleRootName(fastafile);
+	map<string, string> mvariables = variables;
+	mvariables["[tag]"] = "unique";
+	std::string outNameFileName(getOutputFileName("name", variables, namefile, mvariables));
+	std::string outCountFileName(getOutputFileName("count", variables, countfile, mvariables));
+	variables["[extension]"] = File::getExtension(fastafile);
+	FastaFileRead fasta(fastafile);
+	FastaFileWrite outFasta(getOutputFileName("fasta", variables));
 
-		if (abort == true) { if (calledHelp) { return 0; }  return 2; }
+	NameMapUniqueToDups nameMap;
+	NameMapUniqueToDups newNameMap;
+	CountTable ct;
+	CountTable newCt;
 
-		//prepare filenames and open files
-		map<string, string> variables;
-		variables["[filename]"] = outputDir + File::getRootName(File::getSimpleName(fastafile));
-		string outNameFile = getOutputFileName("name", variables);
-		string outCountFile = getOutputFileName("count", variables);
-		variables["[extension]"] = m->getExtension(fastafile);
-		string outFastaFile = getOutputFileName("fasta", variables);
+	if (namefile != "") {
+		nameMap = NameMapUniqueToDups(namefile);
+	}
+	if (countfile != "") {
+		ct = CountTable(countfile);
+	}
 
-		map<string, string> nameMap;
-		map<string, string>::iterator itNames;
-		if (namefile != "") {
-			m->readNames(namefile, nameMap);
-			if (namefile == outNameFile) {
-				//prepare filenames and open files
-				map<string, string> mvariables;
-				mvariables["[filename]"] = outputDir + File::getRootName(File::getSimpleName(fastafile));
-				mvariables["[tag]"] = "unique";
-				outNameFile = getOutputFileName("name", mvariables);
+	if (ctrlc_pressed) { return 0; }
+
+	std::map<std::string, std::string> sequenceStrings; //sequenceString -> first name of that sequence.
+	std::unordered_set<std::string> nameInFastaFile; //for sanity checking
+	std::vector<std::string> nameFileOrder;
+	int count = 0;
+	while (!(fasta.eof()) && !ctrlc_pressed) {
+
+		Sequence seq = fasta.readSequence();
+		if (seq.getName() != "") {
+			//sanity checks
+			auto itname = nameInFastaFile.find(seq.getName());
+			if (itname == nameInFastaFile.end()) {
+				nameInFastaFile.insert(seq.getName());
 			}
-		}
-		CountTable ct;
-		if (countfile != "") {
-			ct.readTable(countfile, true, false);
-			if (countfile == outCountFile) {
-				//prepare filenames and open files
-				map<string, string> mvariables;
-				mvariables["[filename]"] = outputDir + File::getRootName(File::getSimpleName(fastafile));
-				mvariables["[tag]"] = "unique";
-				outCountFile = getOutputFileName("count", mvariables);
+			else {
+				LOG(LOGERROR) << "You already have a sequence named " + seq.getName() + " in your fasta file, sequence names must be unique, please correct." << '\n';
 			}
-		}
 
-		if (ctrlc_pressed) { return 0; }
+			auto itStrings = sequenceStrings.find(seq.getSequence());
 
-		ifstream in;
-		File::openInputFile(fastafile, in);
+			if (itStrings == sequenceStrings.end()) { //this is a new unique sequence
+				//output to unique fasta file
+				outFasta.writeSequence(seq);
 
-		ofstream outFasta;
-		File::openOutputFile(outFastaFile, outFasta);
+				if (namefile != "") {
+					auto itNames = nameMap.find(seq.getName());
 
-		map<string, string> sequenceStrings; //sequenceString -> list of names.  "atgc...." -> seq1,seq2,seq3.
-		map<string, string>::iterator itStrings;
-		set<string> nameInFastaFile; //for sanity checking
-		set<string>::iterator itname;
-		vector<string> nameFileOrder;
-		CountTable newCt;
-		int count = 0;
-		while (!in.eof()) {
-
-			if (ctrlc_pressed) { in.close(); outFasta.close(); File::remove(outFastaFile); return 0; }
-
-			Sequence seq(in);
-
-			if (seq.getName() != "") {
-
-				//sanity checks
-				itname = nameInFastaFile.find(seq.getName());
-				if (itname == nameInFastaFile.end()) { nameInFastaFile.insert(seq.getName()); }
-				else { LOG(LOGERROR) << "You already have a sequence named " + seq.getName() + " in your fasta file, sequence names must be unique, please correct." << '\n'; }
-
-				itStrings = sequenceStrings.find(seq.getAligned());
-
-				if (itStrings == sequenceStrings.end()) { //this is a new unique sequence
-					//output to unique fasta file
-					seq.printSequence(outFasta);
-
-					if (namefile != "") {
-						itNames = nameMap.find(seq.getName());
-
-						if (itNames == nameMap.end()) { //namefile and fastafile do not match
-							LOG(LOGERROR) << "" + seq.getName() + " is in your fasta file, and not in your namefile, please correct." << '\n';
-						}
-						else {
-							if (format == "name") {
-								sequenceStrings[seq.getAligned()] = itNames->second;  nameFileOrder.push_back(seq.getAligned());
-							}
-							else { newCt.push_back(seq.getName(), m->getNumNames(itNames->second)); sequenceStrings[seq.getAligned()] = seq.getName();	nameFileOrder.push_back(seq.getAligned()); }
-						}
-					}
-					else if (countfile != "") {
-						if (format == "name") {
-							int numSeqs = ct.getNumSeqs(seq.getName());
-							string expandedName = seq.getName() + "_0";
-							for (int i = 1; i < numSeqs; i++) { expandedName += "," + seq.getName() + "_" + toString(i); }
-							sequenceStrings[seq.getAligned()] = expandedName;  nameFileOrder.push_back(seq.getAligned());
-						}
-						else {
-							ct.getNumSeqs(seq.getName()); //checks to make sure seq is in table
-							sequenceStrings[seq.getAligned()] = seq.getName();	nameFileOrder.push_back(seq.getAligned());
-						}
+					if (itNames == nameMap.end()) { //namefile and fastafile do not match
+						LOG(LOGERROR) << seq.getName() + " is in your fasta file, and not in your namefile, please correct.";
+						ctrlc_pressed = true;
 					}
 					else {
-						if (format == "name") { sequenceStrings[seq.getAligned()] = seq.getName();	nameFileOrder.push_back(seq.getAligned()); }
-						else { newCt.push_back(seq.getName()); sequenceStrings[seq.getAligned()] = seq.getName();	nameFileOrder.push_back(seq.getAligned()); }
+						if (format == "name") {
+							std::swap(newNameMap[seq.getName()], itNames->second);
+						}
+						else {
+							newCt.setTotalCount(seq.getName(), itNames->second.size());
+						}
 					}
 				}
-				else { //this is a dup
-					if (namefile != "") {
-						itNames = nameMap.find(seq.getName());
-
-						if (itNames == nameMap.end()) { //namefile and fastafile do not match
-							LOG(LOGERROR) << "" + seq.getName() + " is in your fasta file, and not in your namefile, please correct." << '\n';
-						}
-						else {
-							if (format == "name") { sequenceStrings[seq.getAligned()] += "," + itNames->second; }
-							else { int currentReps = newCt.getNumSeqs(itStrings->second);  newCt.setNumSeqs(itStrings->second, currentReps + (m->getNumNames(itNames->second))); }
-						}
-					}
-					else if (countfile != "") {
-						if (format == "name") {
-							int numSeqs = ct.getNumSeqs(seq.getName());
-							string expandedName = seq.getName() + "_0";
-							for (int i = 1; i < numSeqs; i++) { expandedName += "," + seq.getName() + "_" + toString(i); }
-							sequenceStrings[seq.getAligned()] += "," + expandedName;
-						}
-						else {
-							int num = ct.getNumSeqs(seq.getName()); //checks to make sure seq is in table
-							if (num != 0) { //its in the table
-								ct.mergeCounts(itStrings->second, seq.getName()); //merges counts and saves in uniques name
-							}
+				else if (countfile != "") {
+					if (format == "name") {
+						long long numSeqs = ct.getNumSeqs(seq.getName());
+						for (long long i = 0; i < numSeqs; i++) {
+							newNameMap[seq.getName()].push_back(seq.getName() + "_" + std::to_string(i));
 						}
 					}
 					else {
-						if (format == "name") { sequenceStrings[seq.getAligned()] += "," + seq.getName(); }
-						else { int currentReps = newCt.getNumSeqs(itStrings->second); newCt.setNumSeqs(itStrings->second, currentReps + 1); }
-					}
-				}
-				count++;
-			}
-
-			File::gobble(in);
-
-			if (count % 1000 == 0) { LOG(SCREENONLY) << toString(count) + "\t" + toString(sequenceStrings.size()) + "\n"; }
-		}
-
-		if (count % 1000 != 0) { LOG(INFO) << toString(count) + "\t" + toString(sequenceStrings.size()) << '\n'; }
-
-		in.close();
-		outFasta.close();
-
-		if (ctrlc_pressed) { File::remove(outFastaFile); return 0; }
-
-		//print new names file
-		ofstream outNames;
-		if (format == "name") { File::openOutputFile(outNameFile, outNames); outputNames.push_back(outNameFile); outputTypes["name"].push_back(outNameFile); }
-		else { File::openOutputFile(outCountFile, outNames); outputTypes["count"].push_back(outCountFile); outputNames.push_back(outCountFile); }
-
-		if ((countfile != "") && (format == "count")) { ct.printHeaders(outNames); }
-		else if ((countfile == "") && (format == "count")) { newCt.printHeaders(outNames); }
-
-		for (int i = 0; i < nameFileOrder.size(); i++) {
-			if (ctrlc_pressed) { outputTypes.clear(); File::remove(outFastaFile); outNames.close(); for (int j = 0; j < outputNames.size(); j++) { File::remove(outputNames[j]); } return 0; }
-
-			itStrings = sequenceStrings.find(nameFileOrder[i]);
-
-			if (itStrings != sequenceStrings.end()) {
-				if (format == "name") {
-					//get rep name
-					int pos = (itStrings->second).find_first_of(',');
-
-					if (pos == string::npos) { // only reps itself
-						outNames << itStrings->second << '\t' << itStrings->second << endl;
-					}
-					else {
-						outNames << (itStrings->second).substr(0, pos) << '\t' << itStrings->second << endl;
+						newCt.setTotalCount(seq.getName(), ct.getNumSeqs(seq.getName())); //checks to make sure seq is in table
 					}
 				}
 				else {
-					if (countfile != "") { ct.printSeq(outNames, itStrings->second); }
-					else if (format == "count") { newCt.printSeq(outNames, itStrings->second); }
+					if (format == "name") {
+						newNameMap[seq.getName()].push_back(seq.getName());
+					}
+					else {
+						newCt.setTotalCount(seq.getName(), 1);
+					}
+				}
+				sequenceStrings[seq.getSequence()] = seq.getName();
+				nameFileOrder.push_back(seq.getName());
+			}
+			else { //this is a dup
+				if (namefile != "") {
+					auto itNames = nameMap.find(seq.getName());
+
+					if (itNames == nameMap.end()) { //namefile and fastafile do not match
+						LOG(LOGERROR) << seq.getName() + " is in your fasta file, and not in your namefile, please correct." << '\n';
+					}
+					else {
+						if (format == "name") {
+							newNameMap[itStrings->second].insert(newNameMap[itStrings->second].end(), itNames->second.begin(), itNames->second.end());
+						}
+						else {
+							long long currentReps = newCt.getNumSeqs(itStrings->second);
+							newCt.setTotalCount(itStrings->second, currentReps + itNames->second.size());
+						}
+					}
+				}
+				else if (countfile != "") {
+					if (format == "name") {
+						long long numSeqs = ct.getNumSeqs(seq.getName());
+						for (long long i = 0; i < numSeqs; i++) {
+							newNameMap[itStrings->second].push_back(seq.getName() + "_" + std::to_string(i));
+						}
+					}
+					else {
+						long long currentReps = newCt.getNumSeqs(itStrings->second);
+						newCt.setTotalCount(itStrings->second, currentReps + ct.getNumSeqs(seq.getName())); //merges counts and saves in uniques name
+					}
+				}
+				else {
+					if (format == "name") {
+						newNameMap[itStrings->second].push_back(seq.getName());
+					}
+					else {
+						long long currentReps = newCt.getNumSeqs(itStrings->second);
+						newCt.setTotalCount(itStrings->second, currentReps + 1);
+					}
 				}
 			}
-			else { LOG(LOGERROR) << "mismatch in namefile print." << '\n'; ctrlc_pressed = true; }
-		}
-		outNames.close();
-
-		if (ctrlc_pressed) { outputTypes.clear(); File::remove(outFastaFile); for (int j = 0; j < outputNames.size(); j++) { File::remove(outputNames[j]); }  return 0; }
-
-		LOG(INFO) << '\n' << "Output File Names: " << '\n';
-		outputNames.push_back(outFastaFile);   outputTypes["fasta"].push_back(outFastaFile);
-		for (int i = 0; i < outputNames.size(); i++) { LOG(INFO) << outputNames[i] << '\n'; }
-		LOG(INFO) << "";
-
-		//set fasta file as new current fastafile
-		string current = "";
-		itTypes = outputTypes.find("fasta");
-		if (itTypes != outputTypes.end()) {
-			if ((itTypes->second).size() != 0) { current = (itTypes->second)[0]; settings.setCurrent("fasta", current); }
+			count++;
 		}
 
-		itTypes = outputTypes.find("name");
-		if (itTypes != outputTypes.end()) {
-			if ((itTypes->second).size() != 0) { current = (itTypes->second)[0]; settings.setCurrent("name", current); }
-		}
+		if (count % 1000 == 0) { LOG(SCREENONLY) << toString(count) + "\t" + toString(sequenceStrings.size()); }
+	}
 
-		itTypes = outputTypes.find("count");
-		if (itTypes != outputTypes.end()) {
-			if ((itTypes->second).size() != 0) { current = (itTypes->second)[0]; settings.setCurrent("counttable", current); }
-		}
+	if (ctrlc_pressed) { return 0; }
 
+	LOG(INFO) << toString(count) + "\t" + toString(sequenceStrings.size());
+
+	bool success = false;
+
+	if (format == "name") {
+		success = newNameMap.writeNameFile(outNameFileName, nameFileOrder);
+		if (success) {
+			outputTypes["name"].files.push_back(outNameFileName);
+			settings.setCurrent("name", outFasta.getFileName());
+		}
+	}
+	else {
+		success = newCt.writeCountTable(outCountFileName, nameFileOrder);
+		if (success) {
+			outputTypes["name"].files.push_back(outCountFileName);
+			settings.setCurrent("count", outFasta.getFileName());
+		}
+	}
+
+	if (!success) {
+		if (!ctrlc_pressed) {
+			LOG(LOGERROR) << "Error writing output file";
+		}
 		return 0;
 	}
-	catch (exception& e) {
-		LOG(FATAL) << e.what() << " in DeconvoluteCommand, execute";
-		exit(1);
+
+	LOG(INFO) << '\n' << "Output File Names: ";
+	outputTypes["fasta"].files.push_back(outFasta.getFileName());
+	for (auto ot : outputTypes) {
+		if (ot.second.files.size() > 0) {
+			LOG(INFO) << Utility::join(ot.second.files, "\n");
+		}
 	}
+
+	//set fasta file as new current fastafile
+	outFasta.commit();
+	settings.setCurrent("fasta", outFasta.getFileName());
+	return 0;
 }
 /**************************************************************************************/

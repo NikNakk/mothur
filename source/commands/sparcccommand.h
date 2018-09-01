@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_sparcccommand_h
-#define Mothur_sparcccommand_h
+#pragma once
 
 #include "command.hpp"
 #include "inputdata.h"
@@ -52,7 +51,6 @@ private:
 /**************************************************************************************************/
 
 struct sparccData {
-	MothurOut* m;
 	int numPerms;
 	vector< vector<float> > sharedVector;
 	vector< vector<float> > origCorrMatrix;
@@ -131,4 +129,4 @@ static DWORD WINAPI MySparccThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef GETSABUNDCOMMAND_H
-#define GETSABUNDCOMMAND_H
+#pragma once
 
 /*
  *  getsabundcommand.h
@@ -47,4 +46,4 @@ private:
 
 };
 
-#endif
+

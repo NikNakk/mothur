@@ -1,5 +1,4 @@
-#ifndef MGCLUSTERCOMMAND_H
-#define MGCLUSTERCOMMAND_H
+#pragma once
 
 /*
  *  mgclustercommand.h
@@ -70,7 +69,7 @@ private:
 
 /**********************************************************************/
 
-#endif
+
 
 
 

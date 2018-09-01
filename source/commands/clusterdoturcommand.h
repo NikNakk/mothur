@@ -1,5 +1,4 @@
-#ifndef CLUSTERDOTURCOMMAND_H
-#define CLUSTERDOTURCOMMAND_H
+#pragma once
 
 /*
  *  clusterdoturcommand.h
@@ -52,5 +51,5 @@ private:
 	vector<string> outputNames;
 };
 
-#endif
+
 

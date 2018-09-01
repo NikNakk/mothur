@@ -1,5 +1,4 @@
-#ifndef SOERGEL_H
-#define SOERGEL_H
+#pragma once
 
 /*
  *  soergel.h
@@ -28,7 +27,7 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 
 

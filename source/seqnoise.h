@@ -1,5 +1,4 @@
-#ifndef SEQNOISE
-#define SEQNOISE
+#pragma once
 
 
 
@@ -37,7 +36,7 @@ struct freqData {
 
 class seqNoise {
 public:
-	seqNoise() { m = MothurOut::getInstance(); }
+	seqNoise() { }
 	~seqNoise() {}
 
 	int getSequenceData(string, vector<string>&);
@@ -56,7 +55,6 @@ public:
 
 
 private:
-	MothurOut* m;
 
 	int getLastMatch(char, vector<vector<char> >&, int, int, vector<int>&, vector<int>&);
 	int countDiffs(vector<int>, vector<int>);
@@ -66,5 +64,5 @@ private:
 };
 
 /**************************************************************************************************/
-#endif
+
 

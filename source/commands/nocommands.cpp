@@ -15,7 +15,7 @@ int NoCommand::execute(){
 	//Could choose to give more help here?fdsah
 	LOG(LOGERROR) << "Invalid command.";
    
-	LOG(INFO) << (CommandFactory(settings)).getCommands();
+	LOG(INFO) << Utility::join((CommandFactory(settings)).getListCommands(), ", ");
 	
 	return 0;
 }

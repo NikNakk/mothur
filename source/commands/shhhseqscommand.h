@@ -1,5 +1,4 @@
-#ifndef SHHHSEQSCOMMAND_H
-#define SHHHSEQSCOMMAND_H
+#pragma once
 
 /*
  *  shhhseqscommand.h
@@ -69,7 +68,6 @@ struct shhhseqsData {
 	string namefile;
 	string groupfile;
 	string newFName, newNName, newMName;
-	MothurOut* m;
 	int start;
 	int end;
 	int sigma, threadID, count;
@@ -330,4 +328,4 @@ static DWORD WINAPI MyShhhSeqsThreadFunction(LPVOID lpParam) {
 #endif
 /**************************************************************************************************/
 
-#endif
+

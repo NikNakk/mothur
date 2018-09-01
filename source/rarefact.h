@@ -1,5 +1,4 @@
-#ifndef RAREFACT_H
-#define RAREFACT_H
+#pragma once
 
 #include "rarefactioncurvedata.h"
 #include "raredisplay.h"
@@ -32,7 +31,6 @@ private:
 	set<int> ends;
 	void mergeVectors(SharedRAbundVector*, SharedRAbundVector*);
 	vector<SharedRAbundVector*> lookup;
-	MothurOut* m;
 
 	int createProcesses(vector<int>&, RarefactionCurveData*, int, int);
 	int driver(RarefactionCurveData*, int, int);
@@ -40,5 +38,5 @@ private:
 };
 
 
-#endif
+
 

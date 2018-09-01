@@ -1,5 +1,4 @@
-#ifndef CORRECTDIST_H
-#define CORRECTDIST_H
+#pragma once
 
 
 /*
@@ -24,7 +23,6 @@ public:
 	int execute(string);
 
 private:
-	MothurOut* m;
 	int getSequences(string);
 	vector<int> fixSequence(string);
 
@@ -47,6 +45,6 @@ private:
 
 /**************************************************************************************************/
 
-#endif
+
 
 

@@ -1,5 +1,4 @@
-#ifndef REMOVEGROUPSCOMMAND_H
-#define REMOVEGROUPSCOMMAND_H
+#pragma once
 
 /*
  *  removegroupscommand.h
@@ -64,6 +63,6 @@ private:
 
 };
 
-#endif
+
 
 

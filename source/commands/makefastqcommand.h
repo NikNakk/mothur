@@ -1,5 +1,4 @@
-#ifndef MAKEFASTQCOMMAND_H
-#define MAKEFASTQCOMMAND_H
+#pragma once
 
 /*
  *  makefastqcommand.h
@@ -45,6 +44,6 @@ private:
 
 };
 
-#endif
+
 
 

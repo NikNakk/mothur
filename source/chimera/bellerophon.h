@@ -1,5 +1,4 @@
-#ifndef BELLEROPHON_H
-#define BELLEROPHON_H
+#pragma once
 
 /*
  *  bellerophon.h
@@ -59,5 +58,5 @@ private:
 
 /***********************************************************/
 
-#endif
+
 

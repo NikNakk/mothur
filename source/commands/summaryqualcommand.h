@@ -1,5 +1,4 @@
-#ifndef SUMMARYQUALCOMMAND_H
-#define SUMMARYQUALCOMMAND_H
+#pragma once
 
 /*
  *  summaryqualcommand.h
@@ -62,7 +61,6 @@ struct seqSumQualData {
 	unsigned long long start;
 	unsigned long long end;
 	int count, numSeqs;
-	MothurOut* m;
 	bool hasNameMap;
 	map<string, int> nameMap;
 
@@ -157,5 +155,5 @@ static DWORD WINAPI MySeqSumQualThreadFunction(LPVOID lpParam) {
 /**************************************************************************************************/
 
 
-#endif
+
 

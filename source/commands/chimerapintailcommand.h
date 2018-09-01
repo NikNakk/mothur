@@ -1,5 +1,4 @@
-#ifndef CHIMERAPINTAILCOMMAND_H
-#define CHIMERAPINTAILCOMMAND_H
+#pragma once
 
 /*
  *  chimerapintailcommand.h
@@ -55,6 +54,6 @@ private:
 
 /***********************************************************/
 
-#endif
+
 
 

@@ -1,5 +1,4 @@
-#ifndef DLIBSHUFF
-#define DLIBSHUFF
+#pragma once
 
 /*
  *  dlibshuff.h
@@ -26,4 +25,4 @@ private:
 	vector<int> calcN(vector<double>);
 };
 
-#endif
+

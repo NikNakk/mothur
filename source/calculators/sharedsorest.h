@@ -1,5 +1,4 @@
-#ifndef SOREST_H
-#define SOREST_H
+#pragma once
 /*
  *  sharedsorest.h
  *  Dotur
@@ -30,4 +29,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 University of Michigan. All rights reserved.
 //
 
-#ifndef pdsBayesian_alignTree_h
-#define pdsBayesian_alignTree_h
+#pragma once
 
 #include "classify.h"
 
@@ -31,4 +30,4 @@ private:
 	vector<AlignNode*> tree;
 };
 
-#endif
+

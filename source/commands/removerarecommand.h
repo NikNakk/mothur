@@ -1,5 +1,4 @@
-#ifndef REMOVERARECOMMAND_H
-#define REMOVERARECOMMAND_H
+#pragma once
 
 /*
  *  removerarecommand.h
@@ -51,7 +50,7 @@ private:
 
 };
 
-#endif
+
 
 
 

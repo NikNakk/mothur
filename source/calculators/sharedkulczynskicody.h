@@ -1,5 +1,4 @@
-#ifndef KULCZYNSKICODY_H
-#define KULCZYNSKICODY_H
+#pragma once
 
 /*
  *  sharedkulczynskicody.h
@@ -28,4 +27,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

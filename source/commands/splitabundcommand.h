@@ -1,5 +1,4 @@
-#ifndef SPLITABUNDCOMMAND_H
-#define SPLITABUNDCOMMAND_H
+#pragma once
 
 /*
  *  splitabundcommand.h
@@ -75,6 +74,6 @@ private:
 
 /***************************************************************************************/
 
-#endif
+
 
 

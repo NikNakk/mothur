@@ -1,5 +1,4 @@
-#ifndef SPLITMATRIX_H
-#define SPLITMATRIX_H
+#pragma once
 /*
  *  splitmatrix.h
  *  Mothur
@@ -27,7 +26,6 @@ public:
 	string getSingletonNames() { return singleton; } //returns namesfile containing singletons
 
 private:
-	MothurOut* m;
 
 	string distFile, namefile, singleton, method, taxFile, fastafile, outputDir, countfile;
 	vector< map< string, string> > dists;
@@ -46,5 +44,5 @@ private:
 
 /******************************************************/
 
-#endif
+
 

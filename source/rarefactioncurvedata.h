@@ -1,5 +1,4 @@
-#ifndef RAREFACTIONCURVEDATA_H
-#define RAREFACTIONCURVEDATA_H
+#pragma once
 
 #include "mothur.h"
 #include "sabundvector.hpp"
@@ -59,5 +58,5 @@ private:
 /***********************************************************************/
 
 
-#endif
+
 

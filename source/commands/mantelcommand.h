@@ -1,5 +1,4 @@
-#ifndef MANTELCOMMAND_H
-#define MANTELCOMMAND_H
+#pragma once
 
 /*
  *  mantelcommand.h
@@ -41,7 +40,7 @@ private:
 };
 
 
-#endif
+
 
 
 

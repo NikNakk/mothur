@@ -1,5 +1,4 @@
-#ifndef NORMALIZESHAREDCOMMAND_H
-#define NORMALIZESHAREDCOMMAND_H
+#pragma once
 
 /*
  *  normalizesharedcommand.h
@@ -53,5 +52,5 @@ private:
 
 };
 
-#endif
+
 

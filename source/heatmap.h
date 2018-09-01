@@ -1,5 +1,4 @@
-#ifndef HEATMAP_H
-#define HEATMAP_H
+#pragma once
 /*
  *  heatmap.h
  *  Mothur
@@ -58,7 +57,6 @@ private:
 
 	string format, sorted, groupComb, scaler, outputDir, inputfile;
 	ofstream outsvg;
-	MothurOut* m;
 	int numOTU, fontSize;
 
 	map<int, int> orderTopGroup(vector<SharedRAbundVector*>&);
@@ -73,7 +71,7 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 
 

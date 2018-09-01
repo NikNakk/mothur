@@ -1,5 +1,4 @@
-#ifndef DECONVOLUTECOMMAND_H
-#define DECONVOLUTECOMMAND_H
+#pragma once
 /*
  *  deconvolute.h
  *  Mothur
@@ -10,8 +9,6 @@
  */
 
 #include "command.hpp"
-#include "fastamap.h"
-#include "counttable.h"
 
  /* The unique.seqs command reads a fasta file, finds the duplicate sequences and outputs a names file
 	 containing 2 columns.  The first being the groupname and the second the list of identical sequence names. */
@@ -20,30 +17,26 @@
 class DeconvoluteCommand : public Command {
 
 public:
-	DeconvoluteCommand(Settings& settings, string option);
-	DeconvoluteCommand(Settings& settings);
-	~DeconvoluteCommand() {}
+	DeconvoluteCommand(Settings& settings, ParameterListToProcess& ptp);
+	DeconvoluteCommand(Settings& settings) : Command(settings) {};
+	~DeconvoluteCommand() = default;
 
-	vector<string> setParameters();
-	string getCommandName() { return "unique.seqs"; }
-	string getCommandCategory() { return "Sequence Processing"; }
+	virtual void setParameters() override;
+	virtual void setOutputTypes() override;
+	virtual std::string getCommandName() const override { return "unique.seqs"; }
+	virtual std::string getCommandCategory() const override { return "Sequence Processing"; }
 
-	string getHelpString();
-	string getOutputPattern(string);
-	string getCitation() { return "http://www.mothur.org/wiki/Unique.seqs"; }
-	string getDescription() { return "creates a fasta containing the unique sequences as well as a namesfile with the names each sequence represents"; }
+	virtual string getHelpString() const override;
+	virtual string getDescription() const override { return "creates a fasta containing the unique sequences as well as a namesfile with the names each sequence represents"; }
 
-	virtual void setOutputTypes();
-
-
-	int execute();
+	virtual int execute() override;
 
 
 private:
-	string fastafile, namefile, outputDir, countfile, format;
-	vector<string> outputNames;
-
-	bool abort;
+	std::string fastafile;
+	std::string namefile;
+	std::string countfile;
+	std::string format;
 };
 
-#endif
+

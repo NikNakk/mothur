@@ -1,5 +1,4 @@
-#ifndef DIST_H
-#define DIST_H
+#pragma once
 /*
  *  dist.h
  *  Mothur
@@ -17,17 +16,16 @@
 class Dist {
 	
 public:
-	Dist(){ dist = 0; m = MothurOut::getInstance(); }
-	Dist(const Dist& d) : dist(d.dist) { m = MothurOut::getInstance(); }
+	Dist(){ dist = 0; }
+	Dist(const Dist& d) : dist(d.dist) { }
 	virtual ~Dist() {}
 	virtual void calcDist(Sequence, Sequence) = 0;
 	double getDist()	{	return dist;	}
 
 protected:
 	double dist;
-	MothurOut* m;
 };
 
 /**************************************************************************************************/
 
-#endif
+

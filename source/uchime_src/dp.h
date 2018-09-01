@@ -1,5 +1,4 @@
-#ifndef dp_h
-#define dp_h
+#pragma once
 
 #define SAVE_FAST	0
 
@@ -161,4 +160,4 @@ static inline void Max_xI(float &Score, float MI, float II, byte &State)
 		}
 	}
 
-#endif // dp_h
+ // dp_h

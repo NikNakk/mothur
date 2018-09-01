@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__classifyrfsharedcommand__
-#define __Mothur__classifyrfsharedcommand__
+#pragma once
 
 #include "command.hpp"
 #include "inputdata.h"
@@ -52,4 +51,4 @@ private:
 	void processSharedAndDesignData(vector<SharedRAbundVector*> lookup);
 };
 
-#endif /* defined(__Mothur__classifyrfsharedcommand__) */
+ /* defined(__Mothur__classifyrfsharedcommand__) */

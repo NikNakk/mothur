@@ -1,5 +1,4 @@
-#ifndef CHIMERACHECK_H
-#define CHIMERACHECK_H
+#pragma once
 
 /*
  *  chimeracheckrdp.h
@@ -52,5 +51,5 @@ private:
 };
 /***********************************************************/
 
-#endif
+
 

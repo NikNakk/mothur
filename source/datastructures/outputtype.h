@@ -1,27 +1,24 @@
-#ifndef outputtypes_h
-#define outputtypes_h
+#pragma once
 
 #include <string>
 #include <vector>
 #include <map>
 
-using namespace std;
-
 class OutputType {
 public:
 	OutputType() {};
-	OutputType(string name, string filePattern) : name(name), filePattern(filePattern) {};
-	string getOutputFileName(map<string, string> variableParts);
-	vector<string> files;
+	OutputType(std::string name, std::string filePattern) : name(name), filePattern(filePattern) {};
+	std::string getFilePattern() { return filePattern; }
+	std::vector<std::string> files;
 private:
 	string name;
 	string filePattern;
 };
 
-class OutputTypeCollection : map<string, OutputType>{
+class OutputTypeCollection : public std::map<string, OutputType>{
 public:
 	OutputTypeCollection() {};
-	void add(string name, string filePattern) { (*this)[name] = OutputType(name, filePattern); }
+	void add(std::string name, std::string filePattern) { (*this)[name] = OutputType(name, filePattern); }
 };
 
-#endif
+

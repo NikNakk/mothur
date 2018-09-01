@@ -1,5 +1,4 @@
-#ifndef MANHATTAN_H
-#define MANHATTAN_H
+#pragma once
 
 /*
  *  manhattan.h
@@ -28,4 +27,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

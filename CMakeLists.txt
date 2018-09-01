@@ -32,7 +32,7 @@ enable_testing()
 include_directories ("${PROJECT_BINARY_DIR}/source")
 
 add_executable(mothur
-source/averagelinkage.cpp
+# source/averagelinkage.cpp
 # source/calcsparcc.cpp
 # source/calculators/ace.cpp
 # source/calculators/bergerparker.cpp
@@ -145,13 +145,16 @@ source/commandparameters/commandparametercollection.cpp
 source/commandparameters/countfileparameter.cpp
 source/commandparameters/directoryparameter.cpp
 source/commandparameters/fastafileparameter.cpp
+source/commandparameters/groupfileparameter.cpp
 source/commandparameters/inputdirectoryparameter.cpp
 source/commandparameters/inputtypeparameter.cpp
+source/commandparameters/integerparameter.cpp
 source/commandparameters/multipleparameter.cpp
 source/commandparameters/namefileparameter.cpp
 source/commandparameters/numberparameter.cpp
 source/commandparameters/outputdirectoryparameter.cpp
 source/commandparameters/outputfileparameter.cpp
+source/commandparameters/processorsparameter.cpp
 source/commandparameters/seedparameter.cpp
 # source/commands/aligncommand.cpp
 # source/commands/amovacommand.cpp
@@ -180,14 +183,14 @@ source/commandparameters/seedparameter.cpp
 # source/commands/clustersplitcommand.cpp
 # source/commands/collectcommand.cpp
 # source/commands/collectsharedcommand.cpp
-# source/commands/command.cpp
+source/commands/command.cpp
 # source/commands/consensusseqscommand.cpp
 # source/commands/cooccurrencecommand.cpp
 # source/commands/corraxescommand.cpp
 # source/commands/countgroupscommand.cpp
 # source/commands/countseqscommand.cpp
 # source/commands/createdatabasecommand.cpp
-# source/commands/deconvolutecommand.cpp
+source/commands/deconvolutecommand.cpp
 # source/commands/degapseqscommand.cpp
 # source/commands/deuniqueseqscommand.cpp
 # source/commands/deuniquetreecommand.cpp
@@ -259,7 +262,6 @@ source/commands/nocommands.cpp
 # source/commands/pipelinepdscommand.cpp
 # source/commands/preclustercommand.cpp
 # source/commands/primerdesigncommand.cpp
-source/commands/quitcommand.cpp
 # source/commands/rarefactcommand.cpp
 # source/commands/rarefactsharedcommand.cpp
 # source/commands/removedistscommand.cpp
@@ -271,7 +273,7 @@ source/commands/quitcommand.cpp
 # source/commands/removeseqscommand.cpp
 # source/commands/renameseqscommand.cpp
 # source/commands/reversecommand.cpp
-# source/commands/screenseqscommand.cpp
+source/commands/screenseqscommand.cpp
 # source/commands/secondarystructurecommand.cpp
 # source/commands/sensspeccommand.cpp
 # source/commands/seqerrorcommand.cpp
@@ -308,75 +310,88 @@ source/commands/setseedcommand.cpp
 # source/communitytype/qFinderDMM.cpp
 # source/completelinkage.cpp
 # source/consensus.cpp
-source/datastructures/alignment.cpp
-source/datastructures/alignmentcell.cpp
-source/datastructures/alignmentdb.cpp
-source/datastructures/blastalign.cpp
-source/datastructures/blastdb.cpp
+# source/datastructures/alignment.cpp
+# source/datastructures/alignmentcell.cpp
+# source/datastructures/alignmentdb.cpp
+# source/datastructures/blastalign.cpp
+# source/datastructures/blastdb.cpp
 source/datastructures/counttable.cpp
-source/datastructures/database.cpp
-source/datastructures/designmap.cpp
-source/datastructures/distancedb.cpp
-source/datastructures/fastamap.cpp
-source/datastructures/fastqread.cpp
-source/datastructures/flowdata.cpp
-source/datastructures/fullmatrix.cpp
+# source/datastructures/database.cpp
+# source/datastructures/designmap.cpp
+# source/datastructures/distancedb.cpp
+# source/datastructures/fastamap.cpp
+# source/datastructures/fastqread.cpp
+# source/datastructures/flowdata.cpp
+# source/datastructures/fullmatrix.cpp
 source/datastructures/groupmap.cpp
-source/datastructures/isequenceparser.cpp
-source/datastructures/kmer.cpp
-source/datastructures/kmeralign.cpp
-source/datastructures/kmerdb.cpp
-source/datastructures/listvector.cpp
-source/datastructures/nameassignment.cpp
-source/datastructures/oligos.cpp
-source/datastructures/ordervector.cpp
-source/datastructures/outputtype.cpp
-source/datastructures/qualityscores.cpp
-source/datastructures/rabundvector.cpp
-source/datastructures/referencedb.cpp
-source/datastructures/reportfile.cpp
-source/datastructures/sabundvector.cpp
+# source/datastructures/isequenceparser.cpp
+# source/datastructures/kmer.cpp
+# source/datastructures/kmeralign.cpp
+# source/datastructures/kmerdb.cpp
+# source/datastructures/listvector.cpp
+# source/datastructures/nameassignment.cpp
+source/datastructures/namemap.cpp
+# source/datastructures/oligos.cpp
+# source/datastructures/ordervector.cpp
+# source/datastructures/outputtype.cpp
+# source/datastructures/qualityscores.cpp
+# source/datastructures/rabundvector.cpp
+# source/datastructures/referencedb.cpp
+# source/datastructures/reportfile.cpp
+# source/datastructures/sabundvector.cpp
 source/datastructures/sequence.cpp
-source/datastructures/sequencecountparser.cpp
-source/datastructures/sequencedb.cpp
-source/datastructures/sequenceparser.cpp
-source/datastructures/sharedlistvector.cpp
-source/datastructures/sharedordervector.cpp
-source/datastructures/sharedrabundfloatvector.cpp
-source/datastructures/sharedrabundvector.cpp
-source/datastructures/sharedsabundvector.cpp
-source/datastructures/sparsedistancematrix.cpp
-source/datastructures/sparsematrix.cpp
-source/datastructures/suffixdb.cpp
-source/datastructures/suffixnodes.cpp
-source/datastructures/suffixtree.cpp
+# source/datastructures/sequencecountparser.cpp
+# source/datastructures/sequencedb.cpp
+# source/datastructures/sequenceparser.cpp
+# source/datastructures/sharedlistvector.cpp
+# source/datastructures/sharedordervector.cpp
+# source/datastructures/sharedrabundfloatvector.cpp
+# source/datastructures/sharedrabundvector.cpp
+# source/datastructures/sharedsabundvector.cpp
+# source/datastructures/sparsedistancematrix.cpp
+# source/datastructures/sparsematrix.cpp
+# source/datastructures/suffixdb.cpp
+# source/datastructures/suffixnodes.cpp
+# source/datastructures/suffixtree.cpp
 # source/datastructures/tree.cpp
 # source/datastructures/treemap.cpp
 # source/datastructures/treenode.cpp
-source/dlibshuff.cpp
+# source/dlibshuff.cpp
 source/engine.cpp
+source/filehandling/countfileread.cpp
+source/filehandling/countfilewrite.cpp
+source/filehandling/fastafileread.cpp
+source/filehandling/fastafilewrite.cpp
+source/filehandling/groupfileread.cpp
+source/filehandling/groupfilewrite.cpp
+source/filehandling/namefileread.cpp
+source/filehandling/namefilewrite.cpp
 source/filehandling/file.cpp
-source/fileoutput.cpp
-source/gotohoverlap.cpp
-source/hcluster.cpp
-source/heatmap.cpp
-source/heatmapsim.cpp
-source/inputdata.cpp
-source/libshuff.cpp
-source/linearalgebra.cpp
+source/filehandling/summaryfileread.cpp
+source/filehandling/summaryfilewrite.cpp
+source/filehandling/textfileread.cpp
+source/filehandling/textfilewrite.cpp
+# source/fileoutput.cpp
+# source/gotohoverlap.cpp
+# source/hcluster.cpp
+# source/heatmap.cpp
+# source/heatmapsim.cpp
+# source/inputdata.cpp
+# source/libshuff.cpp
+# source/linearalgebra.cpp
 source/logsinks.cpp
 # source/metastats/mothurfisher.cpp
 # source/metastats/mothurmetastats.cpp
 source/mothur.cpp
-source/mothurout.cpp
-source/myseqdist.cpp
-source/nast.cpp
-source/nastreport.cpp
-source/needlemanoverlap.cpp
-source/noalign.cpp
-source/optionparser.cpp
-source/overlap.cpp
-source/progress.cpp
+# source/mothurout.cpp
+# source/myseqdist.cpp
+# source/nast.cpp
+# source/nastreport.cpp
+# source/needlemanoverlap.cpp
+# source/noalign.cpp
+# source/optionparser.cpp
+# source/overlap.cpp
+# source/progress.cpp
 # source/randomforest/abstractdecisiontree.cpp
 # source/randomforest/abstractrandomforest.cpp
 # source/randomforest/decisiontree.cpp
@@ -385,10 +400,10 @@ source/progress.cpp
 # source/randomforest/regularizeddecisiontree.cpp
 # source/randomforest/regularizedrandomforest.cpp
 # source/randomforest/rftreenode.cpp
-source/randomnumber.cpp
-source/rarecalc.cpp
-source/raredisplay.cpp
-source/rarefact.cpp
+# source/randomnumber.cpp
+# source/rarecalc.cpp
+# source/raredisplay.cpp
+# source/rarefact.cpp
 # source/read/formatcolumn.cpp
 # source/read/formatphylip.cpp
 # source/read/readblast.cpp
@@ -400,21 +415,21 @@ source/rarefact.cpp
 # source/read/splitmatrix.cpp
 # source/read/treereader.cpp
 # source/refchimeratest.cpp
-source/seqnoise.cpp
+# source/seqnoise.cpp
 source/settings.cpp
-source/sharedutilities.cpp
-source/singlelinkage.cpp
-source/slibshuff.cpp
-source/subsample.cpp
-source/svm/svm.cpp
-source/trialSwap2.cpp
-source/trimoligos.cpp
+# source/sharedutilities.cpp
+# source/singlelinkage.cpp
+# source/slibshuff.cpp
+# source/subsample.cpp
+# source/svm/svm.cpp
+# source/trialSwap2.cpp
+# source/trimoligos.cpp
 source/utility.cpp
 # source/validcalculator.cpp
-source/validparameter.cpp
-source/venn.cpp
-source/weightedlinkage.cpp
-source/wilcox.cpp
+# source/validparameter.cpp
+# source/venn.cpp
+# source/weightedlinkage.cpp
+# source/wilcox.cpp
 source/calcsparcc.h
 source/calculators/ace.h
 source/calculators/bergerparker.h
@@ -546,8 +561,10 @@ source/commandparameters/commandparametercollection.h
 source/commandparameters/countfileparameter.h
 source/commandparameters/directoryparameter.h
 source/commandparameters/fastafileparameter.h
+source/commandparameters/groupfileparameter.h
 source/commandparameters/inputdirectoryparameter.h
 source/commandparameters/inputtypeparameter.h
+source/commandparameters/integerparameter.h
 source/commandparameters/multipleparameter.h
 source/commandparameters/namefileparameter.h
 source/commandparameters/numberparameter.h
@@ -709,59 +726,15 @@ source/communitytype/communitytype.h
 source/communitytype/kmeans.h
 source/communitytype/pam.h
 source/communitytype/qFinderDMM.h
-source/consensus.h
-source/datastructures/alignment.hpp
-source/datastructures/alignmentcell.hpp
-source/datastructures/alignmentdb.h
-source/datastructures/blastalign.hpp
-source/datastructures/blastdb.hpp
-source/datastructures/compare.h
-source/datastructures/counttable.h
-source/datastructures/database.hpp
-source/datastructures/datavector.hpp
-source/datastructures/designmap.h
-source/datastructures/distancedb.hpp
-source/datastructures/fastamap.h
-source/datastructures/fastqread.h
-source/datastructures/flowdata.h
-source/datastructures/fullmatrix.h
 source/datastructures/groupmap.h
-source/datastructures/isequenceparser.h
-source/datastructures/kmer.hpp
-source/datastructures/kmeralign.h
-source/datastructures/kmerdb.hpp
-source/datastructures/listvector.hpp
-source/datastructures/nameassignment.hpp
-source/datastructures/oligos.h
-source/datastructures/ordervector.hpp
-source/datastructures/outputtype.h
-source/datastructures/qualityscores.h
-source/datastructures/rabundvector.hpp
-source/datastructures/referencedb.h
-source/datastructures/reportfile.h
-source/datastructures/sabundvector.hpp
-source/datastructures/sequence.hpp
-source/datastructures/sequencecountparser.h
-source/datastructures/sequencedb.h
-source/datastructures/sequenceparser.h
-source/datastructures/sharedlistvector.h
-source/datastructures/sharedordervector.h
-source/datastructures/sharedrabundfloatvector.h
-source/datastructures/sharedrabundvector.h
-source/datastructures/sharedsabundvector.h
-source/datastructures/sparsedistancematrix.h
-source/datastructures/sparsematrix.hpp
-source/datastructures/suffixdb.hpp
-source/datastructures/suffixnodes.hpp
-source/datastructures/suffixtree.hpp
-source/datastructures/tree.h
-source/datastructures/treemap.h
-source/datastructures/treenode.h
+source/consensus.h
 source/display.h
 source/dlibshuff.h
 source/endiannessmacros.h
 source/engine.hpp
 source/filehandling/file.h
+source/filehandling/summaryfileread.h
+source/filehandling/summaryfilewrite.h
 source/fileoutput.h
 source/gotohoverlap.hpp
 source/hcluster.h

@@ -1,5 +1,4 @@
-#ifndef TRIMOLIGOS_H
-#define TRIMOLIGOS_H
+#pragma once
 
 /*
  *  trimoligos.h
@@ -71,7 +70,6 @@ private:
 
 	int maxFBarcodeLength, maxRBarcodeLength, maxFPrimerLength, maxRPrimerLength, maxLinkerLength, maxSpacerLength;
 
-	MothurOut* m;
 
 	bool compareDNASeq(string, string);
 	int countDiffs(string, string);
@@ -83,5 +81,5 @@ private:
 
 };
 
-#endif
+
 

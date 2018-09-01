@@ -1,5 +1,4 @@
-#ifndef OBSERVABLE_H
-#define OBSERVABLE_H
+#pragma once
 
 
 #include "collectdisplay.h"
@@ -18,4 +17,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef HOMOVACOMMAND_H
-#define HOMOVACOMMAND_H
+#pragma once
 
 /*
  *  homovacommand.h
@@ -50,4 +49,4 @@ private:
 	double experimentwiseAlpha;
 };
 
-#endif
+

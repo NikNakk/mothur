@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_removedistscommand_h
-#define Mothur_removedistscommand_h
+#pragma once
 
 #include "command.hpp"
 
@@ -45,4 +44,4 @@ private:
 };
 
 
-#endif
+

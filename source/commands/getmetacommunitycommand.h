@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_getmetacommunitycommand_h
-#define Mothur_getmetacommunitycommand_h
+#pragma once
 
 #include "command.hpp"
 #include "inputdata.h"
@@ -105,4 +104,4 @@ struct summaryData {
 
 };
 
-#endif
+

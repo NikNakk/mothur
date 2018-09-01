@@ -1,5 +1,4 @@
-#ifndef RARECALC_H
-#define RARECALC_H
+#pragma once
 /*
  *  rarecalc.h
  *  Dotur
@@ -17,16 +16,15 @@
 class RareCalc {
 
 public:
-	RareCalc(RAbundVector* b) : bins(b), numSeqs(b->getNumSeqs()), maxRank(b->getMaxRank()), numBins(b->getNumBins()) {	m = MothurOut::getInstance(); bMatrix = Utility::binomial(numSeqs+1); }
+	RareCalc(RAbundVector* b) : bins(b), numSeqs(b->getNumSeqs()), maxRank(b->getMaxRank()), numBins(b->getNumBins()) {	bMatrix = Utility::binomial(numSeqs+1); }
 	EstOutput getValues(int);
 	string getName()	{	return "rarecalc";	}
 private:
 	RAbundVector* bins;
 	vector<vector<double> > bMatrix;
 	int numSeqs, maxRank, numBins;
-	MothurOut* m;
 };
 
 /***********************************************************************/
 
-#endif
+

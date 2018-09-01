@@ -1,5 +1,4 @@
-#ifndef PRECLUSTERCOMMAND_H
-#define PRECLUSTERCOMMAND_H
+#pragma once
 
 
 /*
@@ -110,7 +109,6 @@ struct preClusterData {
 	string namefile;
 	string groupfile, countfile;
 	string newFName, newNName, newMName, method, align;
-	MothurOut* m;
 	int start;
 	int end, count;
 	int diffs, threadID;
@@ -485,6 +483,6 @@ static DWORD WINAPI MyPreclusterThreadFunction(LPVOID lpParam) {
 /**************************************************************************************************/
 
 
-#endif
+
 
 

@@ -1,5 +1,4 @@
-#ifndef NMDSCOMMAND_H
-#define NMDSCOMMAND_H
+#pragma once
 
 /*
  *  nmdscommand.h
@@ -66,6 +65,6 @@ private:
 
 /*****************************************************************/
 
-#endif
+
 
 

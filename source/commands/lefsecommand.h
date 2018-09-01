@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__lefsecommand__
-#define __Mothur__lefsecommand__
+#pragma once
 
 #include "command.hpp"
 
@@ -76,4 +75,4 @@ private:
 
 
 
-#endif /* defined(__Mothur__lefsecommand__) */
+ /* defined(__Mothur__lefsecommand__) */

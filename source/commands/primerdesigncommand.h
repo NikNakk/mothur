@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 Schloss Lab. All rights reserved.
 //
 
-#ifndef Mothur_primerdesigncommand_h
-#define Mothur_primerdesigncommand_h
+#pragma once
 
 #include "command.hpp"
 #include "listvector.hpp"
@@ -74,7 +73,6 @@ private:
 // that can be passed using a single void pointer (LPVOID).
 struct primerDesignData {
 	string summaryFileName;
-	MothurOut* m;
 	int start;
 	int end;
 	int pdiffs, threadID, length, binIndex;
@@ -212,4 +210,4 @@ static DWORD WINAPI MyPrimerThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+

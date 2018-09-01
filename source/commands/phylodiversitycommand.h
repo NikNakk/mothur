@@ -1,5 +1,4 @@
-#ifndef PHYLODIVERSITYCOMMAND_H
-#define PHYLODIVERSITYCOMMAND_H
+#pragma once
 
 /*
  *  phylodiversitycommand.h
@@ -56,7 +55,6 @@ private:
 /***********************************************************************/
 struct phylodivData {
 	int numIters;
-	MothurOut* m;
 	map< string, vector<float> > div;
 	map<string, vector<float> > sumDiv;
 	map<string, int> rootForGroup;
@@ -205,5 +203,5 @@ static DWORD WINAPI MyPhyloDivThreadFunction(LPVOID lpParam) {
 }
 #endif
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef NASTREPORT_HPP
-#define NASTREPORT_HPP
+#pragma once
 
 
 /*
@@ -47,9 +46,8 @@ private:
 	int totalGapsInQuery, totalGapsInTemplate;
 	float similarityToTemplate;
 	ofstream candidateReportFile;
-	MothurOut* m;
 };
 
 /******************************************************************************************************************/
 
-#endif
+

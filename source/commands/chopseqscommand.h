@@ -1,5 +1,4 @@
-#ifndef CHOPSEQSCOMMAND_H
-#define CHOPSEQSCOMMAND_H
+#pragma once
 
 /*
  *  chopseqscommand.h
@@ -60,7 +59,6 @@ struct chopData {
 	unsigned long long end;
 	int numbases, count;
 	bool countGaps, Short, wroteAccnos, keepN;
-	MothurOut* m;
 	string namefile;
 	map<string, int> nameMap;
 
@@ -292,6 +290,6 @@ static DWORD WINAPI MyChopThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+
 
 

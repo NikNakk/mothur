@@ -1,5 +1,4 @@
-#ifndef STRUCTCHI2_H
-#define STRUCTCHI2_H
+#pragma once
 
 /*
  *  structchi2.h
@@ -28,7 +27,7 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 
 

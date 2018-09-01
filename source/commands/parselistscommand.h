@@ -1,5 +1,4 @@
-#ifndef PARSELISTCOMMAND_H
-#define PARSELISTCOMMAND_H
+#pragma once
 /*
  *  parselistcommand.h
  *  Mothur
@@ -52,5 +51,5 @@ private:
 
 /***************************************************************************************/
 
-#endif
+
 

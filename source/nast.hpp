@@ -1,5 +1,4 @@
-#ifndef NAST_HPP
-#define NAST_HPP
+#pragma once
 
 /*
  *  nast.hpp
@@ -44,9 +43,8 @@ private:
 	shared_ptr<Sequence> templateSeq;
 
 	int maxInsertLength;
-	MothurOut* m;
 };
 
 /**************************************************************************************************/
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef Mothur_getotulabelscommand_h
-#define Mothur_getotulabelscommand_h
+#pragma once
 
 //
 //  getotulabelscommand.h
@@ -59,4 +58,4 @@ private:
 
 
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef COVERAGE_H
-#define COVERAGE_H
+#pragma once
 
 /*
  *  coverage.h
@@ -29,4 +28,4 @@ public:
 
 /***********************************************************************/
 
-#endif
+

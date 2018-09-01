@@ -1,5 +1,4 @@
-#ifndef MAKEGROUPCOMMAND_H
-#define MAKEGROUPCOMMAND_H
+#pragma once
 
 /*
  *  makegroupcommand.h
@@ -40,5 +39,5 @@ private:
 	bool abort;
 };
 
-#endif
+
 

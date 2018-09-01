@@ -1,5 +1,4 @@
-#ifndef SHAREDSOBS_H
-#define SHAREDSOBS_H
+#pragma once
 /*
  *  sharedsobs.h
  *  Dotur
@@ -27,5 +26,5 @@ public:
 
 /***********************************************************************/
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef SYSTEMCOMMAND_H
-#define SYSTEMCOMMAND_H
+#pragma once
 
 /*
  *  systemcommand.h
@@ -17,7 +16,7 @@ class SystemCommand : public Command {
 
 public:
 
-	SystemCommand(Settings& settings, string option) : Command(settings, option) {}
+	SystemCommand(Settings& settings, ParameterListToProcess ptp) : Command(settings, ptp) {}
 	SystemCommand(Settings& settings) : Command(settings) {}
 	~SystemCommand() {}
 
@@ -32,5 +31,5 @@ public:
 	int execute();
 };
 
-#endif
+
 

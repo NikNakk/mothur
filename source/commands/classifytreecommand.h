@@ -1,5 +1,4 @@
-#ifndef Mothur_classifytreecommand_h
-#define Mothur_classifytreecommand_h
+#pragma once
 
 //
 //  classifytreecommand.h
@@ -50,4 +49,4 @@ private:
 
 
 
-#endif
+

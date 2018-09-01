@@ -17,4 +17,4 @@
 #include "inputdirectoryparameter.h"
 #include "commandparametercollection.h"
 #include "outputfileparameter.h"
-#include "stringparameter.h"
+#include "std::stringparameter.h"

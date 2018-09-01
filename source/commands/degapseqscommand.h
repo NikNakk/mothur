@@ -1,5 +1,4 @@
-#ifndef DEGAPSEQSCOMMAND_H
-#define DEGAPSEQSCOMMAND_H
+#pragma once
 
 /*
  *  degapseqscommand.h
@@ -55,7 +54,6 @@ struct degapData {
 	unsigned long long start;
 	unsigned long long end;
 	int count;
-	MothurOut* m;
 
 	degapData() {}
 	degapData(string f, string of, MothurOut* mout, unsigned long long st, unsigned long long en) {
@@ -125,6 +123,6 @@ static DWORD WINAPI MyDegapThreadFunction(LPVOID lpParam) {
 
 
 
-#endif
+
 
 

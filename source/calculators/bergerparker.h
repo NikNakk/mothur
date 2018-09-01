@@ -1,5 +1,4 @@
-#ifndef BERGERPARKER_H
-#define BERGERPARKER_H
+#pragma once
 /*
  *  bergerparker.h
  *  Mothur
@@ -29,5 +28,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

@@ -1,5 +1,4 @@
-#ifndef SORCLASS_H
-#define SORCLASS_H
+#pragma once
 /*
  *  sharedsorclass.h
  *  Dotur
@@ -29,4 +28,4 @@ private:
 };
 /***********************************************************************/
 
-#endif
+

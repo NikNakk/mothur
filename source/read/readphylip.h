@@ -1,5 +1,4 @@
-#ifndef READPHYLIP_H
-#define READPHYLIP_H
+#pragma once
 /*
  *  readphylip.h
  *  Mothur
@@ -28,4 +27,4 @@ private:
 
 /******************************************************/
 
-#endif
+

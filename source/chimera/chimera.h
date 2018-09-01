@@ -1,5 +1,4 @@
-#ifndef CHIMERA_H
-#define CHIMERA_H
+#pragma once
 
 /*
  *  chimera.h
@@ -168,5 +167,5 @@ protected:
 
 /***********************************************************************/
 
-#endif
+
 

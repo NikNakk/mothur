@@ -1,8 +1,7 @@
-#ifndef ultra_h
-#define ultra_h
+#pragma once
 
 #include "seqdb.h"
 #define Ultra SeqDB
 #define GetSeedLabel GetLabel
 
-#endif // ultra_h
+ // ultra_h

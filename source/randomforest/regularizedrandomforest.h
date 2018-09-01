@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__regularizedrandomforest__
-#define __Mothur__regularizedrandomforest__
+#pragma once
 
 #include "forest.h"
 #include "decisiontree.hpp"
@@ -24,7 +23,6 @@ public:
 
 private:
 	//
-	MothurOut* m;
 };
 
-#endif /* defined(__Mothur__regularizedrandomforest__) */
+ /* defined(__Mothur__regularizedrandomforest__) */

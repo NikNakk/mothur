@@ -1,5 +1,4 @@
-#ifndef Mothur_loadlogfilecommand_h
-#define Mothur_loadlogfilecommand_h
+#pragma once
 
 //
 //  loadlogfilecommand.h
@@ -44,4 +43,4 @@ private:
 
 
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef RAREDISPLAY_H
-#define RAREDISPLAY_H
+#pragma once
 
 #include "sabundvector.hpp"
 #include "calculator.h"
@@ -31,5 +30,5 @@ private:
 	int nIters;
 };
 
-#endif
+
 

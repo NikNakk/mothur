@@ -1,5 +1,4 @@
-#ifndef KULCZYNSKI_H
-#define KULCZYNSKI_H
+#pragma once
 /*
  *  sharedkulczynski.h
  *  Mothur
@@ -27,4 +26,4 @@ private:
 
 /***********************************************************************/
 
-#endif
+

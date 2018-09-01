@@ -1,5 +1,4 @@
-#ifndef alpha_h
-#define alpha_h
+#pragma once
 
 #include <limits.h>
 #include <string>
@@ -47,4 +46,4 @@ const char *WordToStrNucleo(unsigned Word, unsigned WordLength);
 const char *WordToStrAmino(unsigned Word, unsigned WordLength);
 const char *WordToStrAmino2(unsigned Word, unsigned WordLength, char *Str);
 
-#endif // alpha_h
+ // alpha_h

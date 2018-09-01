@@ -1,5 +1,4 @@
-#ifndef SUMMARYSHAREDCOMMAND_H
-#define SUMMARYSHAREDCOMMAND_H
+#pragma once
 /*
  *  summarysharedcommand.h
  *  Dotur
@@ -109,7 +108,6 @@ struct summarySharedData {
 	vector<string>  Estimators;
 	unsigned long long start;
 	unsigned long long end;
-	MothurOut* m;
 	string sumFile;
 	int count;
 
@@ -325,4 +323,4 @@ static DWORD WINAPI MySummarySharedThreadFunction(LPVOID lpParam) {
 #endif
 
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef CLUSTERCLASSIC_H
-#define CLUSTERCLASSIC_H
+#pragma once
 
 
 #include "listvector.hpp"
@@ -59,9 +58,8 @@ private:
 	map<string, int> seq2Bin;
 	string method, tag;
 
-	MothurOut* m;
 };
 
-#endif
+
 
 

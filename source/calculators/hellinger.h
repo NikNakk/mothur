@@ -1,5 +1,4 @@
-#ifndef HELLINGER_H
-#define HELLINGER_H
+#pragma once
 
 /*
  *  hellinger.h
@@ -28,6 +27,6 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 

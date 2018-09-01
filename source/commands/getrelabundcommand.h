@@ -1,5 +1,4 @@
-#ifndef GETRELABUNDCOMMAND_H
-#define GETRELABUNDCOMMAND_H
+#pragma once
 
 /*
  *  getrelabundcommand.h
@@ -48,5 +47,5 @@ private:
 
 };
 
-#endif
+
 

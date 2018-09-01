@@ -1,5 +1,4 @@
-#ifndef UNIFRACUNWEIGHTEDCOMMAND_H
-#define UNIFRACUNWEIGHTEDCOMMAND_H
+#pragma once
 
 /*
  *  unifracunweightedcommand.h
@@ -67,4 +66,4 @@ private:
 
 };
 
-#endif
+

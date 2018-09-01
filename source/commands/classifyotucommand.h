@@ -1,5 +1,4 @@
-#ifndef CLASSIFYOTUSCOMMAND_H
-#define CLASSIFYOTUSCOMMAND_H
+#pragma once
 
 /*
  *  classifyotucommand.h
@@ -56,6 +55,6 @@ private:
 
 };
 
-#endif
+
 
 

@@ -1,5 +1,4 @@
-#ifndef COLLECTCOMMAND_H
-#define COLLECTCOMMAND_H
+#pragma once
 /*
  *  collectcommand.h
  *  Dotur
@@ -68,4 +67,4 @@ private:
 
 };
 
-#endif
+

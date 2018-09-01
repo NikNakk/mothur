@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef RF_RANDOMFOREST_HPP
-#define RF_RANDOMFOREST_HPP
+#pragma once
 
 #include "macros.h"
 #include "forest.h"
@@ -47,8 +46,7 @@ public:
 	int getMissclassifications(string, map<int, string> intToTreatmentMap, vector<string> names);
 
 private:
-	MothurOut* m;
 
 };
 
-#endif
+

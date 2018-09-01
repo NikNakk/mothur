@@ -1,5 +1,4 @@
-#ifndef COLLECT_H
-#define COLLECT_H
+#pragma once
 
 #include "collectorscurvedata.h"
 #include "display.h"
@@ -36,9 +35,8 @@ private:
 	void getGroupComb();
 	vector<string> groupComb;
 	bool validGroup(vector<string>, string);
-	MothurOut* m;
 };
 
 
-#endif
+
 

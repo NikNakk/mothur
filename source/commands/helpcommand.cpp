@@ -9,16 +9,12 @@
 
 #include "helpcommand.h"
 
- //**********************************************************************************************************************
-
-HelpCommand::HelpCommand(Settings& settings, string option) : Command(settings, option) {
-}
 //**********************************************************************************************************************
 int HelpCommand::execute() {
-	CommandFactory commandFactory;
-	LOG(SCREENONLY) << commandFactory.getCommands();
-	LOG(INFO) << "For more information about a specific command type 'commandName(help)' i.e. 'read.dist(help)'\n";
-	LOG(INFO) << "For further assistance please refer to the Mothur manual on our wiki at http://www.mothur.org/wiki, or contact Pat Schloss at mothur.bugs@gmail.com.";
+	CommandFactory commandFactory(settings);
+	LOG(SCREENONLY) << Utility::join(commandFactory.getListCommands(), ", ");
+	LOG(SCREENONLY) << "For more information about a specific command type 'commandName(help)' i.e. 'read.dist(help)'\n";
+	LOG(SCREENONLY) << "For further assistance please refer to the Mothur manual on our wiki at http://www.mothur.org/wiki, or contact Pat Schloss at mothur.bugs@gmail.com.";
 
 	return 0;
 }

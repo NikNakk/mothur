@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__testbiominfocommand__
-#define __Mothur__testbiominfocommand__
+#pragma once
 
 #include "biominfocommand.h"
 
@@ -26,4 +25,4 @@ public:
 };
 
 
-#endif /* defined(__Mothur__testbiominfocommand__) */
+ /* defined(__Mothur__testbiominfocommand__) */

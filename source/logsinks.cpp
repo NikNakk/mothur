@@ -27,14 +27,14 @@ void LogMainLogFile::fileWrite(g3::LogMessageMover message)
 	g3::LogMessage msg = message.get();
 	if (msg.level() != "SCREENONLY" && !finished) {
 		std::unique_lock<std::mutex> lock(m_);
-		out << msg.message() << std::endl;
+		out << msg.toString() << std::endl;
 	}
 }
 
 void LogScreen::screenWrite(g3::LogMessageMover message) {
 	g3::LogMessage msg = message.get();
 	if (msg.level() != "FILEONLY") {
-		std::cout << msg.message() << std::endl;
+		std::cout << msg.toString() << std::endl;
 	}
 }
 

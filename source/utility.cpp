@@ -1,17 +1,12 @@
 #include "utility.h"
+#include "g3log\g3log.hpp"
 #include <sstream>
 #include <iterator>
+#include <vector>
+#include <map>
+#include <algorithm>
 
 // Split taken from http://stackoverflow.com/a/236803/4998761
-
-std::vector<std::string>& Utility::split(const std::string &s, char delim, std::vector<std::string> &elems) {
-	std::stringstream ss(s);
-	std::string item;
-	while (std::getline(ss, item, delim)) {
-		elems.push_back(item);
-	}
-	return elems;
-}
 
 std::set<std::string>& Utility::split(const std::string &s, char delim, std::set<std::string> &elems) {
 	std::stringstream ss(s);
@@ -23,34 +18,42 @@ std::set<std::string>& Utility::split(const std::string &s, char delim, std::set
 }
 
 
-std::vector<std::string> Utility::split(const std::string &s, char delim) {
+std::vector<std::string> Utility::split(const std::string &s, char delim, bool trimWhiteSpace) {
 	std::vector<std::string> elems;
-	split(s, delim, elems);
+	std::istringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		if (trimWhiteSpace) {
+			elems.push_back(trim(item));
+		}
+		else {
+			elems.push_back(item);
+		}
+	}
 	return elems;
 }
 
-std::string Utility::join(std::vector<std::string>& sv, const std::string& delim)
+// Taken from http://stackoverflow.com/a/1798170/4998761
+std::string Utility::trim(const std::string& str, const std::string& whitespace)
 {
-	std::ostringstream ss;
-	for (std::vector<std::string>::iterator it = sv.begin(); it != sv.end(); it++) {
-		ss << *it << delim;
-	}
-	std::string output;
-	output = ss.str();
-	if (output != "") {
-		output = output.substr(0, output.length() - delim.length());
-	}
-	return output;
+	const auto strBegin = str.find_first_not_of(whitespace);
+	if (strBegin == std::string::npos)
+		return ""; // no content
+
+	const auto strEnd = str.find_last_not_of(whitespace);
+	const auto strRange = strEnd - strBegin + 1;
+
+	return str.substr(strBegin, strRange);
 }
 
 std::vector<char*>& Utility::to_c_strs(std::vector<std::string>& sv, std::vector<char*>& output) {
-	for (std::vector<std::string>::iterator it = sv.begin(); it != sv.end(); it++) {
+	for (std::vector<std::string>::iterator it = sv.begin(); it != sv.end(); ++it) {
 		output.push_back(const_cast<char*>(it->c_str()));
 	}
 	return output;
 }
 
-bool Utility::mothurConvert(string item, int& num) {
+bool Utility::mothurConvert(std::string item, int& num) {
 	bool error = false;
 
 	if (isNumeric1(item)) {
@@ -66,11 +69,11 @@ bool Utility::mothurConvert(string item, int& num) {
 	return error;
 }
 /***********************************************************************/
-bool Utility::mothurConvert(string item, intDist& num) {
+bool Utility::mothurConvert(std::string item, intDist& num) {
 	bool error = false;
 
 	if (isNumeric1(item)) {
-		convert(item, num);
+		num = static_cast<short>(std::stoi(item));
 	}
 	else {
 		num = 0;
@@ -83,35 +86,35 @@ bool Utility::mothurConvert(string item, intDist& num) {
 }
 
 /***********************************************************************/
-bool Utility::isNumeric1(string stringToCheck) {
+bool Utility::isNumeric1(std::string stringToCheck) {
 	bool numeric = false;
 
 	if (stringToCheck == "") { numeric = false; }
-	else if (stringToCheck.find_first_not_of("0123456789.-") == string::npos) { numeric = true; }
+	else if (stringToCheck.find_first_not_of("0123456789.-") == std::string::npos) { numeric = true; }
 
 	return numeric;
 
 }
 /***********************************************************************/
-bool Utility::isInteger(string stringToCheck) {
+bool Utility::isInteger(std::string stringToCheck) {
 	bool isInt = false;
 
-	if (stringToCheck.find_first_not_of("0123456789-") == string::npos) { isInt = true; }
+	if (stringToCheck.find_first_not_of("0123456789-") == std::string::npos) { isInt = true; }
 
 	return isInt;
 
 }
 /***********************************************************************/
-bool Utility::containsAlphas(string stringToCheck) {
+bool Utility::containsAlphas(std::string stringToCheck) {
 	bool containsAlpha = false;
 
-	if (stringToCheck.find_first_of("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOopPQqRrSsTtUuVvWwXxYyZz") != string::npos) { containsAlpha = true; }
+	if (stringToCheck.find_first_of("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOopPQqRrSsTtUuVvWwXxYyZz") != std::string::npos) { containsAlpha = true; }
 
 	return containsAlpha;
 
 }
 /***********************************************************************/
-bool Utility::mothurConvert(string item, float& num) {
+bool Utility::mothurConvert(std::string item, float& num) {
 	bool error = false;
 
 	if (isNumeric1(item)) {
@@ -127,7 +130,7 @@ bool Utility::mothurConvert(string item, float& num) {
 	return error;
 }
 /***********************************************************************/
-bool Utility::mothurConvert(string item, double& num) {
+bool Utility::mothurConvert(std::string item, double& num) {
 	bool error = false;
 
 	if (isNumeric1(item)) {
@@ -144,8 +147,8 @@ bool Utility::mothurConvert(string item, double& num) {
 }
 /**************************************************************************************************/
 
-vector<vector<double> > Utility::binomial(int maxOrder) {
-	vector<vector<double> > binomial(maxOrder + 1);
+std::vector<std::vector<double>> Utility::binomial(int maxOrder) {
+	std::vector<std::vector<double>> binomial(maxOrder + 1);
 
 	for (int i = 0;i <= maxOrder;i++) {
 		binomial[i].resize(maxOrder + 1);
@@ -173,72 +176,72 @@ vector<vector<double> > Utility::binomial(int maxOrder) {
 
 }
 /**************************************************************************************************/
-unsigned int Utility::fromBase36(string base36) {
+unsigned int Utility::fromBase36(std::string base36) {
 	unsigned int num = 0;
 
-	map<char, int> converts;
-	converts['A'] = 0;
-	converts['a'] = 0;
-	converts['B'] = 1;
-	converts['b'] = 1;
-	converts['C'] = 2;
-	converts['c'] = 2;
-	converts['D'] = 3;
-	converts['d'] = 3;
-	converts['E'] = 4;
-	converts['e'] = 4;
-	converts['F'] = 5;
-	converts['f'] = 5;
-	converts['G'] = 6;
-	converts['g'] = 6;
-	converts['H'] = 7;
-	converts['h'] = 7;
-	converts['I'] = 8;
-	converts['i'] = 8;
-	converts['J'] = 9;
-	converts['j'] = 9;
-	converts['K'] = 10;
-	converts['k'] = 10;
-	converts['L'] = 11;
-	converts['l'] = 11;
-	converts['M'] = 12;
-	converts['m'] = 12;
-	converts['N'] = 13;
-	converts['n'] = 13;
-	converts['O'] = 14;
-	converts['o'] = 14;
-	converts['P'] = 15;
-	converts['p'] = 15;
-	converts['Q'] = 16;
-	converts['q'] = 16;
-	converts['R'] = 17;
-	converts['r'] = 17;
-	converts['S'] = 18;
-	converts['s'] = 18;
-	converts['T'] = 19;
-	converts['t'] = 19;
-	converts['U'] = 20;
-	converts['u'] = 20;
-	converts['V'] = 21;
-	converts['v'] = 21;
-	converts['W'] = 22;
-	converts['w'] = 22;
-	converts['X'] = 23;
-	converts['x'] = 23;
-	converts['Y'] = 24;
-	converts['y'] = 24;
-	converts['Z'] = 25;
-	converts['z'] = 25;
-	converts['0'] = 26;
-	converts['1'] = 27;
-	converts['2'] = 28;
-	converts['3'] = 29;
-	converts['4'] = 30;
-	converts['5'] = 31;
-	converts['6'] = 32;
-	converts['7'] = 33;
-	converts['8'] = 34;
-	converts['9'] = 35;
+	std::map<char, int> converts = {
+	{'A', 0},
+	{'a', 0},
+	{'B', 1},
+	{'b', 1},
+	{'C', 2},
+	{'c', 2},
+	{'D', 3},
+	{'d', 3},
+	{'E', 4},
+	{'e', 4},
+	{'F', 5},
+	{'f', 5},
+	{'G', 6},
+	{'g', 6},
+	{'H', 7},
+	{'h', 7},
+	{'I', 8},
+	{'i', 8},
+	{'J', 9},
+	{'j', 9},
+	{'K', 10},
+	{'k', 10},
+	{'L', 11},
+	{'l', 11},
+	{'M', 12},
+	{'m', 12},
+	{'N', 13},
+	{'n', 13},
+	{'O', 14},
+	{'o', 14},
+	{'P', 15},
+	{'p', 15},
+	{'Q', 16},
+	{'q', 16},
+	{'R', 17},
+	{'r', 17},
+	{'S', 18},
+	{'s', 18},
+	{'T', 19},
+	{'t', 19},
+	{'U', 20},
+	{'u', 20},
+	{'V', 21},
+	{'v', 21},
+	{'W', 22},
+	{'w', 22},
+	{'X', 23},
+	{'x', 23},
+	{'Y', 24},
+	{'y', 24},
+	{'Z', 25},
+	{'z', 25},
+	{'0', 26},
+	{'1', 27},
+	{'2', 28},
+	{'3', 29},
+	{'4', 30},
+	{'5', 31},
+	{'6', 32},
+	{'7', 33},
+	{'8', 34},
+	{'9', 35} };
 
 	int i = 0;
 	while (i < base36.length()) {
@@ -251,9 +254,9 @@ unsigned int Utility::fromBase36(string base36) {
 
 }
 /***********************************************************************/
-string  Utility::findEdianness() {
+std::string  Utility::findEdianness() {
 	// find real endian type
-	string endianType = "unknown";
+	std::string endianType = "unknown";
 	int num = 1;
 	if (*(char *)&num == 1)
 	{
@@ -266,66 +269,20 @@ string  Utility::findEdianness() {
 	return endianType;
 }
 /***********************************************************************/
-double  Utility::median(vector<double> x) {
-	double value = 0.0;
-
-	if (x.size() == 0) {} //error
-	else {
-		//For example, if a < b < c, then the median of the list {a, b, c} is b, and, if a < b < c < d, then the median of the list {a, b, c, d} is the mean of b and c; i.e., it is (b + c)/2.
-		sort(x.begin(), x.end());
-		//is x.size even?
-		if ((x.size() % 2) == 0) { //size() is even. median = average of 2 midpoints
-			int midIndex1 = (x.size() / 2) - 1;
-			int midIndex2 = (x.size() / 2);
-			value = (x[midIndex1] + x[midIndex2]) / 2.0;
-		}
-		else {
-			int midIndex = (x.size() / 2);
-			value = x[midIndex];
-		}
-	}
-	return value;
-}
-/***********************************************************************/
-int  Utility::median(vector<int> x) {
-	double value = 0;
-
-	if (x.size() == 0) {} //error
-	else {
-		//For example, if a < b < c, then the median of the list {a, b, c} is b, and, if a < b < c < d, then the median of the list {a, b, c, d} is the mean of b and c; i.e., it is (b + c)/2.
-		sort(x.begin(), x.end());
-		//is x.size even?
-		if ((x.size() % 2) == 0) { //size() is even. median = average of 2 midpoints
-			int midIndex1 = (x.size() / 2) - 1;
-			int midIndex2 = (x.size() / 2);
-			value = (x[midIndex1] + x[midIndex2]) / 2.0;
-		}
-		else {
-			int midIndex = (x.size() / 2);
-			value = x[midIndex];
-		}
-	}
-	return (int)value;
-}
-/***********************************************************************/
-int  Utility::average(vector<int> x) {
+int Utility::average(std::vector<int> x) {
 	int value = 0;
 
-	for (int i = 0; i < x.size(); i++) {
-		if (control_pressed) { break; }
+	for (int i = 0; i < x.size() && !ctrlc_pressed; i++) {
 		value += x[i];
 	}
 
-	return ((int)value / x.size());
+	return static_cast<int>(value / static_cast<int>(x.size()));
 }
 /***********************************************************************/
-int  Utility::sum(vector<int> x) {
+int  Utility::sum(std::vector<int> x) {
 	int value = 0;
 
-	Application& app = Application::getApplication();
-
-	for (int i = 0; i < x.size(); i++) {
-		if (ctrlc_pressed) { break; }
+	for (int i = 0; i < x.size() && !ctrlc_pressed; i++) {
 		value += x[i];
 	}
 
@@ -346,12 +303,12 @@ int Utility::factorial(int num) {
 //this function determines if the user has given us labels that are smaller than the given label.
 //if so then it returns true so that the calling function can run the previous valid distance.
 //it's a "smart" distance function.  It also checks for invalid labels.
-bool Utility::anyLabelsToProcess(string label, set<string>& userLabels, string errorOff) {
+bool Utility::anyLabelsToProcess(std::string label, std::set<std::string>& userLabels, std::string errorOff) {
 
-	set<string>::iterator it;
-	vector<float> orderFloat;
-	map<string, float> userMap;  //the conversion process removes trailing 0's which we need to put back
-	map<string, float>::iterator it2;
+	std::set<std::string>::iterator it;
+	std::vector<float> orderFloat;
+	std::map<std::string, float> userMap;  //the conversion process removes trailing 0's which we need to put back
+	std::map<std::string, float>::iterator it2;
 	float labelFloat;
 	bool smaller = false;
 
@@ -374,16 +331,16 @@ bool Utility::anyLabelsToProcess(string label, set<string>& userLabels, string e
 			convert(*it, temp);
 			orderFloat.push_back(temp);
 			userMap[*it] = temp;
-			it++;
+			++it;
 		}
 		else if (*it == "unique") {
 			orderFloat.push_back(-1.0);
 			userMap["unique"] = -1.0;
-			it++;
+			++it;
 		}
 		else {
-			if (errorOff == "") { mothurOut(*it + " is not a valid label."); mothurOutEndLine(); }
-			userLabels.erase(it++);
+			if (errorOff == "") { LOG(LOGERROR) << *it << " is not a valid label."; }
+			userLabels.erase(++it);
 		}
 	}
 
@@ -403,7 +360,7 @@ bool Utility::anyLabelsToProcess(string label, set<string>& userLabels, string e
 				userLabels.erase("unique");
 			}
 			else {
-				string s = "";
+				std::string s = "";
 				for (it2 = userMap.begin(); it2 != userMap.end(); it2++) {
 					if (it2->second == orderFloat[i]) {
 						s = it2->first;

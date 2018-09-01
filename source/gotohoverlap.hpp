@@ -1,5 +1,4 @@
-#ifndef GOTOHOVERLAP_H
-#define GOTOHOVERLAP_H
+#pragma once
 
 /*
  *  gotohoverlap.h
@@ -42,4 +41,4 @@ private:
 
 /**************************************************************************************************/
 
-#endif
+

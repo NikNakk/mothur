@@ -1,5 +1,4 @@
-#ifndef SHAREDUTIL_H
-#define SHAREDUTIL_H
+#pragma once
 /*
  *  sharedutilities.h
  *  Mothur
@@ -18,7 +17,7 @@ class SharedOrderVector;
 
 class SharedUtil {
 public:
-	SharedUtil() { m = MothurOut::getInstance(); }
+	SharedUtil() { }
 	~SharedUtil() {};
 
 	void getSharedVectors(vector<string>, vector<SharedRAbundVector*>&, SharedOrderVector*);
@@ -31,10 +30,9 @@ public:
 	bool isValidGroup(string, vector<string>);
 
 private:
-	MothurOut* m;
 
 };
 
 /**************************************************************************************************/
 
-#endif
+

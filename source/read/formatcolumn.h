@@ -1,5 +1,4 @@
-#ifndef FORMATCOLUMN_H
-#define FORMATCOLUMN_H
+#pragma once
 /*
  *  formatcolumn.h
  *  Mothur
@@ -29,5 +28,5 @@ private:
 
 /******************************************************/
 
-#endif
+
 

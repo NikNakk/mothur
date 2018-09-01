@@ -1,5 +1,4 @@
-#ifndef REMOVELINEAGECOMMAND_H
-#define REMOVELINEAGECOMMAND_H
+#pragma once
 
 /*
  *  removelineagecommand.h
@@ -58,5 +57,5 @@ private:
 	vector< map<string, float> > getTaxons(string);
 };
 
-#endif
+
 

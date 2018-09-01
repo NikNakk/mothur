@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__mimarksattributescommand__
-#define __Mothur__mimarksattributescommand__
+#pragma once
 
 #include "command.hpp"
 
@@ -99,4 +98,4 @@ private:
 
 
 
-#endif /* defined(__Mothur__mimarksattributescommand__) */
+ /* defined(__Mothur__mimarksattributescommand__) */

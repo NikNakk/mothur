@@ -1,18 +1,18 @@
-#ifndef countfileparameter_h
-#define countfileparameter_h
+#pragma once
 
 #include "inputtypeparameter.h"
 
 class CountFileParameter : public InputTypeParameter {
 public:
-	CountFileParameter(Settings& settings, string name, bool required, bool important = false,
-		string chooseOnlyOneGroup = "", string chooseAtLeastOneGroup = "", string linkedGroup = "") :
-		InputTypeParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup) {}
-	virtual string getValue() {
+	CountFileParameter(std::string& countfile, Settings& settings, std::string name, bool required, bool important = false,
+		std::string chooseOnlyOneGroup = "", std::string chooseAtLeastOneGroup = "", std::string linkedGroup = "") :
+		InputTypeParameter(settings, name, required, important, chooseOnlyOneGroup, chooseAtLeastOneGroup, linkedGroup),
+		value(countfile) {}
+	virtual std::string getValue() const override {
 		return value;
 	}
-	virtual void validateAndSet(string newValue);
+	virtual void validateAndSet(std::string newValue);
 private:
-	string value;
+	std::string& value;
 };
-#endif
+

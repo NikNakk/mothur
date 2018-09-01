@@ -1,5 +1,4 @@
-#ifndef TRIMSEQSCOMMAND_H
-#define TRIMSEQSCOMMAND_H
+#pragma once
 
 /*
  *  trimseqscommand.h
@@ -86,7 +85,6 @@ private:
 // that can be passed using a single void pointer (LPVOID).
 struct trimData {
 	unsigned long long start, end;
-	MothurOut* m;
 	string filename, qFileName, trimFileName, scrapFileName, trimQFileName, scrapQFileName, trimNFileName, scrapNFileName, trimCFileName, scrapCFileName, groupFileName, nameFile, countfile;
 	vector<vector<string> > fastaFileNames;
 	vector<vector<string> > qualFileNames;
@@ -665,5 +663,5 @@ static DWORD WINAPI MyTrimThreadFunction(LPVOID lpParam) {
 
 /**************************************************************************************************/
 
-#endif
+
 

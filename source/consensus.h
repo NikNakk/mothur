@@ -1,5 +1,4 @@
-#ifndef CONCENSUS_H
-#define CONCENSUS_H
+#pragma once
 /*
  *  consensus.h
  *  Mothur
@@ -22,13 +21,12 @@
 class Consensus {
 
 public:
-	Consensus() { m = MothurOut::getInstance(); }
+	Consensus() { }
 	~Consensus() {}
 
 	Tree* getTree(vector<Tree*>&);
 
 private:
-	MothurOut* m;
 	Tree* consensusTree;
 
 	vector<string> treeSet;		//set containing all members of the tree to start recursion.  filled in getSets().
@@ -57,5 +55,5 @@ private:
 
 };
 
-#endif
+
 

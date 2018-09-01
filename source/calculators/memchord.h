@@ -1,5 +1,4 @@
-#ifndef MEMCHORD_H
-#define MEMCHORD_H
+#pragma once
 
 /*
  *  memchord.h
@@ -28,5 +27,5 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 

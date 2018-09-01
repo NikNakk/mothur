@@ -1,5 +1,4 @@
-#ifndef SPECIESPROFILE_H
-#define SPECIESPROFILE_H
+#pragma once
 
 /*
  *  speciesprofile.h
@@ -28,6 +27,6 @@ private:
 
 /***********************************************************************/
 
-#endif
+
 
 

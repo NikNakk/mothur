@@ -1,5 +1,4 @@
-#ifndef PAIRWISESEQSCOMMAND_H
-#define PAIRWISESEQSCOMMAND_H
+#pragma once
 
 /*
  *  pairwiseseqscommand.h
@@ -83,7 +82,6 @@ struct pairwiseData {
 	string align, square, distcalcType, output;
 	unsigned long long start;
 	unsigned long long end;
-	MothurOut* m;
 	float match, misMatch, gapOpen, gapExtend, cutoff;
 	int count, threadID, longestBase;
 	bool countends;
@@ -324,5 +322,5 @@ static DWORD WINAPI MyPairwiseThreadFunction(LPVOID lpParam) {
 #endif
 
 
-#endif
+
 

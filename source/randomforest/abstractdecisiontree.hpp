@@ -6,8 +6,7 @@
 //  Copyright (c) 2012 Schloss Lab. All rights reserved.
 //
 
-#ifndef RF_ABSTRACTDECISIONTREE_HPP
-#define RF_ABSTRACTDECISIONTREE_HPP
+#pragma once
 
 #include "macros.h"
 #include "rftreenode.hpp"
@@ -65,7 +64,6 @@ protected:
 	vector<int> globalDiscardedFeatureIndices;
 	int optimumFeatureSubsetSize;
 	string treeSplitCriterion;
-	MothurOut* m;
 
 private:
 
@@ -73,6 +71,6 @@ private:
 };
 /**************************************************************************************************/
 
-#endif
+
 
 

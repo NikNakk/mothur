@@ -1,5 +1,4 @@
-#ifndef alnheuristics_h
-#define alnheuristics_h
+#pragma once
 
 struct AlnParams;
 
@@ -26,4 +25,4 @@ struct AlnHeuristics
 
 	};
 
-#endif // alnheuristics_h
+ // alnheuristics_h

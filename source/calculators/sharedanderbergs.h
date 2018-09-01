@@ -1,5 +1,4 @@
-#ifndef ANDERBERG_H
-#define ANDERBERG_H
+#pragma once
 /*
  *  sharedanderberg.h
  *  Mothur
@@ -26,4 +25,4 @@ class Anderberg : public Calculator  {
 
 /***********************************************************************/
 
-#endif
+

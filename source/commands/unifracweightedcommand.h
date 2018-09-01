@@ -1,5 +1,4 @@
-#ifndef UNIFRACWEIGHTEDCOMMAND_H
-#define UNIFRACWEIGHTEDCOMMAND_H
+#pragma once
 
 /*
  *  unifracweightedcommand.h
@@ -80,7 +79,6 @@ private:
 struct weightedRandomData {
 	int start;
 	int num;
-	MothurOut* m;
 	vector< vector<double> > scores;
 	vector< vector<string> > namesOfGroupCombos;
 	Tree* t;
@@ -149,4 +147,4 @@ static DWORD WINAPI MyWeightedRandomThreadFunction(LPVOID lpParam) {
 #endif
 
 
-#endif
+

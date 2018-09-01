@@ -1,5 +1,4 @@
-#ifndef BINSEQCOMMAND_H
-#define BINSEQCOMMAND_H
+#pragma once
 /*
  *  binsequencecommand.h
  *  Mothur
@@ -54,4 +53,4 @@ private:
 	int process(ListVector*);
 };
 
-#endif
+

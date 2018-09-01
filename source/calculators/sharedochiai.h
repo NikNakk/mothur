@@ -1,5 +1,4 @@
-#ifndef OCHIAI_H
-#define OCHIAI_H
+#pragma once
 /*
  *  sharedochiai.h
  *  Mothur
@@ -27,4 +26,4 @@ private:
 /***********************************************************************/
 
 
-#endif
+

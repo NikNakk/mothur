@@ -8,8 +8,7 @@
 //  This class is based on ClassifySharedCommand
 //
 
-#ifndef __Mothur__classifysvmsharedcommand__
-#define __Mothur__classifysvmsharedcommand__
+#pragma once
 
 #include "command.hpp"
 #include "inputdata.h"
@@ -99,4 +98,4 @@ private:
 
 };
 
-#endif /* defined(__Mothur__classifysvmsharedcommand__) */
+ /* defined(__Mothur__classifysvmsharedcommand__) */

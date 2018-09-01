@@ -1,5 +1,4 @@
-#ifndef CLEARCUTCOMMAND_H
-#define CLEARCUTCOMMAND_H
+#pragma once
 
 /*
  *  clearcutcommand.h
@@ -49,5 +48,5 @@ private:
 
 /****************************************************************************/
 
-#endif
+
 

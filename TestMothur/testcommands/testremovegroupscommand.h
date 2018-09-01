@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Schloss Lab. All rights reserved.
 //
 
-#ifndef __Mothur__testremovegroupscommand__
-#define __Mothur__testremovegroupscommand__
+#pragma once
 
 #include "removegroupscommand.h"
 
@@ -31,4 +30,4 @@ public:
 };
 
 
-#endif /* defined(__Mothur__testremovegroupscommand__) */
+ /* defined(__Mothur__testremovegroupscommand__) */

@@ -1,5 +1,4 @@
-#ifndef Mothur_createdatabasecommand_h
-#define Mothur_createdatabasecommand_h
+#pragma once
 
 //
 //  createdatabasecommand.h
@@ -50,4 +49,4 @@ private:
 
 
 
-#endif
+

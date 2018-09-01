@@ -1,6 +1,5 @@
 
-#ifndef PDSSparCC_runSparcc_h
-#define PDSSparCC_runSparcc_h
+#pragma once
 
 //
 //  runSparcc.h
@@ -50,6 +49,6 @@ private:
 	RandomNumberGenerator RNG;
 };
 
-#endif
+
 
 /**************************************************************************************************/

@@ -1,5 +1,4 @@
-#ifndef FORMATMATRIX_H
-#define FORMATMATRIX_H
+#pragma once
 
 /*
  *  formatmatrix.h
@@ -58,7 +57,7 @@
 class FormatMatrix {
 
 public:
-	FormatMatrix() { m = MothurOut::getInstance(); }
+	FormatMatrix() { }
 	virtual ~FormatMatrix() {}
 
 	virtual int read(NameAssignment*) { return 1; }
@@ -74,10 +73,9 @@ protected:
 	float cutoff;
 	string distFile;
 	vector<int> rowPos;
-	MothurOut* m;
 };
 
 //**********************************************************************************************************************
 
-#endif
+
 

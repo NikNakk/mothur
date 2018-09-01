@@ -70,10 +70,10 @@ const LEVELS DBUG{ g3::kDebugVaulue, {"DEBUG"} },
 #else
 const LEVELS DEBUG{ g3::kDebugVaulue, {"DEBUG"} },
 #endif
-SCREENONLY{ g3::kDebugVaulue + 1,{ "SCREENONLY" } },
+INFO{ g3::kDebugVaulue + 1,{ "INFO" } },
+WARNING{ INFO.value + 1,{ "WARNING" } },
+SCREENONLY{ WARNING.value + 1,{ "SCREENONLY" } },
 FILEONLY{ SCREENONLY.value + 1,{ "FILEONLY" } },
-INFO{ INFO.value + 1, {"INFO"} },
-WARNING{ INFO.value + 1, {"WARNING"} },
 LOGERROR{ WARNING.value + 1, {"ERROR"} },
 LOGWAIT{ LOGERROR.value + 1, {"WAIT"} },
 

@@ -1,5 +1,4 @@
-#ifndef HCLUSTERCOMMAND_H
-#define HCLUSTERCOMMAND_H
+#pragma once
 
 /*
  *  hclustercommand.h
@@ -70,4 +69,4 @@ private:
 
 /************************************************************/
 
-#endif
+
